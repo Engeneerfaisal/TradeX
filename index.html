@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Islamic Pashto AI (Offline) - Smart Mapping</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body{
+  background:linear-gradient(180deg,#0b3d2e,#041f17);
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  color:white;
+}
+
+header{
+  padding:15px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+  background:#06281d;
+}
+
+#chat{
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.user{
+  align-self:flex-end;
+  background:#1e8f5a;
+  padding:12px;
+  border-radius:18px 18px 0 18px;
+  max-width:80%;
+  font-size:15px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bot{
+  align-self:flex-start;
+  background:#0f3d2e;
+  padding:12px;
+  border-radius:18px 18px 18px 0;
+  max-width:80%;
+  font-size:15px;
+  line-height:1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.input-area{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  background:#031812;
+  align-items: flex-end;
+}
+
+.input-area textarea{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  outline:none;
+  font-size:15px;
+  resize:none;
+  max-height:140px;
+  overflow-y:auto;
+  line-height:1.6;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.input-area button{
+  background:#22c55e;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  
+}
+
+#chat::-webkit-scrollbar{
+  width:5px;
+}
+#chat::-webkit-scrollbar-thumb{
+  background:#22c55e;
+  border-radius:10px;
+}
+
+#menuBtn{
+  position:absolute;
+  left:15px;
+  top:15px;
+  font-size:24px;
+  cursor:pointer;
+}
+
+#sidebar{
+  position:fixed;
+  top:0;
+  left:-280px;
+  width:260px;
+  height:100%;
+  background:#041f17;
+  padding:15px;
+  transition:0.3s;
+  z-index:999;
+  overflow-y:auto;
+}
+
+#sidebar.active{
+  left:0;
+}
+
+#chatList{
+  margin-top:10px;
+}
+
+#chatList li{
+  list-style:none;
+  background:#0f3d2e;
+  padding:8px;
+  border-radius:6px;
+  margin-bottom:6px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+}
+
+#chatList li span{
+  color:red;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<header>
+  Islamic Pashto AI (Offline)
+</header>
+
+<div id="chat">
+  <div class="bot">
+    السلام علیکم ورحمة الله وبرکاته 🌙  
+    زه یو افلاین اسلامي AI یم، خپله پوښتنه ولیکئ.
+  </div>
+</div>
+
+<div class="input-area">
+  <textarea id="userInput" rows="1" placeholder="خپله پوښتنه ولیکئ..."></textarea>
+  <button onclick="send()">➤</button>
+</div>
+
+<script>
+const knowledgeBase = [
+  {
+    keywords: ["ته څوک یی","تاسو څوک یاست","خپل ځان معرفی کړه","دا اپلیکیشن څه دی","څوک یی"],
+    answer: "زه یو افلاین اسلامي AI یم چې د فیصل احمدی له خوا جوړ شوی یم او د قرآن، حدیث او اسلامي بنسټیزو معلوماتو پر اساس پوښتنو ته ځواب ورکوم."
+  },
+  {
+    keywords: ["اسلام","اسلام څه دی","اسلام تعریف","اسلام څه معنا لري","د اسلام مانا"],
+    answer: "اسلام د الله جل جلاله دین دی، چې د اطاعت، امن، سولې او هدایت بشپړ نظام وړاندې کوي."
+  },
+  {
+    keywords: ["قرآن","قرآن څه دی","قرآن کریم","قرآن تعریف","قران","قران مجید","قران مجید د چا کتاب دی","وروستی اسمانی کتاب","ولی اسلام مهم دی"],
+    answer: "قرآن کریم د الله وروستی آسماني کتاب دی چې پر حضرت محمد ﷺ نازل شوی او د انسانانو لپاره د ژوند لارښود دی."
+  },
+  {
+    keywords: ["ته چا جوړ کړی یی","چا جوړ کړی یی","ته د چا له خوا جوړ شوی یی","د چا لخوا جوړ شوی یی"],
+    answer: "زه د فیصل احمدی له خوا جوړ شوی یو ساده افلاین اسلامي AI یم."
+  },
+  {
+    keywords: ["محمد څوک دی"],
+    answer: "محمد ﷺ د الله رسول او نبی دی."
+  },
+  
+  {
+    keywords: ["د 1404 کال کانکور کی د خوګیاڼیو په سطحه پنځم نمره څوک وه"],
+    answer: "د 1404 کال کانکور کی د خوګیاڼیو په سطحه پنځم نمره جواد ځلاند وه چی د لغمان پوهنتون د ابو انجینری برخه کی زده کړی کوی."
+  }
+];
+
+function normalize(text){
+  return text
+    .toLowerCase()
+    .replace(/[؟?.,!]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function words(text){
+  return normalize(text).split(" ").filter(w => w.length > 1);
+}
+
+function isNumberSelection(text){
+  return /^[1-5]$/.test(text.trim());
+}
+
+function wordSimilarity(input, keyword){
+  const inputWords = words(input);
+  const keyWords   = words(keyword);
+
+  if(inputWords.length === 0 || keyWords.length === 0) return null;
+
+  let common = 0;
+  for(let w of keyWords){
+    if(inputWords.includes(w)) common++;
+  }
+
+  const ratio = common / keyWords.length;
+
+  return {
+    common,
+    ratio,
+    inputLen: inputWords.length,
+    keyLen: keyWords.length
+  };
+}
+
+function getSuggestions(input){
+  let results = [];
+
+  for(let item of knowledgeBase){
+    for(let key of item.keywords){
+
+      const sim = wordSimilarity(input, key);
+      if(!sim) continue;
+
+      // 🔴 اصلي قواعد
+      if(
+        sim.common >= 3 &&           // لږ تر لږه ۲ مشترکې کلمې
+        sim.ratio >= 0.3 &&          // لږ تر لږه ۴۰٪ match
+        (sim.inputLen - sim.common) <= 5 // input ډېر اوږد نه وي
+      ){
+        results.push({
+          question: key,
+          answer: item.answer,
+          score: sim.ratio
+        });
+      }
+    }
+  }
+
+  results.sort((a,b)=>b.score - a.score);
+  lastSuggestions = results.slice(0,5);
+  return lastSuggestions;
+}
+
+function splitQuestions(text){
+  return text
+    .replace(/؟|\?/g,"|")
+    .replace(/\s+او\s+/g,"|")
+    .replace(/\s+او همدارنګه\s+/g,"|")
+    .replace(/\s+همدارنګه\s+/g,"|")
+    .replace(/\s+ " "\s+/g,"|")
+    .replace(/\s+او هم\s+/g,"|")
+    .split("|")
+    .map(q => q.trim())
+    .filter(q => q.length > 1);
+}
+
+function processSingleQuestion(input){
+
+  for(let item of knowledgeBase){
+    for(let key of item.keywords){
+      if(normalize(key) === input){
+        return item.answer;
+      }
+    }
+  }
+
+  const suggestions = getSuggestions(input);
+  if(suggestions.length){
+    let msg = `❓ "${input}" لپاره ممکن سوالونه:\n\n`;
+    suggestions.forEach((s,i)=>{
+      msg += `${i+1}. ${s.question}\n`;
+    });
+    msg += "\n(شمېره ولیکئ)";
+    return msg;
+  }
+
+  return `❌ "${input}" پوښتنه ونه پېژندل شوه.`;
+}
+
+function getAnswer(input){
+
+  // 1️⃣ Try to solve math first
+  const mathResult = solveMath(input);
+  if(!mathResult.startsWith("بښنه غواړم")){ // که ریاضي حل شوی وي
+    return mathResult;
+  }
+
+
+  input = normalize(input);
+
+  if(isNumberSelection(input) && lastSuggestions.length){
+    const idx = Number(input) - 1;
+    if(lastSuggestions[idx]){
+      const ans = lastSuggestions[idx].answer;
+      lastSuggestions = [];
+      return ans;
+    }
+  }
+
+  const questions = splitQuestions(input);
+
+  if(questions.length > 1){
+    let finalAnswer = "";
+
+    questions.forEach((q,i)=>{
+      const answer = processSingleQuestion(q);
+      finalAnswer += `🟢 سوال ${i+1}:\n${answer}\n\n`;
+    });
+
+    return finalAnswer.trim();
+  }
+
+  return processSingleQuestion(input);
+}
+
+function send(){
+  const inputEl = document.getElementById("userInput");
+  const text = inputEl.value.trim();
+  if(!text) return;
+
+  addUserMessage(text);
+  const reply = getAnswer(text);
+  typeMessage(reply,"bot");
+
+  inputEl.value = "";
+  inputEl.style.height = "auto";
+}
+
+function addUserMessage(text){
+  const div = document.createElement("div");
+  div.className = "user";
+  div.innerText = text;
+  document.getElementById("chat").appendChild(div);
+  div.scrollIntoView({behavior:"smooth"});
+}
+
+function typeMessage(text,type){
+  const div = document.createElement("div");
+  div.className = type;
+  div.style.whiteSpace = "pre-wrap";
+  document.getElementById("chat").appendChild(div);
+
+  let i=0;
+  const speed=30;
+  function typeChar(){
+    if(i < text.length){
+      div.innerText += text.charAt(i++);
+      div.scrollIntoView({behavior:"smooth"});
+      setTimeout(typeChar,speed);
+    }
+  }
+  typeChar();
+}
+
+const userInput = document.getElementById("userInput");
+
+userInput.addEventListener("input", ()=>{
+  userInput.style.height = "auto";
+  userInput.style.height = userInput.scrollHeight + "px";
+});
+
+document.getElementById("userInput").addEventListener("keydown", e=>{
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    send();
+  }
+});
+
+const pashtoNumbers = {
+  "صفر":0, "یو":1, "یوه":1, "دوه":2, "درې":3, "څلور":4, "پنځه":5,
+  "شپږ":6, "اووه":7, "اته":8, "نهه":9, "لس":10, "یولس":11, "دولس":12,
+  "دیارلس":13, "څوارلس":14, "پنځلس":15, "شپاړس":16, "اووه لس":17, "اته لس":18, "نهه لس":19, "شلو":20
+};
+
+function convertPashtoNumbers(text){
+  for(let key in pashtoNumbers){
+    let re = new RegExp("\\b"+key+"\\b","gi");
+    text = text.replace(re, pashtoNumbers[key]);
+  }
+  return text;
+}
+
+const pashtoOperators = {
+  "جمعه": "+",
+  "جمع": "+",
+  "تفریق": "-",
+  "منفي": "-",
+  "ضرب": "*",
+  "ضربه": "*",
+  "تقسیم": "/",
+  "تقسیمه": "/",
+  "توان": "**",
+  "په توان": "**"
+};
+
+function convertPashtoOperators(text){
+  for(let key in pashtoOperators){
+    let re = new RegExp("\\b"+key+"\\b","gi");
+    text = text.replace(re, pashtoOperators[key]);
+  }
+  return text;
+}
+
+function solveMath(input){
+
+  function convertPersianNumbers(text){
+    const persianNums = {"۰":"0","۱":"1","۲":"2","۳":"3","۴":"4","۵":"5","۶":"6","۷":"7","۸":"8","۹":"9"};
+    for(let key in persianNums){
+      let re = new RegExp(key,"g");
+      text = text.replace(re, persianNums[key]);
+    }
+    return text;
+  }
+
+  input = input.toLowerCase();
+
+  input = convertPashtoNumbers(input);
+
+  input = convertPersianNumbers(input);
+
+  input = convertPashtoOperators(input);
+  
+  input = input.replace(/\s+/g,"");
+
+  try{
+    let result = eval(input);
+    return `نتیجه: ${result}`;
+  }catch(e){
+    return "بښنه غواړم، زه د دې ریاضي پوښتنه حل نه کړم.";
+  }
+}
+console.log(solveMath("2 + 3"));           // 5
+console.log(solveMath("دوه جمعه درې"));   // 5
+console.log(solveMath("پنځه ضربه درې"));  // 15
+console.log(solveMath("لس تقسیم دوه"));    // 5
+console.log(solveMath("۲ په توان ۳"));     // 8
+</script>
+</body>
+</html>
