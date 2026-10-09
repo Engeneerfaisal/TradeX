@@ -1,1 +1,12 @@
-
+{
+  "name": "TradeX",
+  "short_name": "TradeX",
+  "description": "TradeX Crypto Trading App",
+  "start_url": "/TradeX/",
+  "scope": "/TradeX/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "orientation": "portrait",
+  "icons": []
+}
