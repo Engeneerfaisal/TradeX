@@ -1,464 +1,4768 @@
 <!DOCTYPE html>
-<html lang="ps" dir="rtl">
+<html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b1220">
-<meta name="mobile-web-app-capable" content="yes">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Islamic Pashto AI (Offline) - Smart Mapping</title>
+
+<title>TradeX Futures</title>
 
 <style>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family: "Segoe UI", Tahoma, sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
 }
 
 body{
-  background:linear-gradient(180deg,#0b3d2e,#041f17);
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  color:white;
+    background:#0b0f14;
+    color:#e8edf3;
+    font-family:Arial,sans-serif;
+    overflow-x:hidden;
 }
 
-header{
-  padding:15px;
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-  background:#06281d;
+button,
+input,
+select{
+    font:inherit;
 }
 
-#chat{
-  flex:1;
-  overflow-y:auto;
-  padding:15px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+button{
+    cursor:pointer;
 }
 
-.user{
-  align-self:flex-end;
-  background:#1e8f5a;
-  padding:12px;
-  border-radius:18px 18px 0 18px;
-  max-width:80%;
-  font-size:15px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+.app{
+    max-width:1200px;
+    margin:auto;
+    min-height:100vh;
 }
 
-.bot{
-  align-self:flex-start;
-  background:#0f3d2e;
-  padding:12px;
-  border-radius:18px 18px 18px 0;
-  max-width:80%;
-  font-size:15px;
-  line-height:1.6;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header{
+    height:58px;
+    background:#111820;
+    border-bottom:1px solid #26313c;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 12px;
+    gap:14px;
+
+    position:sticky;
+    top:0;
+    z-index:20;
 }
 
-.input-area{
-  display:flex;
-  gap:10px;
-  padding:10px;
-  background:#031812;
-  align-items: flex-end;
+.logo{
+    font-size:21px;
+    font-weight:bold;
+    color:#19d99b;
+    white-space:nowrap;
 }
 
-.input-area textarea{
-  flex:1;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  outline:none;
-  font-size:15px;
-  resize:none;
-  max-height:140px;
-  overflow-y:auto;
-  line-height:1.6;
-  white-space:pre-wrap;
-  word-break:break-word;
+.symbol{
+    display:flex;
+    flex-direction:column;
 }
 
-.input-area button{
-  background:#22c55e;
-  color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-weight: bold;
-  
+.symbol strong{
+    font-size:15px;
 }
 
-#chat::-webkit-scrollbar{
-  width:5px;
-}
-#chat::-webkit-scrollbar-thumb{
-  background:#22c55e;
-  border-radius:10px;
+.symbol span{
+    font-size:11px;
+    color:#7f8b98;
 }
 
-#menuBtn{
-  position:absolute;
-  left:15px;
-  top:15px;
-  font-size:24px;
-  cursor:pointer;
+.price{
+    font-size:17px;
+    font-weight:bold;
+    color:#19d99b;
+    margin-left:auto;
 }
 
-#sidebar{
-  position:fixed;
-  top:0;
-  left:-280px;
-  width:260px;
-  height:100%;
-  background:#041f17;
-  padding:15px;
-  transition:0.3s;
-  z-index:999;
-  overflow-y:auto;
+.priceChange{
+    font-size:11px;
+    color:#19d99b;
 }
 
-#sidebar.active{
-  left:0;
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.toolbar{
+    height:45px;
+
+    background:#0e141b;
+    border-bottom:1px solid #222c35;
+
+    display:flex;
+    align-items:center;
+
+    gap:6px;
+    padding:5px 8px;
+
+    overflow-x:auto;
 }
 
-#chatList{
-  margin-top:10px;
+.toolBtn,
+.tf{
+    border:0;
+    background:#17212b;
+    color:#9da9b5;
+
+    padding:7px 10px;
+
+    border-radius:5px;
+    white-space:nowrap;
 }
 
-#chatList li{
-  list-style:none;
-  background:#0f3d2e;
-  padding:8px;
-  border-radius:6px;
-  margin-bottom:6px;
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between;
+.tf.active{
+    background:#19d99b;
+    color:#07130f;
+    font-weight:bold;
 }
 
-#chatList li span{
-  color:red;
-  cursor:pointer;
+
+/* =========================================================
+   CHART
+========================================================= */
+
+.chartBox{
+    height:430px;
+
+    position:relative;
+
+    background:#080d12;
+
+    border-bottom:1px solid #27313b;
+
+    touch-action:none;
+    user-select:none;
+
+    overflow:hidden;
 }
+
+#chart{
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    touch-action:none;
+    user-select:none;
+}
+
+
+/* =========================================================
+   CHART INFORMATION
+========================================================= */
+
+.chartInfo{
+    position:absolute;
+
+    top:9px;
+    left:10px;
+
+    font-size:11px;
+    color:#9aa6b2;
+
+    line-height:18px;
+
+    pointer-events:none;
+
+    z-index:4;
+}
+
+
+/* =========================================================
+   PRICE SCALE
+========================================================= */
+
+.priceScale{
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:68px;
+    height:100%;
+
+    pointer-events:none;
+
+    z-index:5;
+
+    background:linear-gradient(
+        to right,
+        rgba(8,13,18,0),
+        rgba(8,13,18,.45)
+    );
+
+    border-left:1px solid #17212a;
+}
+
+
+/* Price labels */
+
+.priceLevel{
+    position:absolute;
+
+    right:4px;
+
+    transform:translateY(-50%);
+
+    color:#8a96a2;
+
+    font-size:10px;
+
+    white-space:nowrap;
+
+    background:rgba(8,13,18,.80);
+
+    padding:1px 3px;
+
+    border-radius:2px;
+}
+
+
+/* =========================================================
+   CURRENT PRICE BOX
+========================================================= */
+
+.priceTag{
+    position:absolute;
+
+    right:0;
+
+    min-width:68px;
+
+    padding:4px 7px;
+
+    background:#19d99b;
+
+    color:#06110d;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    border-radius:3px 0 0 3px;
+
+    pointer-events:none;
+
+    z-index:8;
+
+    transition:
+        background .10s linear,
+        color .10s linear,
+        top .06s linear;
+}
+
+/* =========================================================
+   CROSSHAIR
+========================================================= */
+
+.crosshair{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:7;
+    display:none;
+}
+
+.crosshair.active{
+    display:block;
+}
+
+
+/* عمودي کرښه */
+
+.crosshairVertical{
+    position:absolute;
+    top:0;
+    bottom:0;
+
+    width:1px;
+
+    background:rgba(220,230,240,.65);
+
+    box-shadow:
+        0 0 3px rgba(255,255,255,.15);
+
+    transform:translateX(-50%);
+}
+
+
+/* افقي کرښه */
+
+.crosshairHorizontal{
+    position:absolute;
+    left:0;
+    right:68px;
+
+    height:1px;
+
+    background:rgba(220,230,240,.65);
+
+    box-shadow:
+        0 0 3px rgba(255,255,255,.15);
+
+    transform:translateY(-50%);
+}
+
+
+/* د Crosshair منځنی + */
+
+.crosshairCenter{
+    position:absolute;
+
+    width:9px;
+    height:9px;
+
+    border:1px solid #dfe7ee;
+
+    border-radius:50%;
+
+    background:#080d12;
+
+    transform:
+        translate(-50%,-50%);
+
+    box-shadow:
+        0 0 5px rgba(255,255,255,.35);
+}
+
+
+/* Crosshair Price */
+
+.crosshairPrice{
+    position:absolute;
+
+    right:0;
+
+    min-width:68px;
+
+    padding:3px 5px;
+
+    background:#080d12;
+
+    border:1px solid #7f8b98;
+
+    color:#e8edf3;
+
+    font-size:10px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    border-radius:3px 0 0 3px;
+
+    transform:translateY(-50%);
+}
+
+
+/* Crosshair Time */
+
+.crosshairTime{
+    position:absolute;
+
+    bottom:0;
+
+    padding:3px 6px;
+
+    background:#080d12;
+
+    border:1px solid #7f8b98;
+
+    color:#cbd4dc;
+
+    font-size:9px;
+
+    border-radius:3px 3px 0 0;
+
+    transform:translateX(-50%);
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    background:#10161d;
+
+    border-bottom:1px solid #26313b;
+}
+
+.stat{
+    padding:9px 8px;
+
+    border-right:1px solid #222c35;
+}
+
+.stat small{
+    display:block;
+
+    color:#71808d;
+
+    font-size:10px;
+
+    margin-bottom:4px;
+}
+
+.stat b{
+    font-size:13px;
+}
+
+
+/* =========================================================
+   TRADE PANEL
+========================================================= */
+
+.tradePanel{
+    background:#10161d;
+
+    padding:10px;
+}
+
+.tabs{
+    display:flex;
+
+    gap:5px;
+
+    margin-bottom:10px;
+}
+
+.tab{
+    flex:1;
+
+    border:0;
+
+    padding:9px;
+
+    background:#17212b;
+
+    color:#8d9aa7;
+
+    border-radius:5px;
+}
+
+.tab.active{
+    background:#27333f;
+
+    color:white;
+}
+
+
+.fields{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:8px;
+}
+
+.field label{
+    display:block;
+
+    color:#7e8b97;
+
+    font-size:11px;
+
+    margin-bottom:5px;
+}
+
+.field input,
+.field select{
+    width:100%;
+
+    background:#0b1117;
+
+    border:1px solid #29343e;
+
+    color:white;
+
+    padding:10px;
+
+    border-radius:5px;
+
+    outline:none;
+}
+
+.field input:focus,
+.field select:focus{
+    border-color:#19d99b;
+}
+
+
+/* =========================================================
+   LEVERAGE
+========================================================= */
+
+.leverage{
+    display:flex;
+
+    gap:4px;
+}
+
+.lev{
+    flex:1;
+
+    border:0;
+
+    padding:7px 3px;
+
+    background:#17212b;
+
+    color:#9ba7b3;
+
+    border-radius:4px;
+
+    font-size:11px;
+}
+
+.lev.active{
+    background:#19d99b;
+
+    color:#07130f;
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.actionButtons{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:8px;
+
+    margin-top:10px;
+}
+
+.longBtn,
+.shortBtn{
+    border:0;
+
+    padding:13px;
+
+    border-radius:6px;
+
+    font-size:15px;
+
+    font-weight:bold;
+}
+
+.longBtn{
+    background:#0c9f72;
+
+    color:white;
+}
+
+.shortBtn{
+    background:#d94b59;
+
+    color:white;
+}
+
+.longBtn:active,
+.shortBtn:active{
+    transform:scale(.98);
+}
+
+
+/* =========================================================
+   CALCULATION
+========================================================= */
+
+.calculation{
+    margin-top:10px;
+
+    background:#0b1117;
+
+    border:1px solid #222d37;
+
+    border-radius:6px;
+
+    padding:10px;
+}
+
+.calcRow{
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:4px 0;
+
+    font-size:12px;
+}
+
+.calcRow span:first-child{
+    color:#7d8a97;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section{
+    background:#0e141a;
+
+    margin-top:8px;
+
+    border-top:1px solid #26313b;
+}
+
+.sectionTitle{
+    padding:10px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    border-bottom:1px solid #222c35;
+}
+
+
+/* =========================================================
+   POSITIONS
+========================================================= */
+
+.positionCard{
+    margin:8px;
+
+    padding:10px;
+
+    background:#121b23;
+
+    border:1px solid #27333e;
+
+    border-radius:6px;
+}
+
+.positionTop{
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:8px;
+}
+
+.sideLong{
+    color:#19d99b;
+
+    font-weight:bold;
+}
+
+.sideShort{
+    color:#ff5868;
+
+    font-weight:bold;
+}
+
+.positionGrid{
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:7px;
+}
+
+.posItem{
+    background:#0b1117;
+
+    padding:7px;
+
+    border-radius:4px;
+}
+
+.posItem small{
+    display:block;
+
+    color:#72808d;
+
+    font-size:9px;
+}
+
+.posItem b{
+    font-size:11px;
+}
+
+.closeBtn{
+    width:100%;
+
+    margin-top:8px;
+
+    padding:8px;
+
+    border:1px solid #3b4651;
+
+    background:#19232d;
+
+    color:#fff;
+
+    border-radius:5px;
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+.history{
+    padding:8px;
+}
+
+.historyRow{
+    display:grid;
+
+    grid-template-columns:1fr 1fr 1fr;
+
+    gap:5px;
+
+    padding:9px 4px;
+
+    border-bottom:1px solid #202a33;
+
+    font-size:10px;
+}
+
+.empty{
+    color:#65727e;
+
+    text-align:center;
+
+    padding:18px;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    text-align:center;
+
+    color:#53616e;
+
+    font-size:10px;
+
+    padding:20px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+    .header{
+        gap:8px;
+    }
+
+    .logo{
+        font-size:17px;
+    }
+
+    .symbol strong{
+        font-size:13px;
+    }
+
+    .price{
+        font-size:14px;
+    }
+
+    .chartBox{
+        height:360px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .stat{
+        border-bottom:1px solid #222c35;
+    }
+
+    .fields{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .priceScale{
+        width:64px;
+    }
+
+    .priceTag{
+        min-width:64px;
+
+        font-size:10px;
+    }
+}
+
 </style>
 </head>
+
+
 <body>
 
-<header>
-  Islamic Pashto AI (Offline)
+<div class="app">
+
+
+<!-- ======================================================
+     HEADER
+====================================================== -->
+
+<header class="header">
+
+    <div class="logo">
+        TradeX
+    </div>
+
+    <div class="symbol">
+        <strong>XRP/USDT</strong>
+        <span>Perpetual Futures</span>
+    </div>
+
+    <div>
+
+        <div class="price" id="topPrice">
+            2.5000
+        </div>
+
+        <div class="priceChange" id="change">
+            +0.00%
+        </div>
+
+    </div>
+
 </header>
 
-<div id="chat">
-  <div class="bot">
-    السلام علیکم ورحمة الله وبرکاته 🌙  
-    زه یو افلاین اسلامي AI یم، خپله پوښتنه ولیکئ.
-  </div>
+
+<!-- ======================================================
+     TOOLBAR
+====================================================== -->
+
+<div class="toolbar">
+
+    <button class="tf active" data-tf="1m">
+        1m
+    </button>
+
+    <button class="tf" data-tf="5m">
+        5m
+    </button>
+
+    <button class="tf" data-tf="15m">
+        15m
+    </button>
+
+    <button class="tf" data-tf="1h">
+        1h
+    </button>
+
+    <button class="tf" data-tf="4h">
+        4h
+    </button>
+
+    <button class="toolBtn" onclick="resetMarket()">
+        Reset
+    </button>
+
+    <button class="toolBtn" onclick="toggleSimulation()">
+        <span id="simText">
+            Pause
+        </span>
+    </button>
+
 </div>
 
-<div class="input-area">
-  <textarea id="userInput" rows="1" placeholder="خپله پوښتنه ولیکئ..."></textarea>
-  <button onclick="send()">➤</button>
+
+<!-- ======================================================
+     CHART
+====================================================== -->
+
+<div class="chartBox">
+
+    <canvas id="chart"></canvas>
+
+
+    <div class="chartInfo">
+
+        XRPUSDT · Perpetual
+
+        <br>
+
+        <span id="chartMode">
+            SIMULATED MARKET · 1m
+        </span>
+
+    </div>
+
+
+    <!-- Price Scale -->
+
+    <div
+        class="priceScale"
+        id="priceScale">
+    </div>
+
+
+    <!-- Current Price Box -->
+
+    <div
+        class="priceTag"
+        id="priceTag">
+
+        2.5000
+
+    </div>
+    
+    <!-- ======================================================
+     CROSSHAIR
+====================================================== -->
+
+<div class="crosshair" id="crosshair">
+
+    <div
+        class="crosshairVertical"
+        id="crosshairVertical">
+    </div>
+
+    <div
+        class="crosshairHorizontal"
+        id="crosshairHorizontal">
+    </div>
+
+    <div
+        class="crosshairCenter"
+        id="crosshairCenter">
+    </div>
+
+    <div
+        class="crosshairPrice"
+        id="crosshairPrice">
+        2.5000
+    </div>
+
+    <div
+        class="crosshairTime"
+        id="crosshairTime">
+        1m
+    </div>
+
 </div>
+
+</div>
+
+
+<!-- ======================================================
+     STATS
+====================================================== -->
+
+<div class="stats">
+
+    <div class="stat">
+
+        <small>
+            Mark Price
+        </small>
+
+        <b id="markPrice">
+            2.5000
+        </b>
+
+    </div>
+
+
+    <div class="stat">
+
+        <small>
+            24h Change
+        </small>
+
+        <b id="statChange">
+            +0.00%
+        </b>
+
+    </div>
+
+
+    <div class="stat">
+
+        <small>
+            24h High
+        </small>
+
+        <b id="highPrice">
+            2.5000
+        </b>
+
+    </div>
+
+
+    <div class="stat">
+
+        <small>
+            24h Low
+        </small>
+
+        <b id="lowPrice">
+            2.5000
+        </b>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     TRADE PANEL
+====================================================== -->
+
+<div class="tradePanel">
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            id="marketTab">
+
+            Market
+
+        </button>
+
+        <button class="tab">
+
+            Limit
+
+        </button>
+
+    </div>
+
+
+    <div class="fields">
+
+
+        <div class="field">
+
+            <label>
+                Margin (USDT)
+            </label>
+
+            <input
+                id="marginInput"
+                type="number"
+                value="20"
+                min="1"
+                step="1"
+                oninput="calculateTrade()">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Leverage
+            </label>
+
+            <div class="leverage">
+
+                <button
+                    class="lev"
+                    onclick="setLeverage(1)">
+                    1x
+                </button>
+
+                <button
+                    class="lev"
+                    onclick="setLeverage(5)">
+                    5x
+                </button>
+
+                <button
+                    class="lev active"
+                    onclick="setLeverage(10)">
+                    10x
+                </button>
+
+                <button
+                    class="lev"
+                    onclick="setLeverage(20)">
+                    20x
+                </button>
+
+                <button
+                    class="lev"
+                    onclick="setLeverage(50)">
+                    50x
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Stop Loss
+            </label>
+
+            <input
+                id="slInput"
+                type="number"
+                placeholder="Optional"
+                step="0.0001">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Take Profit
+            </label>
+
+            <input
+                id="tpInput"
+                type="number"
+                placeholder="Optional"
+                step="0.0001">
+
+        </div>
+
+    </div>
+
+
+    <div class="calculation">
+
+        <div class="calcRow">
+            <span>Entry Price</span>
+            <b id="calcEntry">2.5000</b>
+        </div>
+
+        <div class="calcRow">
+            <span>Position Size</span>
+            <b id="calcSize">0 XRP</b>
+        </div>
+
+        <div class="calcRow">
+            <span>Notional Value</span>
+            <b id="calcNotional">0 USDT</b>
+        </div>
+
+        <div class="calcRow">
+            <span>Required Margin</span>
+            <b id="calcMargin">20 USDT</b>
+        </div>
+
+        <div class="calcRow">
+            <span>Estimated Fee</span>
+            <b id="calcFee">0.00 USDT</b>
+        </div>
+
+    </div>
+
+
+    <div class="actionButtons">
+
+        <button
+            class="longBtn"
+            onclick="openPosition('LONG')">
+
+            LONG
+
+        </button>
+
+
+        <button
+            class="shortBtn"
+            onclick="openPosition('SHORT')">
+
+            SHORT
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     POSITIONS
+====================================================== -->
+
+<div class="section">
+
+    <div class="sectionTitle">
+        Positions
+    </div>
+
+    <div id="positions">
+
+        <div class="empty">
+            No open positions
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     HISTORY
+====================================================== -->
+
+<div class="section">
+
+    <div class="sectionTitle">
+        Order History
+    </div>
+
+    <div id="history">
+
+        <div class="empty">
+            No trades yet
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+
+    TradeX Futures Demo · Offline Simulation
+
+</div>
+
+
+</div>
+
 
 <script>
-const knowledgeBase = [
-  {
-    keywords: ["ته څوک یی","تاسو څوک یاست","خپل ځان معرفی کړه","دا اپلیکیشن څه دی","څوک یی"],
-    answer: "زه یو افلاین اسلامي AI یم چې د فیصل احمدی له خوا جوړ شوی یم او د قرآن، حدیث او اسلامي بنسټیزو معلوماتو پر اساس پوښتنو ته ځواب ورکوم."
-  },
-  {
-    keywords: ["اسلام","اسلام څه دی","اسلام تعریف","اسلام څه معنا لري","د اسلام مانا"],
-    answer: "اسلام د الله جل جلاله دین دی، چې د اطاعت، امن، سولې او هدایت بشپړ نظام وړاندې کوي."
-  },
-  {
-    keywords: ["قرآن","قرآن څه دی","قرآن کریم","قرآن تعریف","قران","قران مجید","قران مجید د چا کتاب دی","وروستی اسمانی کتاب","ولی اسلام مهم دی"],
-    answer: "قرآن کریم د الله وروستی آسماني کتاب دی چې پر حضرت محمد ﷺ نازل شوی او د انسانانو لپاره د ژوند لارښود دی."
-  },
-  {
-    keywords: ["ته چا جوړ کړی یی","چا جوړ کړی یی","ته د چا له خوا جوړ شوی یی","د چا لخوا جوړ شوی یی"],
-    answer: "زه د فیصل احمدی له خوا جوړ شوی یو ساده افلاین اسلامي AI یم."
-  },
-  {
-    keywords: ["محمد څوک دی"],
-    answer: "محمد ﷺ د الله رسول او نبی دی."
-  },
-  
-  {
-    keywords: ["د 1404 کال کانکور کی د خوګیاڼیو په سطحه پنځم نمره څوک وه"],
-    answer: "د 1404 کال کانکور کی د خوګیاڼیو په سطحه پنځم نمره جواد ځلاند وه چی د لغمان پوهنتون د ابو انجینری برخه کی زده کړی کوی."
-  }
-];
 
-function normalize(text){
-  return text
-    .toLowerCase()
-    .replace(/[؟?.,!]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+/* =========================================================
+   TRADEX FUTURES
+   TICK BASED MARKET ENGINE
+========================================================= */
+
+
+/* =========================================================
+   BASIC STATE
+========================================================= */
+
+let price = 2.5000;
+
+let startPrice = 2.5000;
+
+let highPrice = price;
+
+let lowPrice = price;
+
+let previousPrice = price;
+
+let balance = 1000;
+
+let leverage = 10;
+
+let running = true;
+
+let candleData = [];
+
+let positions = [];
+
+let history = [];
+
+let currentTimeframe = "1m";
+
+
+/* =========================================================
+   TIMEFRAME
+========================================================= */
+
+const timeframeMs = {
+
+    "1m":5000,
+
+    "5m":10000,
+
+    "15m":15000,
+
+    "1h":20000,
+
+    "4h":30000
+
+};
+
+let candleDurationMs =
+    timeframeMs[currentTimeframe];
+
+let candleStartMs =
+    Date.now();
+
+
+/* =========================================================
+   MARKET STATE
+========================================================= */
+
+let trend = 0;
+
+let volatility = 0.00030;
+
+let regimeUntil = 0;
+
+let reversalBias = 0;
+
+let lastCandleDirection = 0;
+
+let sameColorStreak = 0;
+
+
+/* =========================================================
+   CHART STATE
+========================================================= */
+
+let chartOffset = 0;
+
+let visibleCount = 60;
+
+let verticalOffset = 0;
+
+let verticalZoom = 1;
+
+let isDragging = false;
+
+let dragStartX = 0;
+
+let dragStartY = 0;
+
+let startOffset = 0;
+
+let startVerticalOffset = 0;
+
+let pinchStartDistance = 0;
+
+let pinchStartVisible = 60;
+
+let pinchStartZoom = 1;
+
+/* =========================================================
+   CROSSHAIR STATE
+========================================================= */
+
+let crosshairActive = false;
+
+let crosshairX = 0;
+
+let crosshairY = 0;
+
+let longPressTimer = null;
+
+let longPressStartX = 0;
+
+let longPressStartY = 0;
+
+const LONG_PRESS_TIME = 600;
+
+
+const canvas =
+    document.getElementById("chart");
+
+const ctx =
+    canvas.getContext("2d");
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+function resizeCanvas(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+    canvas.width =
+        rect.width * dpr;
+
+    canvas.height =
+        rect.height * dpr;
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+    drawChart();
 }
 
-function words(text){
-  return normalize(text).split(" ").filter(w => w.length > 1);
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   RANDOM NORMAL
+========================================================= */
+
+function randomNormal(){
+
+    let u = 0;
+
+    let v = 0;
+
+    while(u === 0){
+        u = Math.random();
+    }
+
+    while(v === 0){
+        v = Math.random();
+    }
+
+    return Math.sqrt(
+        -2 * Math.log(u)
+    ) *
+    Math.cos(
+        2 * Math.PI * v
+    );
 }
 
-function isNumberSelection(text){
-  return /^[1-5]$/.test(text.trim());
+
+/* =========================================================
+   CLAMP
+========================================================= */
+
+function clamp(v,min,max){
+
+    return Math.max(
+        min,
+        Math.min(max,v)
+    );
 }
 
-function wordSimilarity(input, keyword){
-  const inputWords = words(input);
-  const keyWords   = words(keyword);
 
-  if(inputWords.length === 0 || keyWords.length === 0) return null;
+/* =========================================================
+   MARKET REGIME
+========================================================= */
 
-  let common = 0;
-  for(let w of keyWords){
-    if(inputWords.includes(w)) common++;
-  }
+function chooseRegime(){
 
-  const ratio = common / keyWords.length;
+    const r = Math.random();
 
-  return {
-    common,
-    ratio,
-    inputLen: inputWords.length,
-    keyLen: keyWords.length
-  };
+
+    if(r < 0.22){
+
+        trend = 0.000045;
+
+        volatility = 0.00027;
+
+    }
+
+    else if(r < 0.44){
+
+        trend = -0.000045;
+
+        volatility = 0.00027;
+
+    }
+
+    else if(r < 0.68){
+
+        trend = 0;
+
+        volatility = 0.00022;
+
+    }
+
+    else if(r < 0.82){
+
+        trend = 0.000085;
+
+        volatility = 0.00038;
+
+    }
+
+    else{
+
+        trend = -0.000085;
+
+        volatility = 0.00038;
+
+    }
+
+
+    regimeUntil =
+        Date.now() +
+        (
+            5000 +
+            Math.random()*18000
+        );
 }
 
-function getSuggestions(input){
-  let results = [];
 
-  for(let item of knowledgeBase){
-    for(let key of item.keywords){
+/* =========================================================
+   NEXT TICK PRICE
+========================================================= */
 
-      const sim = wordSimilarity(input, key);
-      if(!sim) continue;
+function nextTickPrice(){
 
-      // 🔴 اصلي قواعد
-      if(
-        sim.common >= 3 &&           // لږ تر لږه ۲ مشترکې کلمې
-        sim.ratio >= 0.3 &&          // لږ تر لږه ۴۰٪ match
-        (sim.inputLen - sim.common) <= 5 // input ډېر اوږد نه وي
-      ){
-        results.push({
-          question: key,
-          answer: item.answer,
-          score: sim.ratio
+    const now =
+        Date.now();
+
+
+    if(now >= regimeUntil){
+
+        chooseRegime();
+
+    }
+
+
+    const distanceFromCenter =
+        (price - 2.50) / 2.50;
+
+
+    let reversal = 0;
+
+
+    if(
+        sameColorStreak >= 3 &&
+        lastCandleDirection !== 0
+    ){
+
+        reversal =
+            -lastCandleDirection *
+            0.000055;
+
+    }
+
+
+    let impulse = 0;
+
+
+    if(Math.random() < 0.008){
+
+        impulse =
+            randomNormal() *
+            0.00075;
+
+    }
+
+
+    const meanReversion =
+        -distanceFromCenter *
+        0.000018;
+
+
+    const momentum =
+        (price - previousPrice) *
+        0.08;
+
+
+    const noise =
+        randomNormal() *
+        volatility;
+
+
+    const returnPct =
+        trend +
+        reversal +
+        meanReversion +
+        momentum +
+        noise +
+        impulse;
+
+
+    previousPrice =
+        price;
+
+
+    price *=
+        Math.exp(returnPct);
+
+
+    price =
+        clamp(
+            price,
+            1.45,
+            3.80
+        );
+
+
+    highPrice =
+        Math.max(
+            highPrice,
+            price
+        );
+
+
+    lowPrice =
+        Math.min(
+            lowPrice,
+            price
+        );
+
+
+    return price;
+}
+
+
+/* =========================================================
+   CREATE INITIAL CANDLES
+========================================================= */
+
+function createInitialCandles(){
+
+    candleData = [];
+
+
+    let p = 2.50;
+
+    let simTrend = 0;
+
+    let simVol = 0.00030;
+
+
+    for(let i=0;i<90;i++){
+
+        if(
+            i === 0 ||
+            Math.random() < 0.10
+        ){
+
+            const r =
+                Math.random();
+
+
+            if(r < 0.25){
+
+                simTrend = 0.00005;
+
+            }
+
+            else if(r < 0.50){
+
+                simTrend = -0.00005;
+
+            }
+
+            else if(r < 0.75){
+
+                simTrend = 0;
+
+            }
+
+            else if(r < 0.875){
+
+                simTrend = 0.00010;
+
+            }
+
+            else{
+
+                simTrend = -0.00010;
+
+            }
+
+
+            simVol =
+                simTrend === 0
+                ? 0.00023
+                : 0.00030 +
+                  Math.random()*0.00010;
+        }
+
+
+        const open = p;
+
+        let high = p;
+
+        let low = p;
+
+
+        for(let t=0;t<22;t++){
+
+            const noise =
+                randomNormal()*simVol;
+
+            const mean =
+                -(
+                    (p-2.50)/2.50
+                ) *
+                0.000018;
+
+
+            p *= Math.exp(
+                simTrend +
+                mean +
+                noise
+            );
+
+
+            p =
+                clamp(
+                    p,
+                    1.55,
+                    3.55
+                );
+
+
+            high =
+                Math.max(
+                    high,
+                    p
+                );
+
+
+            low =
+                Math.min(
+                    low,
+                    p
+                );
+
+        }
+
+
+        const close = p;
+
+
+        candleData.push({
+
+            open:open,
+
+            high:high,
+
+            low:low,
+
+            close:close,
+
+            volume:
+                Math.random()*100+20,
+
+            time:
+                Date.now() -
+                (90-i)*60000
+
         });
-      }
-    }
-  }
 
-  results.sort((a,b)=>b.score - a.score);
-  lastSuggestions = results.slice(0,5);
-  return lastSuggestions;
+    }
+
+
+    price = p;
+
+    previousPrice = p;
+
+    startPrice = price;
+
+
+    highPrice =
+        Math.max(
+            ...candleData.map(
+                c => c.high
+            )
+        );
+
+
+    lowPrice =
+        Math.min(
+            ...candleData.map(
+                c => c.low
+            )
+        );
+
+
+    candleStartMs =
+        Date.now();
+
+
+    chooseRegime();
+
+
+    sameColorStreak = 0;
+
+    lastCandleDirection = 0;
+
+
+    for(
+        let i=candleData.length-1;
+        i>=0;
+        i--
+    ){
+
+        const dir =
+            Math.sign(
+                candleData[i].close -
+                candleData[i].open
+            );
+
+
+        if(dir === 0){
+
+            continue;
+
+        }
+
+
+        if(
+            lastCandleDirection === 0
+        ){
+
+            lastCandleDirection =
+                dir;
+
+        }
+
+
+        if(
+            dir ===
+            lastCandleDirection
+        ){
+
+            sameColorStreak++;
+
+        }
+
+        else{
+
+            break;
+
+        }
+
+    }
+
+
+    updateUI();
+
+    drawChart();
+
 }
 
-function splitQuestions(text){
-  return text
-    .replace(/؟|\?/g,"|")
-    .replace(/\s+او\s+/g,"|")
-    .replace(/\s+او همدارنګه\s+/g,"|")
-    .replace(/\s+همدارنګه\s+/g,"|")
-    .replace(/\s+ " "\s+/g,"|")
-    .replace(/\s+او هم\s+/g,"|")
-    .split("|")
-    .map(q => q.trim())
-    .filter(q => q.length > 1);
+
+/* =========================================================
+   UPDATE CURRENT CANDLE
+========================================================= */
+
+function updateCandleFromTick(){
+
+    const c =
+        candleData[
+            candleData.length-1
+        ];
+
+
+    const newPrice =
+        nextTickPrice();
+
+
+    c.close =
+        newPrice;
+
+
+    c.high =
+        Math.max(
+            c.high,
+            newPrice
+        );
+
+
+    c.low =
+        Math.min(
+            c.low,
+            newPrice
+        );
+
+
+    c.volume =
+        (c.volume || 0) +
+        (
+            0.5 +
+            Math.random()*2
+        );
+
+
+    if(
+        Date.now() -
+        candleStartMs >=
+        candleDurationMs
+    ){
+
+        const direction =
+            Math.sign(
+                c.close-c.open
+            );
+
+
+        if(direction !== 0){
+
+            if(
+                direction ===
+                lastCandleDirection
+            ){
+
+                sameColorStreak++;
+
+            }
+
+            else{
+
+                sameColorStreak = 1;
+
+                lastCandleDirection =
+                    direction;
+
+            }
+
+        }
+
+
+        candleData.push({
+
+            open:newPrice,
+
+            high:newPrice,
+
+            low:newPrice,
+
+            close:newPrice,
+
+            volume:0,
+
+            time:Date.now()
+
+        });
+
+
+        candleStartMs =
+            Date.now();
+
+
+        if(
+            candleData.length > 180
+        ){
+
+            candleData.shift();
+
+        }
+
+
+        if(
+            sameColorStreak >= 3
+        ){
+
+            reversalBias =
+                -lastCandleDirection *
+                0.00020;
+
+        }
+
+        else{
+
+            reversalBias *= 0.65;
+
+        }
+
+    }
+
+
+    checkPositions();
+
+    updateUI();
+
+    drawChart();
+
 }
 
-function processSingleQuestion(input){
 
-  for(let item of knowledgeBase){
-    for(let key of item.keywords){
-      if(normalize(key) === input){
-        return item.answer;
-      }
+/* =========================================================
+   NICE PRICE STEP
+   د MEXC/TradingView په شان منظم Price Levels
+========================================================= */
+
+function nicePriceStep(range){
+
+    const targetLevels = 8;
+
+    const rough =
+        range / targetLevels;
+
+
+    if(rough <= 0){
+
+        return 0.01;
+
     }
-  }
 
-  const suggestions = getSuggestions(input);
-  if(suggestions.length){
-    let msg = `❓ "${input}" لپاره ممکن سوالونه:\n\n`;
-    suggestions.forEach((s,i)=>{
-      msg += `${i+1}. ${s.question}\n`;
+
+    const exponent =
+        Math.floor(
+            Math.log10(rough)
+        );
+
+
+    const fraction =
+        rough /
+        Math.pow(
+            10,
+            exponent
+        );
+
+
+    let niceFraction;
+
+
+    if(fraction <= 1){
+
+        niceFraction = 1;
+
+    }
+
+    else if(fraction <= 2){
+
+        niceFraction = 2;
+
+    }
+
+    else if(fraction <= 2.5){
+
+        niceFraction = 2.5;
+
+    }
+
+    else if(fraction <= 5){
+
+        niceFraction = 5;
+
+    }
+
+    else{
+
+        niceFraction = 10;
+
+    }
+
+
+    return (
+        niceFraction *
+        Math.pow(
+            10,
+            exponent
+        )
+    );
+}
+
+
+/* =========================================================
+   PRICE DECIMALS
+========================================================= */
+
+function priceDecimals(step){
+
+    if(step >= 1){
+
+        return 2;
+
+    }
+
+    if(step >= 0.1){
+
+        return 3;
+
+    }
+
+    return 4;
+}
+
+
+/* =========================================================
+   DRAW PRICE SCALE
+========================================================= */
+
+function drawPriceScale(
+    min,
+    max,
+    h
+){
+
+    const scale =
+        document.getElementById(
+            "priceScale"
+        );
+
+
+    scale.innerHTML = "";
+
+
+    const range =
+        max-min;
+
+
+    const step =
+        nicePriceStep(range);
+
+
+    const decimals =
+        priceDecimals(step);
+
+
+    const first =
+        Math.ceil(
+            min/step
+        ) * step;
+
+
+    const last =
+        Math.floor(
+            max/step
+        ) * step;
+
+
+    for(
+        let value=first;
+        value<=last+step*0.001;
+        value+=step
+    ){
+
+        if(
+            value < min-step*0.01 ||
+            value > max+step*0.01
+        ){
+
+            continue;
+
+        }
+
+
+        const ratio =
+            (max-value) /
+            (max-min);
+
+
+        const y =
+            ratio*h;
+
+
+        const label =
+            document.createElement(
+                "div"
+            );
+
+
+        label.className =
+            "priceLevel";
+
+
+        label.style.top =
+            y+"px";
+
+
+        label.innerText =
+            value.toFixed(
+                decimals
+            );
+
+
+        scale.appendChild(
+            label
+        );
+
+    }
+
+}
+
+/* =========================================================
+   CROSSHAIR ELEMENTS
+========================================================= */
+
+const crosshair =
+    document.getElementById(
+        "crosshair"
+    );
+
+const crosshairVertical =
+    document.getElementById(
+        "crosshairVertical"
+    );
+
+const crosshairHorizontal =
+    document.getElementById(
+        "crosshairHorizontal"
+    );
+
+const crosshairCenter =
+    document.getElementById(
+        "crosshairCenter"
+    );
+
+const crosshairPrice =
+    document.getElementById(
+        "crosshairPrice"
+    );
+
+const crosshairTime =
+    document.getElementById(
+        "crosshairTime"
+    );
+
+
+/* =========================================================
+   SHOW CROSSHAIR
+========================================================= */
+
+function showCrosshair(x,y){
+
+    const w =
+        canvas.clientWidth;
+
+    const h =
+        canvas.clientHeight;
+
+
+    crosshairActive = true;
+
+
+    crosshairX =
+        clamp(
+            x,
+            0,
+            w
+        );
+
+
+    crosshairY =
+        clamp(
+            y,
+            0,
+            h
+        );
+
+
+    crosshair.classList.add(
+        "active"
+    );
+
+
+    updateCrosshair();
+
+}
+
+
+/* =========================================================
+   HIDE CROSSHAIR
+========================================================= */
+
+function hideCrosshair(){
+
+    crosshairActive = false;
+
+    crosshair.classList.remove(
+        "active"
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE CROSSHAIR
+========================================================= */
+
+function updateCrosshair(){
+
+    if(!crosshairActive){
+
+        return;
+
+    }
+
+
+    const w =
+        canvas.clientWidth;
+
+    const h =
+        canvas.clientHeight;
+
+
+    crosshairX =
+        clamp(
+            crosshairX,
+            0,
+            w
+        );
+
+
+    crosshairY =
+        clamp(
+            crosshairY,
+            0,
+            h
+        );
+
+
+    /* عمودي */
+
+    crosshairVertical.style.left =
+        crosshairX + "px";
+
+
+    /* افقي */
+
+    crosshairHorizontal.style.top =
+        crosshairY + "px";
+
+
+    /* منځنی نقطه */
+
+    crosshairCenter.style.left =
+        crosshairX + "px";
+
+    crosshairCenter.style.top =
+        crosshairY + "px";
+
+
+    /*
+       Chart price calculation
+       د Chart د اوسني min/max څخه
+    */
+
+    const visibleCountSafe =
+        Math.max(
+            15,
+            Math.min(
+                visibleCount,
+                candleData.length
+            )
+        );
+
+
+    let endIndex =
+        candleData.length -
+        1 -
+        chartOffset;
+
+
+    endIndex =
+        clamp(
+            endIndex,
+            visibleCountSafe-1,
+            candleData.length-1
+        );
+
+
+    let startIndex =
+        endIndex -
+        visibleCountSafe +
+        1;
+
+
+    startIndex =
+        Math.max(
+            0,
+            startIndex
+        );
+
+
+    const visible =
+        candleData.slice(
+            startIndex,
+            endIndex+1
+        );
+
+
+    if(!visible.length){
+
+        return;
+
+    }
+
+
+    let rawMin =
+        Math.min(
+            ...visible.map(
+                c => c.low
+            )
+        );
+
+
+    let rawMax =
+        Math.max(
+            ...visible.map(
+                c => c.high
+            )
+        );
+
+
+    let rawRange =
+        rawMax -
+        rawMin;
+
+
+    if(rawRange <= 0){
+
+        rawRange = 0.05;
+
+    }
+
+
+    let range =
+        rawRange *
+        2.25 /
+        verticalZoom;
+
+
+    let center =
+        (
+            rawMax +
+            rawMin
+        ) / 2;
+
+
+    center +=
+        verticalOffset *
+        rawRange;
+
+
+    const min =
+        center -
+        range/2;
+
+
+    const max =
+        center +
+        range/2;
+
+
+    /*
+       Y څخه Price پیدا کول
+    */
+
+    const priceAtCursor =
+        max -
+        (
+            crosshairY / h
+        ) *
+        (
+            max-min
+        );
+
+
+    /* قیمت ښکاره کول */
+
+    const step =
+        nicePriceStep(
+            max-min
+        );
+
+
+    const decimals =
+        priceDecimals(
+            step
+        );
+
+
+    crosshairPrice.innerText =
+        priceAtCursor.toFixed(
+            decimals
+        );
+
+
+    crosshairPrice.style.top =
+        crosshairY + "px";
+
+
+    /*
+       د X له مخې Candle پیدا کول
+    */
+
+    const chartWidth =
+        w - 68;
+
+
+    const leftSpace = 8;
+
+    const rightSpace = 8;
+
+
+    const usableWidth =
+        chartWidth -
+        leftSpace -
+        rightSpace;
+
+
+    const spacing =
+        usableWidth /
+        Math.max(
+            1,
+            visible.length-1
+        );
+
+
+    let candleIndex =
+        Math.round(
+            (
+                crosshairX -
+                leftSpace
+            ) /
+            spacing
+        );
+
+
+    candleIndex =
+        clamp(
+            candleIndex,
+            0,
+            visible.length-1
+        );
+
+
+    const selectedCandle =
+        visible[candleIndex];
+
+
+    if(selectedCandle){
+
+        const date =
+            new Date(
+                selectedCandle.time
+            );
+
+
+        crosshairTime.innerText =
+            date.toLocaleTimeString(
+                [],
+                {
+                    hour:"2-digit",
+                    minute:"2-digit"
+                }
+            );
+
+    }
+
+
+    crosshairTime.style.left =
+        crosshairX + "px";
+
+}
+
+/* =========================================================
+   DRAW CHART
+========================================================= */
+
+function drawChart(){
+
+    const w =
+        canvas.clientWidth;
+
+    const h =
+        canvas.clientHeight;
+
+
+    ctx.clearRect(
+        0,
+        0,
+        w,
+        h
+    );
+
+
+    if(
+        !candleData.length
+    ){
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       VISIBLE CANDLES
+    ===================================================== */
+
+    let count =
+        Math.max(
+            15,
+            Math.min(
+                visibleCount,
+                candleData.length
+            )
+        );
+
+
+    let endIndex =
+        candleData.length -
+        1 -
+        chartOffset;
+
+
+    endIndex =
+        clamp(
+            endIndex,
+            count-1,
+            candleData.length-1
+        );
+
+
+    let startIndex =
+        endIndex -
+        count +
+        1;
+
+
+    startIndex =
+        Math.max(
+            0,
+            startIndex
+        );
+
+
+    const visible =
+        candleData.slice(
+            startIndex,
+            endIndex+1
+        );
+
+
+    if(
+        !visible.length
+    ){
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       PRICE RANGE
+    ===================================================== */
+
+    let rawMin =
+        Math.min(
+            ...visible.map(
+                c => c.low
+            )
+        );
+
+
+    let rawMax =
+        Math.max(
+            ...visible.map(
+                c => c.high
+            )
+        );
+
+
+    let rawRange =
+        rawMax -
+        rawMin;
+
+
+    if(
+        rawRange <= 0
+    ){
+
+        rawRange = 0.05;
+
+    }
+
+
+    let range =
+        rawRange *
+        2.25 /
+        verticalZoom;
+
+
+    let center =
+        (
+            rawMax +
+            rawMin
+        ) / 2;
+
+
+    /* =====================================================
+       VERTICAL PAN
+    ===================================================== */
+
+    center +=
+        verticalOffset *
+        rawRange;
+
+
+    const min =
+        center -
+        range/2;
+
+
+    const max =
+        center +
+        range/2;
+
+
+    /* =====================================================
+       PRICE TO Y
+    ===================================================== */
+
+    function y(value){
+
+        return h -
+        (
+            (value-min) /
+            (max-min)
+        ) *
+        h;
+
+    }
+
+
+    /* =====================================================
+       CHART WIDTH
+       68px د Price Scale لپاره محفوظ دي
+    ===================================================== */
+
+    const chartWidth =
+        w - 68;
+
+
+    /* =====================================================
+       GRID
+    ===================================================== */
+
+    ctx.strokeStyle =
+        "#17212a";
+
+    ctx.lineWidth = 1;
+
+
+    /* Horizontal Grid */
+
+    for(
+        let i=0;
+        i<=8;
+        i++
+    ){
+
+        const gy =
+            h/8*i;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            gy
+        );
+
+        ctx.lineTo(
+            chartWidth,
+            gy
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    /* Vertical Grid */
+
+    for(
+        let i=0;
+        i<=10;
+        i++
+    ){
+
+        const gx =
+            chartWidth/10*i;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            gx,
+            0
+        );
+
+        ctx.lineTo(
+            gx,
+            h
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    /* =====================================================
+       PRICE SCALE
+    ===================================================== */
+
+    drawPriceScale(
+        min,
+        max,
+        h
+    );
+
+
+    /* =====================================================
+       CANDLE POSITION
+       وروستی Candle د Price Scale تر څنګ
+    ===================================================== */
+
+    const leftSpace = 8;
+
+    const rightSpace = 8;
+
+
+    const usableWidth =
+        chartWidth -
+        leftSpace -
+        rightSpace;
+
+
+    const spacing =
+        usableWidth /
+        Math.max(
+            1,
+            visible.length-1
+        );
+
+
+    const candleWidth =
+        Math.max(
+            2,
+            Math.min(
+                9,
+                spacing*0.58
+            )
+        );
+
+
+    /* =====================================================
+       DRAW CANDLES
+    ===================================================== */
+
+    visible.forEach(
+        (c,i)=>{
+
+            const x =
+                leftSpace +
+                i*spacing;
+
+
+            const openY =
+                y(c.open);
+
+
+            const closeY =
+                y(c.close);
+
+
+            const highY =
+                y(c.high);
+
+
+            const lowY =
+                y(c.low);
+
+
+            const bullish =
+                c.close >= c.open;
+
+
+            /*
+               یوازې دوه رنګونه:
+               شین = bullish
+               سور = bearish
+            */
+
+            const candleColor =
+                bullish
+                ? "#19d99b"
+                : "#ff5262";
+
+
+            ctx.strokeStyle =
+                candleColor;
+
+
+            ctx.fillStyle =
+                candleColor;
+
+
+            /* =================================================
+               WICK
+            ================================================= */
+
+            ctx.lineWidth = 1.2;
+
+
+            ctx.beginPath();
+
+
+            ctx.moveTo(
+                x,
+                highY
+            );
+
+
+            ctx.lineTo(
+                x,
+                lowY
+            );
+
+
+            ctx.stroke();
+
+
+            /* =================================================
+               BODY
+            ================================================= */
+
+            const top =
+                Math.min(
+                    openY,
+                    closeY
+                );
+
+
+            const bodyHeight =
+                Math.max(
+                    2,
+                    Math.abs(
+                        closeY-openY
+                    )
+                );
+
+
+            ctx.fillRect(
+
+                x -
+                candleWidth/2,
+
+                top,
+
+                candleWidth,
+
+                bodyHeight
+
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       CURRENT CANDLE COLOR
+       یوازې شین / سور
+    ===================================================== */
+
+    const currentCandle =
+        candleData[
+            candleData.length-1
+        ];
+
+
+    const currentColor =
+        currentCandle.close >=
+        currentCandle.open
+
+        ? "#19d99b"
+
+        : "#ff5262";
+
+
+    /* =====================================================
+       CURRENT PRICE Y
+    ===================================================== */
+
+    const currentY =
+        y(price);
+
+
+    /* =====================================================
+       CURRENT PRICE DOTTED LINE
+       
+       مهم:
+       دا اوس په Canvas کې رسمېږي،
+       نو د Candle له Y position سره
+       هېڅکله نه جلا کېږي.
+    ===================================================== */
+
+    if(
+        currentY >= 0 &&
+        currentY <= h
+    ){
+
+        ctx.save();
+
+
+        ctx.strokeStyle =
+            currentColor;
+
+
+        ctx.lineWidth = 1;
+
+
+        /*
+           MEXC-style dashed line
+        */
+
+        ctx.setLineDash([
+            2,
+            3
+        ]);
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            0,
+            currentY
+        );
+
+
+        ctx.lineTo(
+            chartWidth,
+            currentY
+        );
+
+
+        ctx.stroke();
+
+
+        ctx.setLineDash([]);
+
+
+        ctx.restore();
+
+    }
+
+
+    /* =====================================================
+       CURRENT PRICE BOX
+    ===================================================== */
+
+    const tag =
+        document.getElementById(
+            "priceTag"
+        );
+
+
+    if(
+        currentY >= -20 &&
+        currentY <= h+20
+    ){
+
+        tag.style.top =
+            Math.max(
+                0,
+                Math.min(
+                    h-22,
+                    currentY-11
+                )
+            ) +
+            "px";
+
+
+        tag.innerText =
+            price.toFixed(4);
+
+
+        tag.style.background =
+            currentColor;
+
+
+        if(
+            currentColor ===
+            "#19d99b"
+        ){
+
+            tag.style.color =
+                "#06110d";
+
+        }
+        
+        if(crosshairActive){
+
+    updateCrosshair();
+
+}
+
+        else{
+
+            tag.style.color =
+                "#ffffff";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE UI
+========================================================= */
+
+function updateUI(){
+
+    document.getElementById(
+        "topPrice"
+    ).innerText =
+        price.toFixed(4);
+
+
+    document.getElementById(
+        "markPrice"
+    ).innerText =
+        price.toFixed(4);
+
+
+    document.getElementById(
+        "highPrice"
+    ).innerText =
+        highPrice.toFixed(4);
+
+
+    document.getElementById(
+        "lowPrice"
+    ).innerText =
+        lowPrice.toFixed(4);
+
+
+    const change =
+        (
+            (price-startPrice) /
+            startPrice
+        ) *
+        100;
+
+
+    const sign =
+        change >= 0
+        ? "+"
+        : "";
+
+
+    const changeEl =
+        document.getElementById(
+            "change"
+        );
+
+
+    const statChange =
+        document.getElementById(
+            "statChange"
+        );
+
+
+    changeEl.innerText =
+        sign +
+        change.toFixed(2) +
+        "%";
+
+
+    statChange.innerText =
+        sign +
+        change.toFixed(2) +
+        "%";
+
+
+    changeEl.style.color =
+        change >= 0
+        ? "#19d99b"
+        : "#ff5262";
+
+
+    statChange.style.color =
+        change >= 0
+        ? "#19d99b"
+        : "#ff5262";
+
+
+    document.getElementById(
+        "chartMode"
+    ).innerText =
+        "SIMULATED MARKET · " +
+        currentTimeframe;
+
+
+    calculateTrade();
+
+    renderPositions();
+
+    renderHistory();
+
+}
+
+
+/* =========================================================
+   LEVERAGE
+========================================================= */
+
+function setLeverage(value){
+
+    leverage = value;
+
+
+    document
+    .querySelectorAll(".lev")
+    .forEach(btn=>{
+
+        btn.classList.toggle(
+            "active",
+            btn.innerText ===
+            value+"x"
+        );
+
     });
-    msg += "\n(شمېره ولیکئ)";
-    return msg;
-  }
 
-  return `❌ "${input}" پوښتنه ونه پېژندل شوه.`;
+
+    calculateTrade();
+
 }
 
-function getAnswer(input){
 
-  // 1️⃣ Try to solve math first
-  const mathResult = solveMath(input);
-  if(!mathResult.startsWith("بښنه غواړم")){ // که ریاضي حل شوی وي
-    return mathResult;
-  }
+/* =========================================================
+   CALCULATOR
+========================================================= */
+
+function calculateTrade(){
+
+    const margin =
+        parseFloat(
+            document.getElementById(
+                "marginInput"
+            ).value
+        ) || 0;
 
 
-  input = normalize(input);
+    const notional =
+        margin *
+        leverage;
 
-  if(isNumberSelection(input) && lastSuggestions.length){
-    const idx = Number(input) - 1;
-    if(lastSuggestions[idx]){
-      const ans = lastSuggestions[idx].answer;
-      lastSuggestions = [];
-      return ans;
+
+    const size =
+        notional /
+        price;
+
+
+    const fee =
+        notional *
+        0.0004;
+
+
+    document.getElementById(
+        "calcEntry"
+    ).innerText =
+        price.toFixed(4);
+
+
+    document.getElementById(
+        "calcSize"
+    ).innerText =
+        size.toFixed(3) +
+        " XRP";
+
+
+    document.getElementById(
+        "calcNotional"
+    ).innerText =
+        notional.toFixed(2) +
+        " USDT";
+
+
+    document.getElementById(
+        "calcMargin"
+    ).innerText =
+        margin.toFixed(2) +
+        " USDT";
+
+
+    document.getElementById(
+        "calcFee"
+    ).innerText =
+        fee.toFixed(4) +
+        " USDT";
+
+}
+
+
+/* =========================================================
+   OPEN POSITION
+========================================================= */
+
+function openPosition(side){
+
+    const margin =
+        parseFloat(
+            document.getElementById(
+                "marginInput"
+            ).value
+        ) || 0;
+
+
+    if(margin <= 0){
+
+        alert(
+            "Margin باید له 0 څخه زیاته وي."
+        );
+
+        return;
+
     }
-  }
 
-  const questions = splitQuestions(input);
 
-  if(questions.length > 1){
-    let finalAnswer = "";
+    if(margin > balance){
 
-    questions.forEach((q,i)=>{
-      const answer = processSingleQuestion(q);
-      finalAnswer += `🟢 سوال ${i+1}:\n${answer}\n\n`;
+        alert(
+            "Insufficient balance."
+        );
+
+        return;
+
+    }
+
+
+    const entry =
+        price;
+
+
+    const notional =
+        margin *
+        leverage;
+
+
+    const size =
+        notional /
+        entry;
+
+
+    const slValue =
+        parseFloat(
+            document.getElementById(
+                "slInput"
+            ).value
+        );
+
+
+    const tpValue =
+        parseFloat(
+            document.getElementById(
+                "tpInput"
+            ).value
+        );
+
+
+    const position = {
+
+        id:Date.now(),
+
+        symbol:"XRPUSDT",
+
+        side:side,
+
+        entry:entry,
+
+        size:size,
+
+        notional:notional,
+
+        margin:margin,
+
+        leverage:leverage,
+
+        sl:
+            isNaN(slValue)
+            ? null
+            : slValue,
+
+        tp:
+            isNaN(tpValue)
+            ? null
+            : tpValue,
+
+        openedAt:
+            new Date()
+            .toLocaleTimeString(),
+
+        pnl:0,
+
+        roe:0
+
+    };
+
+
+    positions.push(
+        position
+    );
+
+
+    balance -=
+        margin;
+
+
+    history.unshift({
+
+        type:"OPEN",
+
+        side:side,
+
+        price:entry,
+
+        size:size,
+
+        time:
+            new Date()
+            .toLocaleTimeString()
+
     });
 
-    return finalAnswer.trim();
-  }
 
-  return processSingleQuestion(input);
+    updateUI();
+
 }
 
-function send(){
-  const inputEl = document.getElementById("userInput");
-  const text = inputEl.value.trim();
-  if(!text) return;
 
-  addUserMessage(text);
-  const reply = getAnswer(text);
-  typeMessage(reply,"bot");
+/* =========================================================
+   PNL
+========================================================= */
 
-  inputEl.value = "";
-  inputEl.style.height = "auto";
-}
+function calculatePnL(position){
 
-function addUserMessage(text){
-  const div = document.createElement("div");
-  div.className = "user";
-  div.innerText = text;
-  document.getElementById("chat").appendChild(div);
-  div.scrollIntoView({behavior:"smooth"});
-}
+    let pnl;
 
-function typeMessage(text,type){
-  const div = document.createElement("div");
-  div.className = type;
-  div.style.whiteSpace = "pre-wrap";
-  document.getElementById("chat").appendChild(div);
 
-  let i=0;
-  const speed=30;
-  function typeChar(){
-    if(i < text.length){
-      div.innerText += text.charAt(i++);
-      div.scrollIntoView({behavior:"smooth"});
-      setTimeout(typeChar,speed);
+    if(
+        position.side ===
+        "LONG"
+    ){
+
+        pnl =
+            (
+                price -
+                position.entry
+            ) *
+            position.size;
+
     }
-  }
-  typeChar();
+
+    else{
+
+        pnl =
+            (
+                position.entry -
+                price
+            ) *
+            position.size;
+
+    }
+
+
+    position.pnl =
+        pnl;
+
+
+    position.roe =
+        (
+            pnl /
+            position.margin
+        ) *
+        100;
+
+
+    return pnl;
+
 }
 
-const userInput = document.getElementById("userInput");
 
-userInput.addEventListener("input", ()=>{
-  userInput.style.height = "auto";
-  userInput.style.height = userInput.scrollHeight + "px";
+/* =========================================================
+   SL / TP
+========================================================= */
+
+function checkPositions(){
+
+    positions
+    .slice()
+    .forEach(position=>{
+
+        calculatePnL(
+            position
+        );
+
+
+        if(
+            position.side ===
+            "LONG"
+        ){
+
+            if(
+                position.sl !== null &&
+                price <= position.sl
+            ){
+
+                closePosition(
+                    position.id,
+                    "STOP LOSS"
+                );
+
+            }
+
+            else if(
+                position.tp !== null &&
+                price >= position.tp
+            ){
+
+                closePosition(
+                    position.id,
+                    "TAKE PROFIT"
+                );
+
+            }
+
+        }
+
+
+        else{
+
+            if(
+                position.sl !== null &&
+                price >= position.sl
+            ){
+
+                closePosition(
+                    position.id,
+                    "STOP LOSS"
+                );
+
+            }
+
+            else if(
+                position.tp !== null &&
+                price <= position.tp
+            ){
+
+                closePosition(
+                    position.id,
+                    "TAKE PROFIT"
+                );
+
+            }
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   CLOSE POSITION
+========================================================= */
+
+function closePosition(
+    id,
+    reason="MANUAL"
+){
+
+    const index =
+        positions.findIndex(
+            p => p.id === id
+        );
+
+
+    if(index === -1){
+
+        return;
+
+    }
+
+
+    const position =
+        positions[index];
+
+
+    calculatePnL(
+        position
+    );
+
+
+    balance +=
+        position.margin +
+        position.pnl;
+
+
+    history.unshift({
+
+        type:"CLOSE",
+
+        side:
+            position.side,
+
+        price:
+            price,
+
+        size:
+            position.size,
+
+        pnl:
+            position.pnl,
+
+        reason:
+            reason,
+
+        time:
+            new Date()
+            .toLocaleTimeString()
+
+    });
+
+
+    positions.splice(
+        index,
+        1
+    );
+
+
+    updateUI();
+
+}
+
+
+/* =========================================================
+   POSITIONS UI
+========================================================= */
+
+function renderPositions(){
+
+    const container =
+        document.getElementById(
+            "positions"
+        );
+
+
+    if(
+        positions.length === 0
+    ){
+
+        container.innerHTML =
+            '<div class="empty">No open positions</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    positions.forEach(
+        position=>{
+
+            calculatePnL(
+                position
+            );
+
+
+            const pnlColor =
+                position.pnl >= 0
+                ? "#19d99b"
+                : "#ff5262";
+
+
+            const sideClass =
+                position.side === "LONG"
+                ? "sideLong"
+                : "sideShort";
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "positionCard";
+
+
+            card.innerHTML = `
+
+                <div class="positionTop">
+
+                    <div>
+
+                        <span class="${sideClass}">
+                            ${position.side}
+                        </span>
+
+                        <span style="color:#7d8994">
+                            ${position.leverage}x
+                        </span>
+
+                        <span style="color:#6f7c87">
+                            XRPUSDT
+                        </span>
+
+                    </div>
+
+
+                    <b style="color:${pnlColor}">
+
+                        ${
+                            position.pnl >= 0
+                            ? "+"
+                            : ""
+                        }
+
+                        ${position.pnl.toFixed(3)}
+                        USDT
+
+                    </b>
+
+                </div>
+
+
+                <div class="positionGrid">
+
+                    <div class="posItem">
+
+                        <small>
+                            Entry
+                        </small>
+
+                        <b>
+                            ${position.entry.toFixed(4)}
+                        </b>
+
+                    </div>
+
+
+                    <div class="posItem">
+
+                        <small>
+                            Mark
+                        </small>
+
+                        <b>
+                            ${price.toFixed(4)}
+                        </b>
+
+                    </div>
+
+
+                    <div class="posItem">
+
+                        <small>
+                            Size
+                        </small>
+
+                        <b>
+                            ${position.size.toFixed(3)}
+                        </b>
+
+                    </div>
+
+
+                    <div class="posItem">
+
+                        <small>
+                            Margin
+                        </small>
+
+                        <b>
+                            ${position.margin.toFixed(2)}
+                        </b>
+
+                    </div>
+
+
+                    <div class="posItem">
+
+                        <small>
+                            ROE
+                        </small>
+
+                        <b style="color:${pnlColor}">
+
+                            ${
+                                position.roe >= 0
+                                ? "+"
+                                : ""
+                            }
+
+                            ${position.roe.toFixed(2)}%
+
+                        </b>
+
+                    </div>
+
+
+                    <div class="posItem">
+
+                        <small>
+                            SL / TP
+                        </small>
+
+                        <b>
+
+                            ${
+                                position.sl !== null
+                                ? position.sl.toFixed(4)
+                                : "-"
+                            }
+
+                            /
+
+                            ${
+                                position.tp !== null
+                                ? position.tp.toFixed(4)
+                                : "-"
+                            }
+
+                        </b>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="closeBtn"
+                    onclick="closePosition(${position.id})">
+
+                    Close Position
+
+                </button>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   HISTORY UI
+========================================================= */
+
+function renderHistory(){
+
+    const container =
+        document.getElementById(
+            "history"
+        );
+
+
+    if(
+        history.length === 0
+    ){
+
+        container.innerHTML =
+            '<div class="empty">No trades yet</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    history
+    .slice(0,20)
+    .forEach(item=>{
+
+        const pnl =
+            item.pnl !== undefined
+            ? item.pnl.toFixed(3)
+            : "-";
+
+
+        const color =
+            item.pnl !== undefined
+            ? (
+                item.pnl >= 0
+                ? "#19d99b"
+                : "#ff5262"
+              )
+            : "#aaa";
+
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+
+        row.className =
+            "historyRow";
+
+
+        row.innerHTML = `
+
+            <div>
+
+                <b>
+                    ${item.type}
+                </b>
+
+                <br>
+
+                <span style="color:#788592">
+
+                    ${item.reason || ""}
+
+                </span>
+
+            </div>
+
+
+            <div>
+
+                ${item.side}
+
+                <br>
+
+                ${item.price.toFixed(4)}
+
+            </div>
+
+
+            <div style="color:${color}">
+
+                ${pnl}
+
+                <br>
+
+                ${item.time}
+
+            </div>
+
+        `;
+
+
+        container.appendChild(
+            row
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   SIMULATION
+========================================================= */
+
+let timer = null;
+
+
+function startSimulation(){
+
+    clearInterval(
+        timer
+    );
+
+
+    /*
+       هر 1 ثانیه یو tick
+    */
+
+    timer =
+        setInterval(
+            ()=>{
+
+                if(running){
+
+                    updateCandleFromTick();
+
+                }
+
+            },
+            1000
+        );
+
+}
+
+
+/* =========================================================
+   PAUSE / START
+========================================================= */
+
+function toggleSimulation(){
+
+    running =
+        !running;
+
+
+    document.getElementById(
+        "simText"
+    ).innerText =
+        running
+        ? "Pause"
+        : "Start";
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetMarket(){
+
+    price = 2.5000;
+
+    chartOffset = 0;
+
+    visibleCount = 60;
+
+    verticalOffset = 0;
+
+    verticalZoom = 1;
+
+
+    startPrice = price;
+
+    highPrice = price;
+
+    lowPrice = price;
+
+    previousPrice = price;
+
+
+    balance = 1000;
+
+    positions = [];
+
+    history = [];
+
+
+    sameColorStreak = 0;
+
+    lastCandleDirection = 0;
+
+    reversalBias = 0;
+
+
+    createInitialCandles();
+
+    updateUI();
+
+    drawChart();
+
+}
+
+
+/* =========================================================
+   TIMEFRAME
+========================================================= */
+
+document
+.querySelectorAll(".tf")
+.forEach(button=>{
+
+    button.addEventListener(
+        "click",
+        ()=>{
+
+            document
+            .querySelectorAll(".tf")
+            .forEach(
+                b =>
+                b.classList.remove(
+                    "active"
+                )
+            );
+
+
+            button.classList.add(
+                "active"
+            );
+
+
+            currentTimeframe =
+                button.dataset.tf;
+
+
+            candleDurationMs =
+                timeframeMs[
+                    currentTimeframe
+                ];
+
+
+            chartOffset = 0;
+
+            visibleCount = 60;
+
+            verticalOffset = 0;
+
+            verticalZoom = 1;
+
+
+            createInitialCandles();
+
+        }
+    );
+
 });
 
-document.getElementById("userInput").addEventListener("keydown", e=>{
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    send();
-  }
-});
 
-const pashtoNumbers = {
-  "صفر":0, "یو":1, "یوه":1, "دوه":2, "درې":3, "څلور":4, "پنځه":5,
-  "شپږ":6, "اووه":7, "اته":8, "نهه":9, "لس":10, "یولس":11, "دولس":12,
-  "دیارلس":13, "څوارلس":14, "پنځلس":15, "شپاړس":16, "اووه لس":17, "اته لس":18, "نهه لس":19, "شلو":20
-};
+/* =========================================================
+   TOUCH HELPERS
+========================================================= */
 
-function convertPashtoNumbers(text){
-  for(let key in pashtoNumbers){
-    let re = new RegExp("\\b"+key+"\\b","gi");
-    text = text.replace(re, pashtoNumbers[key]);
-  }
-  return text;
+function distanceBetweenTouches(
+    t1,
+    t2
+){
+
+    const dx =
+        t1.clientX -
+        t2.clientX;
+
+
+    const dy =
+        t1.clientY -
+        t2.clientY;
+
+
+    return Math.sqrt(
+        dx*dx +
+        dy*dy
+    );
+
 }
 
-const pashtoOperators = {
-  "جمعه": "+",
-  "جمع": "+",
-  "تفریق": "-",
-  "منفي": "-",
-  "ضرب": "*",
-  "ضربه": "*",
-  "تقسیم": "/",
-  "تقسیمه": "/",
-  "توان": "**",
-  "په توان": "**"
-};
 
-function convertPashtoOperators(text){
-  for(let key in pashtoOperators){
-    let re = new RegExp("\\b"+key+"\\b","gi");
-    text = text.replace(re, pashtoOperators[key]);
-  }
-  return text;
-}
+/* =========================================================
+   TOUCH START
+   LONG PRESS CROSSHAIR
+========================================================= */
 
-function solveMath(input){
+canvas.addEventListener(
+    "touchstart",
+    function(e){
 
-  function convertPersianNumbers(text){
-    const persianNums = {"۰":"0","۱":"1","۲":"2","۳":"3","۴":"4","۵":"5","۶":"6","۷":"7","۸":"8","۹":"9"};
-    for(let key in persianNums){
-      let re = new RegExp(key,"g");
-      text = text.replace(re, persianNums[key]);
+        if(e.cancelable){
+
+            e.preventDefault();
+
+        }
+
+
+        /* ============================
+           TWO FINGER PINCH
+        ============================ */
+
+        if(
+            e.touches.length === 2
+        ){
+
+            clearTimeout(
+                longPressTimer
+            );
+
+
+            hideCrosshair();
+
+
+            pinchStartDistance =
+                distanceBetweenTouches(
+                    e.touches[0],
+                    e.touches[1]
+                );
+
+
+            pinchStartVisible =
+                visibleCount;
+
+
+            pinchStartZoom =
+                verticalZoom;
+
+
+            isDragging = false;
+
+            return;
+
+        }
+
+
+        /* ============================
+           ONE FINGER
+        ============================ */
+
+        if(
+            e.touches.length === 1
+        ){
+
+            const touch =
+                e.touches[0];
+
+
+            isDragging = true;
+
+
+            dragStartX =
+                touch.clientX;
+
+
+            dragStartY =
+                touch.clientY;
+
+
+            longPressStartX =
+                touch.clientX;
+
+
+            longPressStartY =
+                touch.clientY;
+
+
+            startOffset =
+                chartOffset;
+
+
+            startVerticalOffset =
+                verticalOffset;
+
+
+            /*
+               600ms Long Press
+            */
+
+            clearTimeout(
+                longPressTimer
+            );
+
+
+            longPressTimer =
+                setTimeout(
+                    ()=>{
+
+                        /*
+                           که تر اوسه ګوته
+                           تقریباً هماغه ځای کې وي
+                        */
+
+                        if(
+                            Math.abs(
+                                dragStartX -
+                                longPressStartX
+                            ) < 12 &&
+                            Math.abs(
+                                dragStartY -
+                                longPressStartY
+                            ) < 12
+                        ){
+
+                            isDragging = false;
+
+
+                            showCrosshair(
+                                longPressStartX -
+                                canvas.getBoundingClientRect().left,
+
+                                longPressStartY -
+                                canvas.getBoundingClientRect().top
+                            );
+
+                        }
+
+                    },
+                    LONG_PRESS_TIME
+                );
+
+        }
+
+    },
+    {
+        passive:false
     }
-    return text;
-  }
+);
 
-  input = input.toLowerCase();
 
-  input = convertPashtoNumbers(input);
+/* =========================================================
+   TOUCH MOVE
+========================================================= */
 
-  input = convertPersianNumbers(input);
+canvas.addEventListener(
+    "touchmove",
+    function(e){
 
-  input = convertPashtoOperators(input);
-  
-  input = input.replace(/\s+/g,"");
+        if(e.cancelable){
 
-  try{
-    let result = eval(input);
-    return `نتیجه: ${result}`;
-  }catch(e){
-    return "بښنه غواړم، زه د دې ریاضي پوښتنه حل نه کړم.";
-  }
-}
-console.log(solveMath("2 + 3"));           // 5
-console.log(solveMath("دوه جمعه درې"));   // 5
-console.log(solveMath("پنځه ضربه درې"));  // 15
-console.log(solveMath("لس تقسیم دوه"));    // 5
-console.log(solveMath("۲ په توان ۳"));     // 8
+            e.preventDefault();
+
+        }
+
+
+        /* ============================
+           PINCH
+        ============================ */
+
+        if(
+            e.touches.length === 2
+        ){
+
+            clearTimeout(
+                longPressTimer
+            );
+
+
+            hideCrosshair();
+
+
+            const currentDistance =
+                distanceBetweenTouches(
+                    e.touches[0],
+                    e.touches[1]
+                );
+
+
+            if(
+                pinchStartDistance <= 0
+            ){
+
+                return;
+
+            }
+
+
+            const scale =
+                currentDistance /
+                pinchStartDistance;
+
+
+            visibleCount =
+                Math.round(
+                    pinchStartVisible /
+                    scale
+                );
+
+
+            visibleCount =
+                clamp(
+                    visibleCount,
+                    15,
+                    100
+                );
+
+
+            verticalZoom =
+                clamp(
+                    pinchStartZoom *
+                    scale,
+                    0.5,
+                    5
+                );
+
+
+            chartOffset =
+                clamp(
+                    chartOffset,
+                    0,
+                    Math.max(
+                        0,
+                        candleData.length -
+                        visibleCount
+                    )
+                );
+
+
+            drawChart();
+
+            return;
+
+        }
+
+
+        /* ============================
+           ONE FINGER
+        ============================ */
+
+        if(
+            e.touches.length === 1
+        ){
+
+            const touch =
+                e.touches[0];
+
+
+            const dx =
+                touch.clientX -
+                dragStartX;
+
+
+            const dy =
+                touch.clientY -
+                dragStartY;
+
+
+            /* =========================
+               CROSSHAIR ACTIVE
+            ========================= */
+
+            if(crosshairActive){
+
+                crosshairX =
+                    touch.clientX -
+                    canvas.getBoundingClientRect().left;
+
+
+                crosshairY =
+                    touch.clientY -
+                    canvas.getBoundingClientRect().top;
+
+
+                updateCrosshair();
+
+                return;
+
+            }
+
+
+            /* =========================
+               LONG PRESS CANCEL
+            ========================= */
+
+            if(
+                Math.abs(dx) > 10 ||
+                Math.abs(dy) > 10
+            ){
+
+                clearTimeout(
+                    longPressTimer
+                );
+
+            }
+
+
+            /* =========================
+               NORMAL PAN
+            ========================= */
+
+            if(isDragging){
+
+                const pixelsPerCandle =
+                    canvas.clientWidth /
+                    visibleCount;
+
+
+                chartOffset =
+                    startOffset +
+                    Math.round(
+                        dx /
+                        pixelsPerCandle
+                    );
+
+
+                chartOffset =
+                    clamp(
+                        chartOffset,
+                        0,
+                        Math.max(
+                            0,
+                            candleData.length -
+                            visibleCount
+                        )
+                    );
+
+
+                verticalOffset =
+                    startVerticalOffset +
+                    dy /
+                    canvas.clientHeight /
+                    verticalZoom;
+
+
+                drawChart();
+
+            }
+
+        }
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================================================
+   TOUCH END
+========================================================= */
+
+canvas.addEventListener(
+    "touchend",
+    function(e){
+
+        clearTimeout(
+            longPressTimer
+        );
+
+
+        /*
+           که Crosshair فعاله،
+           د ګوتې په پورته کولو سره
+           Crosshair پټ شي
+        */
+
+        if(
+            crosshairActive &&
+            e.touches.length === 0
+        ){
+
+            hideCrosshair();
+
+        }
+
+
+        if(
+            e.touches.length === 0
+        ){
+
+            isDragging = false;
+
+            pinchStartDistance = 0;
+
+        }
+
+    },
+    {
+        passive:false
+    }
+);
+
+/* =========================================================
+   MOUSE DOWN
+========================================================= */
+
+canvas.addEventListener(
+    "mousedown",
+    function(e){
+
+        isDragging = true;
+
+        dragStartX =
+            e.clientX;
+
+        dragStartY =
+            e.clientY;
+
+        startOffset =
+            chartOffset;
+
+        startVerticalOffset =
+            verticalOffset;
+
+    }
+);
+
+
+/* =========================================================
+   MOUSE MOVE
+========================================================= */
+
+canvas.addEventListener(
+    "mousemove",
+    function(e){
+
+        if(!isDragging){
+
+            return;
+
+        }
+
+
+        const dx =
+            e.clientX -
+            dragStartX;
+
+
+        const dy =
+            e.clientY -
+            dragStartY;
+
+
+        const pixelsPerCandle =
+            canvas.clientWidth /
+            visibleCount;
+
+
+        chartOffset =
+            startOffset +
+            Math.round(
+                dx /
+                pixelsPerCandle
+            );
+
+
+        chartOffset =
+            clamp(
+                chartOffset,
+                0,
+                Math.max(
+                    0,
+                    candleData.length -
+                    visibleCount
+                )
+            );
+
+
+        verticalOffset =
+            startVerticalOffset +
+            dy /
+            canvas.clientHeight /
+            verticalZoom;
+
+
+        drawChart();
+
+    }
+);
+
+
+/* =========================================================
+   MOUSE UP
+========================================================= */
+
+canvas.addEventListener(
+    "mouseup",
+    ()=>{
+        isDragging = false;
+    }
+);
+
+
+canvas.addEventListener(
+    "mouseleave",
+    ()=>{
+        isDragging = false;
+    }
+);
+
+
+/* =========================================================
+   WHEEL ZOOM
+========================================================= */
+
+canvas.addEventListener(
+    "wheel",
+    function(e){
+
+        if(e.cancelable){
+
+            e.preventDefault();
+
+        }
+
+
+        if(e.deltaY < 0){
+
+            visibleCount -= 5;
+
+            verticalZoom *= 1.10;
+
+        }
+
+        else{
+
+            visibleCount += 5;
+
+            verticalZoom /= 1.10;
+
+        }
+
+
+        visibleCount =
+            clamp(
+                visibleCount,
+                15,
+                100
+            );
+
+
+        verticalZoom =
+            clamp(
+                verticalZoom,
+                0.5,
+                5
+            );
+
+
+        chartOffset =
+            clamp(
+                chartOffset,
+                0,
+                Math.max(
+                    0,
+                    candleData.length -
+                    visibleCount
+                )
+            );
+
+
+        drawChart();
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+createInitialCandles();
+
+resizeCanvas();
+
+updateUI();
+
+startSimulation();
+
 </script>
+
 </body>
 </html>
