@@ -2303,38 +2303,6 @@ function escapeHTML(text) {
         .replace(/'/g, "&#039;");
 }
 
-/* =====================================================
-   د ځواب ژوندی ټایپ کولو انیمېشن
-   ===================================================== */
-
-function typeWriter(element, fullText) {
-    element.textContent = "";
-
-    let index = 0;
-
-    // د پښتو او عربي حروفو د سم ښودلو لپاره
-    const characters = Array.from(fullText);
-
-    // هر ځل څو توري ولیکل شي
-    const speed = 18;
-
-    function writeNext() {
-        if (index >= characters.length) {
-            return;
-        }
-
-        element.textContent += characters[index];
-        index++;
-
-        // د متن له لیکلو سره سکرین لاندې حرکت کوي
-        scrollToBottom();
-
-        setTimeout(writeNext, speed);
-    }
-
-    writeNext();
-}
-
 function renderMessage(message) {
     const isUser = message.role === "user";
 
@@ -2363,11 +2331,6 @@ function renderMessage(message) {
     wrapper.appendChild(bubbleWrap);
 
     messagesEl.appendChild(wrapper);
-
-    // د مرستیال د ځواب لپاره د ټایپ کولو انیمېشن
-    if (message.role === "assistant" && message.animate === true) {
-        typeWriter(bubble, message.text || "");
-    }
 }
 
 function renderChat() {
@@ -2398,12 +2361,11 @@ function addMessage(role, text) {
     const chat = ensureChat();
 
     const message = {
-    id: makeId(),
-    role,
-    text,
-    time: now(),
-    animate: role === "assistant"
-};
+        id: makeId(),
+        role,
+        text,
+        time: now()
+    };
 
     chat.messages.push(message);
     chat.updatedAt = now();
