@@ -1,4779 +1,2779 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ps" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TradeX Futures</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="mobile-web-app-capable" content="yes">
+<title>اسلامي پښتو AI</title>
 
 <style>
-html,
-body {
-    overscroll-behavior: none;
-    overscroll-behavior-y: none;
+:root {
+    --bg: #061a14;
+    --panel: #0b281e;
+    --panel2: #103629;
+    --green: #18c78b;
+    --green2: #0d9f6b;
+    --text: #effff7;
+    --muted: #a6c7b7;
+    --border: rgba(255,255,255,.09);
+    --danger: #ff6868;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Tahoma, sans-serif;
+    min-height: 100vh;
 }
-</style>
-<style>
 
-/* =========================================================
-   GLOBAL
-========================================================= */
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    -webkit-tap-highlight-color:transparent;
+button, input, textarea {
+    font: inherit;
 }
 
-body{
-    background:#0b0f14;
-    color:#e8edf3;
-    font-family:Arial,sans-serif;
-    overflow-x:hidden;
+button {
+    cursor: pointer;
 }
-
-button,
-input,
-select{
-    font:inherit;
+
+.app {
+    height: 100dvh;
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(24,199,139,.07), transparent 35%),
+        var(--bg);
 }
 
-button{
-    cursor:pointer;
-}
+/* HEADER */
 
-.app{
-    max-width:1200px;
-    margin:auto;
-    min-height:100vh;
+.header {
+    height: 64px;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 15px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(6,26,20,.95);
+}
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 21px;
+    display: grid;
+    place-items: center;
+}
+
+.logo {
+    width: 39px;
+    height: 39px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: linear-gradient(145deg, #20d99a, #08744f);
+    color: #03281b;
+    font-size: 22px;
 }
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.header{
-    height:58px;
-    background:#111820;
-    border-bottom:1px solid #26313c;
-
-    display:flex;
-    align-items:center;
-
-    padding:0 12px;
-    gap:14px;
-
-    position:sticky;
-    top:0;
-    z-index:20;
+
+.header-title {
+    flex: 1;
+    min-width: 0;
 }
 
-.logo{
-    font-size:21px;
-    font-weight:bold;
-    color:#19d99b;
-    white-space:nowrap;
+.header-title h1 {
+    font-size: 16px;
+    font-weight: 700;
 }
 
-.symbol{
-    display:flex;
-    flex-direction:column;
+.header-title p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
 }
 
-.symbol strong{
-    font-size:15px;
+.status {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    background: var(--green);
+    border-radius: 50%;
+    margin-left: 5px;
 }
 
-.symbol span{
-    font-size:11px;
-    color:#7f8b98;
-}
+/* CHAT */
 
-.price{
-    font-size:17px;
-    font-weight:bold;
-    color:#19d99b;
-    margin-left:auto;
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 16px 25px;
+    scroll-behavior: smooth;
 }
 
-.priceChange{
-    font-size:11px;
-    color:#19d99b;
+.welcome {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px 0;
 }
-
-
-/* =========================================================
-   TOOLBAR
-========================================================= */
-
-.toolbar{
-    height:45px;
 
-    background:#0e141b;
-    border-bottom:1px solid #222c35;
-
-    display:flex;
-    align-items:center;
-
-    gap:6px;
-    padding:5px 8px;
-
-    overflow-x:auto;
+.welcome-logo {
+    width: 78px;
+    height: 78px;
+    border-radius: 25px;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    color: #042719;
+    background: linear-gradient(145deg, #36e9aa, #08764f);
+    box-shadow: 0 10px 40px rgba(24,199,139,.15);
+    margin-bottom: 23px;
 }
 
-.toolBtn,
-.tf{
-    border:0;
-    background:#17212b;
-    color:#9da9b5;
-
-    padding:7px 10px;
-
-    border-radius:5px;
-    white-space:nowrap;
+.welcome h2 {
+    font-size: 25px;
+    margin-bottom: 12px;
 }
 
-.tf.active{
-    background:#19d99b;
-    color:#07130f;
-    font-weight:bold;
+.welcome p {
+    max-width: 440px;
+    line-height: 1.9;
+    font-size: 14px;
+    color: var(--muted);
 }
-
-
-/* =========================================================
-   CHART
-========================================================= */
 
-.chartBox{
-    height:430px;
-
-    position:relative;
-
-    background:#080d12;
-
-    border-bottom:1px solid #27313b;
-
-    touch-action:none;
-    user-select:none;
-
-    overflow:hidden;
+.suggestions-grid {
+    width: 100%;
+    max-width: 650px;
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
 }
-
-#chart{
-    width:100%;
-    height:100%;
-
-    display:block;
 
-    touch-action:none;
-    user-select:none;
+.suggestion-card {
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: linear-gradient(145deg, var(--panel), #091f17);
+    padding: 15px;
+    text-align: right;
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 13px;
+    transition: .2s;
 }
 
-
-/* =========================================================
-   CHART INFORMATION
-========================================================= */
-
-.chartInfo{
-    position:absolute;
-
-    top:9px;
-    left:10px;
-
-    font-size:11px;
-    color:#9aa6b2;
-
-    line-height:18px;
-
-    pointer-events:none;
-
-    z-index:4;
+.suggestion-card:hover {
+    border-color: var(--green);
+    background: var(--panel2);
 }
-
-
-/* =========================================================
-   PRICE SCALE
-========================================================= */
-
-.priceScale{
-    position:absolute;
-
-    top:0;
-    right:0;
-
-    width:68px;
-    height:100%;
-
-    pointer-events:none;
 
-    z-index:5;
-
-    background:linear-gradient(
-        to right,
-        rgba(8,13,18,0),
-        rgba(8,13,18,.45)
-    );
-
-    border-left:1px solid #17212a;
+.suggestion-card span {
+    display: block;
+    font-size: 21px;
+    margin-bottom: 7px;
 }
-
-
-/* Price labels */
-
-.priceLevel{
-    position:absolute;
-
-    right:4px;
-
-    transform:translateY(-50%);
 
-    color:#8a96a2;
+/* MESSAGES */
 
-    font-size:10px;
-
-    white-space:nowrap;
-
-    background:rgba(8,13,18,.80);
-
-    padding:1px 3px;
-
-    border-radius:2px;
+.message {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 23px;
+    animation: appear .25s ease;
 }
-
-
-/* =========================================================
-   CURRENT PRICE BOX
-========================================================= */
-
-.priceTag{
-    position:absolute;
 
-    right:0;
-
-    min-width:68px;
-
-    padding:4px 7px;
-
-    background:#19d99b;
-
-    color:#06110d;
-
-    font-size:11px;
-
-    font-weight:bold;
-
-    text-align:center;
-
-    border-radius:3px 0 0 3px;
-
-    pointer-events:none;
-
-    z-index:8;
-
-    transition:
-        background .10s linear,
-        color .10s linear,
-        top .06s linear;
+.message.user {
+    flex-direction: row-reverse;
 }
 
-/* =========================================================
-   CROSSHAIR
-========================================================= */
-
-.crosshair{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    z-index:7;
-    display:none;
+.avatar {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--panel2);
+    font-size: 17px;
 }
 
-.crosshair.active{
-    display:block;
+.message.assistant .avatar {
+    color: #05281b;
+    background: var(--green);
 }
-
 
-/* عمودي کرښه */
-
-.crosshairVertical{
-    position:absolute;
-    top:0;
-    bottom:0;
-
-    width:1px;
-
-    background:rgba(220,230,240,.65);
-
-    box-shadow:
-        0 0 3px rgba(255,255,255,.15);
-
-    transform:translateX(-50%);
+.bubble-wrap {
+    max-width: 85%;
+    min-width: 0;
 }
-
-
-/* افقي کرښه */
 
-.crosshairHorizontal{
-    position:absolute;
-    left:0;
-    right:68px;
-
-    height:1px;
-
-    background:rgba(220,230,240,.65);
-
-    box-shadow:
-        0 0 3px rgba(255,255,255,.15);
-
-    transform:translateY(-50%);
+.sender {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 7px;
 }
-
-
-/* د Crosshair منځنی + */
-
-.crosshairCenter{
-    position:absolute;
 
-    width:9px;
-    height:9px;
-
-    border:1px solid #dfe7ee;
-
-    border-radius:50%;
-
-    background:#080d12;
-
-    transform:
-        translate(-50%,-50%);
-
-    box-shadow:
-        0 0 5px rgba(255,255,255,.35);
+.bubble {
+    padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    line-height: 2;
+    font-size: 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
-
-
-/* Crosshair Price */
-
-.crosshairPrice{
-    position:absolute;
-
-    right:0;
-
-    min-width:68px;
-
-    padding:3px 5px;
-
-    background:#080d12;
-
-    border:1px solid #7f8b98;
 
-    color:#e8edf3;
-
-    font-size:10px;
-
-    font-weight:bold;
-
-    text-align:center;
-
-    border-radius:3px 0 0 3px;
-
-    transform:translateY(-50%);
+.user .bubble {
+    background: #104d38;
+    border-color: rgba(24,199,139,.15);
+    border-top-right-radius: 4px;
 }
-
-
-/* Crosshair Time */
-
-.crosshairTime{
-    position:absolute;
-
-    bottom:0;
-
-    padding:3px 6px;
-
-    background:#080d12;
-
-    border:1px solid #7f8b98;
-
-    color:#cbd4dc;
-
-    font-size:9px;
 
-    border-radius:3px 3px 0 0;
-
-    transform:translateX(-50%);
+.assistant .bubble {
+    background: #0b281e;
+    border-top-left-radius: 4px;
 }
-
-/* =========================================================
-   STATS
-========================================================= */
-
-.stats{
-    display:grid;
 
-    grid-template-columns:repeat(4,1fr);
-
-    background:#10161d;
-
-    border-bottom:1px solid #26313b;
+.bubble strong {
+    color: #54e9ae;
 }
-
-.stat{
-    padding:9px 8px;
 
-    border-right:1px solid #222c35;
+.answer-section {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
 }
 
-.stat small{
-    display:block;
-
-    color:#71808d;
-
-    font-size:10px;
-
-    margin-bottom:4px;
+.answer-section:last-child {
+    border-bottom: none;
 }
 
-.stat b{
-    font-size:13px;
+.answer-section h3 {
+    color: #55e9af;
+    font-size: 14px;
+    margin-bottom: 6px;
 }
 
-
-/* =========================================================
-   TRADE PANEL
-========================================================= */
-
-.tradePanel{
-    background:#10161d;
-
-    padding:10px;
+.choice-list {
+    margin-top: 10px;
+    display: grid;
+    gap: 7px;
 }
-
-.tabs{
-    display:flex;
 
-    gap:5px;
-
-    margin-bottom:10px;
+.choice-btn {
+    width: 100%;
+    text-align: right;
+    padding: 10px 12px;
+    background: #103629;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    line-height: 1.7;
 }
-
-.tab{
-    flex:1;
-
-    border:0;
 
-    padding:9px;
-
-    background:#17212b;
-
-    color:#8d9aa7;
-
-    border-radius:5px;
+.choice-btn:hover {
+    border-color: var(--green);
 }
-
-.tab.active{
-    background:#27333f;
 
-    color:white;
+.small-note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 10px;
+    line-height: 1.8;
 }
 
-
-.fields{
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:8px;
+.typing {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 0;
 }
 
-.field label{
-    display:block;
-
-    color:#7e8b97;
-
-    font-size:11px;
-
-    margin-bottom:5px;
+.typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: bounce .8s infinite alternate;
 }
-
-.field input,
-.field select{
-    width:100%;
 
-    background:#0b1117;
-
-    border:1px solid #29343e;
-
-    color:white;
-
-    padding:10px;
-
-    border-radius:5px;
-
-    outline:none;
+.typing span:nth-child(2) {
+    animation-delay: .15s;
 }
 
-.field input:focus,
-.field select:focus{
-    border-color:#19d99b;
+.typing span:nth-child(3) {
+    animation-delay: .3s;
 }
-
 
-/* =========================================================
-   LEVERAGE
-========================================================= */
+/* INPUT */
 
-.leverage{
-    display:flex;
-
-    gap:4px;
+.input-area {
+    padding: 12px 14px 15px;
+    background: rgba(6,26,20,.98);
+    border-top: 1px solid var(--border);
 }
-
-.lev{
-    flex:1;
-
-    border:0;
-
-    padding:7px 3px;
-
-    background:#17212b;
-
-    color:#9ba7b3;
-
-    border-radius:4px;
 
-    font-size:11px;
+.input-box {
+    max-width: 850px;
+    margin: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 9px;
+    border: 1px solid #245340;
+    border-radius: 18px;
+    background: #0b281e;
+    padding: 9px;
+    transition: .2s;
 }
 
-.lev.active{
-    background:#19d99b;
-
-    color:#07130f;
-
-    font-weight:bold;
+.input-box:focus-within {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(24,199,139,.06);
 }
-
-
-/* =========================================================
-   ACTION BUTTONS
-========================================================= */
-
-.actionButtons{
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:8px;
 
-    margin-top:10px;
+#userInput {
+    flex: 1;
+    min-width: 0;
+    max-height: 130px;
+    min-height: 43px;
+    resize: none;
+    outline: none;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 11px 8px;
+    line-height: 1.7;
+    font-size: 14px;
 }
 
-.longBtn,
-.shortBtn{
-    border:0;
-
-    padding:13px;
-
-    border-radius:6px;
-
-    font-size:15px;
-
-    font-weight:bold;
+#userInput::placeholder {
+    color: #83a998;
 }
-
-.longBtn{
-    background:#0c9f72;
 
-    color:white;
+.send-btn {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 13px;
+    background: var(--green);
+    color: #03291c;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.shortBtn{
-    background:#d94b59;
-
-    color:white;
+.send-btn:disabled {
+    opacity: .5;
 }
 
-.longBtn:active,
-.shortBtn:active{
-    transform:scale(.98);
+.footer-note {
+    text-align: center;
+    color: #759988;
+    font-size: 10px;
+    margin-top: 9px;
 }
-
 
-/* =========================================================
-   CALCULATION
-========================================================= */
+/* SIDEBAR */
 
-.calculation{
-    margin-top:10px;
-
-    background:#0b1117;
-
-    border:1px solid #222d37;
-
-    border-radius:6px;
-
-    padding:10px;
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 10;
+    display: none;
 }
-
-.calcRow{
-    display:flex;
-
-    justify-content:space-between;
 
-    padding:4px 0;
-
-    font-size:12px;
+.overlay.show {
+    display: block;
 }
 
-.calcRow span:first-child{
-    color:#7d8a97;
+.sidebar {
+    position: fixed;
+    z-index: 11;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: min(320px, 86vw);
+    background: #081f17;
+    border-left: 1px solid var(--border);
+    transform: translateX(105%);
+    transition: transform .25s ease;
+    display: flex;
+    flex-direction: column;
 }
-
-
-/* =========================================================
-   SECTIONS
-========================================================= */
 
-.section{
-    background:#0e141a;
-
-    margin-top:8px;
-
-    border-top:1px solid #26313b;
+.sidebar.open {
+    transform: translateX(0);
 }
-
-.sectionTitle{
-    padding:10px;
-
-    font-size:13px;
 
-    font-weight:bold;
-
-    border-bottom:1px solid #222c35;
+.sidebar-header {
+    padding: 19px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
 }
-
-
-/* =========================================================
-   POSITIONS
-========================================================= */
-
-.positionCard{
-    margin:8px;
-
-    padding:10px;
-
-    background:#121b23;
-
-    border:1px solid #27333e;
 
-    border-radius:6px;
+.sidebar-header h2 {
+    font-size: 17px;
 }
 
-.positionTop{
-    display:flex;
-
-    justify-content:space-between;
-
-    margin-bottom:8px;
+.sidebar-actions {
+    padding: 13px;
+    display: grid;
+    gap: 9px;
 }
-
-.sideLong{
-    color:#19d99b;
 
-    font-weight:bold;
+.side-btn {
+    padding: 12px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    text-align: right;
 }
 
-.sideShort{
-    color:#ff5868;
-
-    font-weight:bold;
+.side-btn.primary {
+    background: var(--green);
+    color: #03291c;
+    font-weight: bold;
 }
-
-.positionGrid{
-    display:grid;
 
-    grid-template-columns:repeat(3,1fr);
-
-    gap:7px;
+.history-title {
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--muted);
 }
-
-.posItem{
-    background:#0b1117;
 
-    padding:7px;
-
-    border-radius:4px;
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 10px 15px;
 }
-
-.posItem small{
-    display:block;
-
-    color:#72808d;
 
-    font-size:9px;
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 7px;
 }
 
-.posItem b{
-    font-size:11px;
+.history-open {
+    flex: 1;
+    min-width: 0;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
 }
-
-.closeBtn{
-    width:100%;
-
-    margin-top:8px;
-
-    padding:8px;
 
-    border:1px solid #3b4651;
-
-    background:#19232d;
-
-    color:#fff;
-
-    border-radius:5px;
+.history-open.active {
+    background: #103629;
+    border-color: rgba(24,199,139,.2);
 }
 
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-.history{
-    padding:8px;
+.history-menu {
+    width: 34px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 8px;
+    font-size: 19px;
 }
-
-.historyRow{
-    display:grid;
-
-    grid-template-columns:1fr 1fr 1fr;
 
-    gap:5px;
-
-    padding:9px 4px;
-
-    border-bottom:1px solid #202a33;
-
-    font-size:10px;
+.history-menu:hover {
+    background: var(--panel2);
 }
 
-.empty{
-    color:#65727e;
-
-    text-align:center;
-
-    padding:18px;
-
-    font-size:12px;
+.empty-history {
+    text-align: center;
+    padding: 25px 10px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
 }
-
 
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.footer{
-    text-align:center;
-
-    color:#53616e;
-
-    font-size:10px;
-
-    padding:20px;
+.toast {
+    position: fixed;
+    z-index: 30;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #174633;
+    color: white;
+    border: 1px solid #28644a;
+    padding: 11px 17px;
+    border-radius: 12px;
+    font-size: 13px;
+    display: none;
+    max-width: 90%;
+    text-align: center;
 }
 
+.toast.show {
+    display: block;
+    animation: appear .2s ease;
+}
 
-/* =========================================================
-   MOBILE
-========================================================= */
+@keyframes appear {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-@media(max-width:600px){
+@keyframes bounce {
+    from { transform: translateY(0); opacity: .5; }
+    to { transform: translateY(-5px); opacity: 1; }
+}
 
-    .header{
-        gap:8px;
+@media (max-width: 520px) {
+    .header {
+        padding: 0 10px;
+        gap: 8px;
     }
 
-    .logo{
-        font-size:17px;
+    .header-title h1 {
+        font-size: 14px;
     }
 
-    .symbol strong{
-        font-size:13px;
+    .header-title p {
+        font-size: 10px;
     }
 
-    .price{
-        font-size:14px;
+    .chat-area {
+        padding: 18px 11px;
     }
 
-    .chartBox{
-        height:360px;
+    .welcome h2 {
+        font-size: 22px;
     }
 
-    .stats{
-        grid-template-columns:repeat(2,1fr);
+    .suggestions-grid {
+        gap: 8px;
     }
 
-    .stat{
-        border-bottom:1px solid #222c35;
+    .suggestion-card {
+        padding: 11px;
+        font-size: 12px;
     }
 
-    .fields{
-        grid-template-columns:1fr 1fr;
+    .bubble-wrap {
+        max-width: 88%;
     }
 
-    .priceScale{
-        width:64px;
-    }
-
-    .priceTag{
-        min-width:64px;
-
-        font-size:10px;
+    .bubble {
+        font-size: 13px;
+        padding: 11px 12px;
     }
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
+    <header class="header">
+        <button class="icon-btn" id="menuBtn" aria-label="مینو">☰</button>
 
-<!-- ======================================================
-     HEADER
-====================================================== -->
+        <div class="logo">☪</div>
 
-<header class="header">
-
-    <div class="logo">
-        TradeX
-    </div>
-
-    <div class="symbol">
-        <strong>XRP/USDT</strong>
-        <span>Perpetual Futures</span>
-    </div>
-
-    <div>
-
-        <div class="price" id="topPrice">
-            2.5000
+        <div class="header-title">
+            <h1>اسلامي پښتو AI</h1>
+            <p><span class="status"></span> محلي اسلامي مرستیال</p>
         </div>
 
-        <div class="priceChange" id="change">
-            +0.00%
-        </div>
-
-    </div>
-
-</header>
-
-
-<!-- ======================================================
-     TOOLBAR
-====================================================== -->
-
-<div class="toolbar">
-
-    <button class="tf active" data-tf="1m">
-        1m
-    </button>
-
-    <button class="tf" data-tf="5m">
-        5m
-    </button>
-
-    <button class="tf" data-tf="15m">
-        15m
-    </button>
-
-    <button class="tf" data-tf="1h">
-        1h
-    </button>
-
-    <button class="tf" data-tf="4h">
-        4h
-    </button>
-
-    <button class="toolBtn" onclick="resetMarket()">
-        Reset
-    </button>
-
-    <button class="toolBtn" onclick="toggleSimulation()">
-        <span id="simText">
-            Pause
-        </span>
-    </button>
-
-</div>
-
-
-<!-- ======================================================
-     CHART
-====================================================== -->
-
-<div class="chartBox">
-
-    <canvas id="chart"></canvas>
-
-
-    <div class="chartInfo">
-
-        XRPUSDT · Perpetual
-
-        <br>
-
-        <span id="chartMode">
-            SIMULATED MARKET · 1m
-        </span>
-
-    </div>
-
-
-    <!-- Price Scale -->
-
-    <div
-        class="priceScale"
-        id="priceScale">
-    </div>
-
-
-    <!-- Current Price Box -->
-
-    <div
-        class="priceTag"
-        id="priceTag">
-
-        2.5000
-
-    </div>
-    
-    <!-- ======================================================
-     CROSSHAIR
-====================================================== -->
-
-<div class="crosshair" id="crosshair">
-
-    <div
-        class="crosshairVertical"
-        id="crosshairVertical">
-    </div>
-
-    <div
-        class="crosshairHorizontal"
-        id="crosshairHorizontal">
-    </div>
-
-    <div
-        class="crosshairCenter"
-        id="crosshairCenter">
-    </div>
-
-    <div
-        class="crosshairPrice"
-        id="crosshairPrice">
-        2.5000
-    </div>
-
-    <div
-        class="crosshairTime"
-        id="crosshairTime">
-        1m
-    </div>
-
-</div>
-
-</div>
-
-
-<!-- ======================================================
-     STATS
-====================================================== -->
-
-<div class="stats">
-
-    <div class="stat">
-
-        <small>
-            Mark Price
-        </small>
-
-        <b id="markPrice">
-            2.5000
-        </b>
-
-    </div>
-
-
-    <div class="stat">
-
-        <small>
-            24h Change
-        </small>
-
-        <b id="statChange">
-            +0.00%
-        </b>
-
-    </div>
-
-
-    <div class="stat">
-
-        <small>
-            24h High
-        </small>
-
-        <b id="highPrice">
-            2.5000
-        </b>
-
-    </div>
-
-
-    <div class="stat">
-
-        <small>
-            24h Low
-        </small>
-
-        <b id="lowPrice">
-            2.5000
-        </b>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     TRADE PANEL
-====================================================== -->
-
-<div class="tradePanel">
-
-    <div class="tabs">
-
-        <button
-            class="tab active"
-            id="marketTab">
-
-            Market
-
-        </button>
-
-        <button class="tab">
-
-            Limit
-
-        </button>
-
-    </div>
-
-
-    <div class="fields">
-
-
-        <div class="field">
-
-            <label>
-                Margin (USDT)
-            </label>
-
-            <input
-                id="marginInput"
-                type="number"
-                value="20"
-                min="1"
-                step="1"
-                oninput="calculateTrade()">
-
-        </div>
-
-
-        <div class="field">
-
-            <label>
-                Leverage
-            </label>
-
-            <div class="leverage">
-
-                <button
-                    class="lev"
-                    onclick="setLeverage(1)">
-                    1x
+        <button class="icon-btn" id="newChatBtn" aria-label="نوې خبرې">＋</button>
+    </header>
+
+    <main class="chat-area" id="chatArea">
+        <section class="welcome" id="welcome">
+            <div class="welcome-logo">☪</div>
+            <h2>السلام علیکم!</h2>
+            <p>
+                اسلامي پښتو مرستیال ته ښه راغلاست.
+                خپله پوښتنه ولیکئ؛ زه به د موجودو معلوماتو له مخې
+                د ځواب هڅه وکړم.
+            </p>
+
+            <div class="suggestions-grid">
+                <button class="suggestion-card" data-question="اسلام څه شی دی؟">
+                    <span>📖</span>
+                    اسلام څه شی دی؟
                 </button>
 
-                <button
-                    class="lev"
-                    onclick="setLeverage(5)">
-                    5x
+                <button class="suggestion-card" data-question="قرآن کریم څه شی دی؟">
+                    <span>📗</span>
+                    قرآن کریم څه شی دی؟
                 </button>
 
-                <button
-                    class="lev active"
-                    onclick="setLeverage(10)">
-                    10x
+                <button class="suggestion-card" data-question="د اسلام پنځه ارکان کوم دي؟">
+                    <span>🕌</span>
+                    د اسلام پنځه ارکان
                 </button>
 
-                <button
-                    class="lev"
-                    onclick="setLeverage(20)">
-                    20x
+                <button class="suggestion-card" data-question="اودس څنګه کیږي؟">
+                    <span>💧</span>
+                    د اوداسه طریقه
                 </button>
-
-                <button
-                    class="lev"
-                    onclick="setLeverage(50)">
-                    50x
-                </button>
-
             </div>
+        </section>
 
+        <div id="messages"></div>
+    </main>
+
+    <footer class="input-area">
+        <form class="input-box" id="chatForm">
+            <textarea
+                id="userInput"
+                rows="1"
+                placeholder="خپله پوښتنه دلته ولیکئ..."
+                aria-label="خپله پوښتنه ولیکئ"
+            ></textarea>
+
+            <button class="send-btn" id="sendBtn" type="submit" aria-label="لېږل">
+                ➤
+            </button>
+        </form>
+
+        <div class="footer-note">
+            د مهمو شرعي مسایلو لپاره له باوري عالم سره هم مشوره وکړئ.
         </div>
-
-
-        <div class="field">
-
-            <label>
-                Stop Loss
-            </label>
-
-            <input
-                id="slInput"
-                type="number"
-                placeholder="Optional"
-                step="0.0001">
-
-        </div>
-
-
-        <div class="field">
-
-            <label>
-                Take Profit
-            </label>
-
-            <input
-                id="tpInput"
-                type="number"
-                placeholder="Optional"
-                step="0.0001">
-
-        </div>
-
-    </div>
-
-
-    <div class="calculation">
-
-        <div class="calcRow">
-            <span>Entry Price</span>
-            <b id="calcEntry">2.5000</b>
-        </div>
-
-        <div class="calcRow">
-            <span>Position Size</span>
-            <b id="calcSize">0 XRP</b>
-        </div>
-
-        <div class="calcRow">
-            <span>Notional Value</span>
-            <b id="calcNotional">0 USDT</b>
-        </div>
-
-        <div class="calcRow">
-            <span>Required Margin</span>
-            <b id="calcMargin">20 USDT</b>
-        </div>
-
-        <div class="calcRow">
-            <span>Estimated Fee</span>
-            <b id="calcFee">0.00 USDT</b>
-        </div>
-
-    </div>
-
-
-    <div class="actionButtons">
-
-        <button
-            class="longBtn"
-            onclick="openPosition('LONG')">
-
-            LONG
-
-        </button>
-
-
-        <button
-            class="shortBtn"
-            onclick="openPosition('SHORT')">
-
-            SHORT
-
-        </button>
-
-    </div>
+    </footer>
 
 </div>
 
+<div class="overlay" id="overlay"></div>
 
-<!-- ======================================================
-     POSITIONS
-====================================================== -->
-
-<div class="section">
-
-    <div class="sectionTitle">
-        Positions
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>☪ د خبرو تاریخچه</h2>
+        <button class="icon-btn" id="closeMenuBtn" aria-label="بندول">×</button>
     </div>
 
-    <div id="positions">
-
-        <div class="empty">
-            No open positions
-        </div>
-
+    <div class="sidebar-actions">
+        <button class="side-btn primary" id="sidebarNewBtn">＋ نوې خبرې</button>
+        <button class="side-btn" id="renameBtn">✏️ د خبرو نوم بدلول</button>
+        <button class="side-btn" id="deleteCurrentBtn">🗑️ دا خبرې حذف کول</button>
+        <button class="side-btn" id="deleteAllBtn">حذف ټولې خبرې</button>
     </div>
 
-</div>
+    <div class="history-title">پخوانۍ خبرې</div>
+    <div class="history-list" id="historyList"></div>
+</aside>
 
-
-<!-- ======================================================
-     HISTORY
-====================================================== -->
-
-<div class="section">
-
-    <div class="sectionTitle">
-        Order History
-    </div>
-
-    <div id="history">
-
-        <div class="empty">
-            No trades yet
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="footer">
-
-    TradeX Futures Demo · Offline Simulation
-
-</div>
-
-
-</div>
-
+<div class="toast" id="toast"></div>
 
 <script>
-
-/* =========================================================
-   TRADEX FUTURES
-   TICK BASED MARKET ENGINE
-========================================================= */
-
-
-/* =========================================================
-   BASIC STATE
-========================================================= */
-
-let price = 2.5000;
-
-let startPrice = 2.5000;
-
-let highPrice = price;
-
-let lowPrice = price;
-
-let previousPrice = price;
-
-let balance = 1000;
-
-let leverage = 10;
-
-let running = true;
-
-let candleData = [];
-
-let positions = [];
-
-let history = [];
-
-let currentTimeframe = "1m";
-
-
-/* =========================================================
-   TIMEFRAME
-========================================================= */
-
-const timeframeMs = {
-
-    "1m":5000,
-
-    "5m":10000,
-
-    "15m":15000,
-
-    "1h":20000,
-
-    "4h":30000
-
-};
-
-let candleDurationMs =
-    timeframeMs[currentTimeframe];
-
-let candleStartMs =
-    Date.now();
-
-
-/* =========================================================
-   MARKET STATE
-========================================================= */
-
-let trend = 0;
-
-let volatility = 0.00030;
-
-let regimeUntil = 0;
-
-let reversalBias = 0;
-
-let lastCandleDirection = 0;
-
-let sameColorStreak = 0;
-
-
-/* =========================================================
-   CHART STATE
-========================================================= */
-
-let chartOffset = 0;
-
-let visibleCount = 60;
-
-let verticalOffset = 0;
-
-let verticalZoom = 1;
-
-let isDragging = false;
-
-let dragStartX = 0;
-
-let dragStartY = 0;
-
-let startOffset = 0;
-
-let startVerticalOffset = 0;
-
-let pinchStartDistance = 0;
-
-let pinchStartVisible = 60;
-
-let pinchStartZoom = 1;
-
-/* =========================================================
-   CROSSHAIR STATE
-========================================================= */
-
-let crosshairActive = false;
-
-let crosshairX = 0;
-
-let crosshairY = 0;
-
-let longPressTimer = null;
-
-let longPressStartX = 0;
-
-let longPressStartY = 0;
-
-const LONG_PRESS_TIME = 600;
-
-
-const canvas =
-    document.getElementById("chart");
-
-const ctx =
-    canvas.getContext("2d");
-
-
-/* =========================================================
-   RESIZE
-========================================================= */
-
-function resizeCanvas(){
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-    const dpr =
-        window.devicePixelRatio || 1;
-
-    canvas.width =
-        rect.width * dpr;
-
-    canvas.height =
-        rect.height * dpr;
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-    drawChart();
+"use strict";
+
+/* =====================================================
+   1. د اسلامي معلوماتو محلي بانک
+   ===================================================== */
+
+const knowledgeBase = [
+
+{
+    id: 1,
+    question: "اسلام څه شی دی",
+    keywords: ["اسلام", "دین", "مسلمان", "اسلام تعریف"],
+    answer:
+"اسلام د الله تعالی د یووالي منل، د هغه عبادت کول او د هغه د رسولانو پیروي کول دي. د اسلام اساسي پیغام د الله تعالی عبادت، نېک عمل، عدالت، رحمت او د خلکو د حقونو مراعاتول دي."
+},
+
+{
+    id: 2,
+    question: "قرآن کریم څه شی دی",
+    keywords: ["قرآن", "قران", "قرآن کریم", "کتاب الله", "اسماني کتاب"],
+    answer:
+"قرآن کریم د اسلام سپېڅلی کتاب دی چې مسلمانان یې د الله تعالی کلام بولي. دا د حضرت محمد ﷺ پر زړه نازل شوی. قرآن کریم ۱۱۴ سورتونه لري. د آیتونو د دقیق شمېر او تفسیر په اړه باید باوري قرآني سرچینو ته مراجعه وشي."
+},
+
+{
+    id: 3,
+    question: "حضرت محمد ﷺ څوک و",
+    keywords: ["محمد", "رسول الله", "پیغمبر", "نبي", "حضرت محمد"],
+    answer:
+"حضرت محمد ﷺ د اسلام وروستی پیغمبر دی. مسلمانان پر هغه ایمان لري او د هغه سنت د خپل ژوند لپاره لارښود ګڼي. هغه په مکه مکرمه کې زېږېدلی او وروسته مدینې منورې ته هجرت کړی."
+},
+
+{
+    id: 4,
+    question: "د اسلام پنځه ارکان کوم دي",
+    keywords: ["پنځه ارکان", "ارکان اسلام", "کلمې", "زکات", "حج", "روژه"],
+    answer:
+"د اسلام پنځه مشهور ارکان دا دي:\n۱. شهادتین ویل.\n۲. لمونځ ادا کول.\n۳. زکات ورکول، کله چې شرایط پوره شي.\n۴. د رمضان روژه نیول.\n۵. د توان په صورت کې حج ادا کول."
+},
+
+{
+    id: 5,
+    question: "ایمان څه شی دی",
+    keywords: ["ایمان", "مومن", "عقیده", "اصول ایمان"],
+    answer:
+"ایمان په اسلام کې پر الله تعالی، د هغه پر ملایکو، کتابونو، رسولانو، د آخرت پر ورځې او د تقدیر پر خیر او شر باور ته ویل کېږي. د ایمان د تفصیلي بیان لپاره د عقیدې باوري کتابونه وګورئ."
+},
+
+{
+    id: 6,
+    question: "الله تعالی څوک دی",
+    keywords: ["الله", "رب", "خالق", "خدای", "الله تعالی"],
+    answer:
+"الله تعالی د اسلام له نظره د ټولو مخلوقاتو خالق او یوازینی معبود دی. مسلمانان باور لري چې هغه یو دی، شریک نه لري او د عبادت وړ یوازې هماغه دی."
+},
+
+{
+    id: 7,
+    question: "سلام څه معنی لري",
+    keywords: ["سلام", "السلام علیکم", "وعلیکم السلام"],
+    answer:
+"وعلیکم السلام ورحمة الله وبرکاته! ښه راغلاست. الله تعالی دې درته خیر او برکت درکړي. څنګه مرسته درسره وکړم؟"
+},
+
+{
+    id: 8,
+    question: "لمونځ څه شی دی",
+    keywords: ["لمونځ", "نماز", "صلاة", "فرض لمونځ"],
+    answer:
+"لمونځ د اسلام له مهمو عبادتونو څخه دی. مسلمانان هره ورځ پنځه وخته فرض لمونځونه ادا کوي: سهار، ماسپښین، مازدیګر، ماښام او ماسخوتن. د لمانځه د شرایطو او طریقې په اړه د خپل مذهب له باوري لارښود سره سم عمل وکړئ."
+},
+
+{
+    id: 9,
+    question: "پنځه وخته لمونځونه کوم دي",
+    keywords: ["پنځه وخته", "د لمونځونو نومونه", "سهار", "ماسپښین", "مازدیګر", "ماښام", "ماسخوتن"],
+    answer:
+"پنځه وخته فرض لمونځونه دا دي:\n۱. د سهار لمونځ.\n۲. د ماسپښین لمونځ.\n۳. د مازدیګر لمونځ.\n۴. د ماښام لمونځ.\n۵. د ماسخوتن لمونځ."
+},
+
+{
+    id: 10,
+    question: "اودس څنګه کیږي",
+    keywords: ["اودس", "اوداسه", "وضو", "اودس طریقه"],
+    answer:
+"د اوداسه عمومي طریقه دا ده:\n۱. د اوداسه نیت وکړئ.\n۲. لاسونه ومینځئ.\n۳. خوله او پوزه ووینځئ.\n۴. مخ ووینځئ.\n۵. لاسونه تر څنګلو پورې ووینځئ.\n۶. د سر مسح وکړئ.\n۷. پښې تر ښنګرو پورې ووینځئ.\n\nد فرضونو، سنتونو او ترتیب په تفصیل کې د فقهي مذهبونو ترمنځ ځینې توپیرونه شته."
+},
+
+{
+    id: 11,
+    question: "روژه څه شی ده",
+    keywords: ["روژه", "صوم", "رمضان", "روژه نیول"],
+    answer:
+"روژه د الله تعالی د عبادت لپاره له سهار صادق څخه تر لمر لوېدو پورې له خوراک، څښاک او نورو روژه ماتوونکو کارونو څخه ځان ساتلو ته ویل کېږي. د ناروغۍ، سفر او نورو ځانګړو حالتونو احکام جلا تفصیل لري."
+},
+
+{
+    id: 12,
+    question: "زکات څه شی دی",
+    keywords: ["زکات", "صدقه واجبه", "مال", "نصاب"],
+    answer:
+"زکات په ځانګړو شرایطو کې د مال یوه ټاکلې برخه مستحقو کسانو ته ورکول دي. د زکات اندازه او شرایط د مال له ډول، نصاب او نورو شرعي شرایطو سره تړاو لري؛ د خپل مال دقیق حساب له باوري عالم سره وکړئ."
+},
+
+{
+    id: 13,
+    question: "حج څه شی دی",
+    keywords: ["حج", "کعبه", "مکه", "حاجي"],
+    answer:
+"حج د اسلام له پنځو ارکانو څخه دی. هغه مسلمان چې د حج مالي او بدني توان ولري، د شرعي شرایطو له مخې پرې حج فرض کېږي. حج په ټاکلو ورځو کې په مکه مکرمه او شاوخوا مقدسو ځایونو کې ادا کېږي."
+},
+
+{
+    id: 14,
+    question: "توبه څه شی ده",
+    keywords: ["توبه", "ګناه", "استغفار", "بښنه غوښتل"],
+    answer:
+"توبه د ګناه پرېښودل، پر تېروتنه پښېمانه کېدل او د بیا نه کولو کلک هوډ کول دي. که د بل انسان حق ضایع شوی وي، د هغه د حق د ادا کولو یا بښنې غوښتلو هڅه هم ضروري ده."
+},
+
+{
+    id: 15,
+    question: "دعا څه شی ده",
+    keywords: ["دعا", "دعاء", "غوښتنه", "الله څخه غوښتل"],
+    answer:
+"دعا له الله تعالی څخه د خیر، مرستې او بښنې غوښتلو عبادت دی. مسلمان کولای شي په خپلو الفاظو دعا وکړي او له قرآن او صحیح حدیثونو څخه ثابتې دعاګانې هم ولولي."
+},
+
+{
+    id: 16,
+    question: "استغفار څه معنی لري",
+    keywords: ["استغفار", "استغفرالله", "بښنه", "ګناه بښل"],
+    answer:
+"استغفار له الله تعالی څخه د ګناهونو د بښنې غوښتلو ته ویل کېږي. د استغفار یوه مشهوره جمله «أستغفر الله» ده، یعنې له الله تعالی څخه بښنه غواړم."
+},
+
+{
+    id: 17,
+    question: "جنت څه شی دی",
+    keywords: ["جنت", "بهشت", "اخرت", "نعمتونه"],
+    answer:
+"جنت د آخرت هغه ځای دی چې قرآن کریم او اسلامي عقیده یې د مؤمنانو د ابدي نعمتونو کور بولي. د جنت د ترلاسه کولو لپاره ایمان، نېک عمل او د الله تعالی رحمت مهم دي."
+},
+
+{
+    id: 18,
+    question: "دوزخ څه شی دی",
+    keywords: ["دوزخ", "جهنم", "عذاب", "آخرت"],
+    answer:
+"دوزخ یا جهنم په اسلامي عقیده کې د آخرت د عذاب ځای دی. قرآن کریم انسانان له کفر، ظلم او ګناهونو څخه منع کوي او توبه، ایمان او نېک عمل ته یې رابولي."
+},
+
+{
+    id: 19,
+    question: "حدیث څه شی دی",
+    keywords: ["حدیث", "احادیث", "سنت", "روایت"],
+    answer:
+"حدیث هغه روایت ته ویل کېږي چې د رسول الله ﷺ خبرې، کړنې، تأیید یا اړوند صفتونه بیانوي. د حدیث د منلو لپاره د هغه سند او د علماوو ارزونه مهمه ده."
+},
+
+{
+    id: 20,
+    question: "سنت څه شی دی",
+    keywords: ["سنت", "د رسول سنت", "نبوي طریقه"],
+    answer:
+"سنت د رسول الله ﷺ د وینا، کړنې او تأیید له لارې معلومې شوې لارښوونې ته ویل کېږي. د سنتو عملي کول د اسلامي ژوند مهمه برخه ده؛ خو د هر حکم درجه باید د باوري علمي سرچینو له مخې وپېژندل شي."
+},
+
+{
+    id: 21,
+    question: "اخلاق څه اهمیت لري",
+    keywords: ["اخلاق", "ښه اخلاق", "بد اخلاق", "کردار"],
+    answer:
+"ښه اخلاق د اسلام مهمه برخه ده. رښتیا ویل، امانت ساتل، له خلکو سره مهرباني، د مور او پلار احترام، د ګاونډي حق او له ظلم څخه ډډه کول د ښو اخلاقو بېلګې دي."
+},
+
+{
+    id: 22,
+    question: "د مور او پلار حقونه څه دي",
+    keywords: ["مور", "پلار", "والدین", "مور او پلار", "والدینو حق"],
+    answer:
+"اسلام د مور او پلار د احترام، خدمت او له هغوی سره د نېک چلند سپارښتنه کوي. خو که د الله تعالی د حکم خلاف کار ته امر وکړي، اطاعت یې نه کېږي؛ بیا هم ورسره باید په مناسبه او درناوي ډکه ژبه چلند وشي."
+},
+
+{
+    id: 23,
+    question: "د قرآن کریم څو سورتونه دي",
+    keywords: ["څو سورتونه", "د سورتونو شمېر", "قرآن سورتونه"],
+    answer:
+"قرآن کریم ۱۱۴ سورتونه لري."
+},
+
+{
+    id: 24,
+    question: "د قرآن کریم لومړی سورت کوم دی",
+    keywords: ["لومړی سورت", "اول سورت", "فاتحه", "سورة الفاتحه"],
+    answer:
+"د قرآن کریم لومړی سورت سورة الفاتحه دی. مسلمانان یې په لمانځه کې لولي."
+},
+
+{
+    id: 25,
+    question: "د قرآن کریم تر ټولو اوږد سورت کوم دی",
+    keywords: ["تر ټولو اوږد سورت", "لوی سورت", "البقره"],
+    answer:
+"د قرآن کریم تر ټولو اوږد سورت سورة البقرة دی."
+},
+
+{
+    id: 26,
+    question: "د قرآن کریم تر ټولو لنډ سورت کوم دی",
+    keywords: ["تر ټولو لنډ سورت", "کوچنی سورت", "الکوثر"],
+    answer:
+"د آیتونو د شمېر له مخې سورة الکوثر د قرآن کریم تر ټولو لنډ سورت دی او درې آیتونه لري."
+},
+
+{
+    id: 27,
+    question: "هجرت څه شی دی",
+    keywords: ["هجرت", "مدینې ته هجرت", "مکه مدینه"],
+    answer:
+"په اسلامي تاریخ کې هجرت په ځانګړي ډول د رسول الله ﷺ او مسلمانانو له مکې مکرمه څخه مدینې منورې ته تګ ته ویل کېږي. هجرت د اسلامي تاریخ یوه مهمه پېښه ده."
+},
+
+{
+    id: 28,
+    question: "مسلمان څوک دی",
+    keywords: ["مسلمان", "مسلمه", "د اسلام پیرو"],
+    answer:
+"مسلمان هغه څوک دی چې اسلام مني او ځان د الله تعالی حکم ته سپاري. د انسان د ایمان، عمل او د نورو په اړه د حکم کولو مسئلې علمي او شرعي تفصیل لري."
+},
+
+{
+    id: 29,
+    question: "د جمعې لمونځ څه دی",
+    keywords: ["جمعه", "د جمعې لمونځ", "جمعې نماز"],
+    answer:
+"د جمعې لمونځ د جمعې په ورځ د ماسپښین د وخت پر مهال په جماعت ادا کېږي او خطبه لري. د چا لپاره فرض دی او د سفر یا نورو عذرونو احکام یې د فقهي شرایطو له مخې ټاکل کېږي."
+},
+
+{
+    id: 30,
+    question: "د اختر لمونځ څه دی",
+    keywords: ["اختر", "د اختر لمونځ", "عید"],
+    answer:
+"د اختر لمونځ د کوچني او لوی اختر په ورځو کې ادا کېږي. د هغه د حکم او طریقې په اړه د فقهي مذهبونو تفصیل ته مراجعه وکړئ."
+},
+
+{
+    id: 31,
+    question: "حلال او حرام څه معنی لري",
+    keywords: ["حلال", "حرام", "جایز", "ناجایز"],
+    answer:
+"حلال هغه څه ته ویل کېږي چې شریعت اجازه ورکړې وي، او حرام هغه څه دي چې شریعت منع کړي وي. د ځانګړو شیانو د حلال یا حرام حکم باید له باوري شرعي دلیل او متخصص عالم څخه معلوم شي."
+},
+
+{
+    id: 32,
+    question: "صدقه څه شی ده",
+    keywords: ["صدقه", "خیرات", "مرسته", "فقیر"],
+    answer:
+"صدقه د الله تعالی د رضا لپاره د مال یا نورو ګټورو شیانو ورکولو ته ویل کېږي. له اړمنو سره مرسته، د خلکو ګټه او ښه چلند هم د خیر کارونه دي."
+},
+
+{
+    id: 33,
+    question: "د الله ذکر څه شی دی",
+    keywords: ["ذکر", "تسبیح", "الحمدلله", "سبحان الله", "الله یادول"],
+    answer:
+"ذکر د الله تعالی یادولو ته ویل کېږي. د بېلګې په توګه: سبحان الله، الحمدلله، الله اکبر او لا إله إلا الله. د ذکر لپاره له صحیح او باوري سرچینو څخه ثابتې دعاګانې او اذکار زده کړئ."
+},
+
+{
+    id: 34,
+    question: "د شپې خوب نه راتلل او دعا",
+    keywords: ["خوب", "د خوب دعا", "ویده کېدل", "شپه"],
+    answer:
+"د ویده کېدو پر مهال د الله تعالی یادول او له ثابتو نبوي اذکارو څخه استفاده کول ښه کار دی. که بې خوبي دوامداره وي او ورځنی ژوند اغېزمنوي، له روغتیايي متخصص سره مشوره وکړئ."
+},
+
+{
+    id: 35,
+    question: "د ښځې او مېړه ترمنځ ښه چلند",
+    keywords: ["ښځه", "مېړه", "واده", "کورنۍ", "زوجین"],
+    answer:
+"اسلام په کورني ژوند کې د ښه چلند، عدالت، احترام، مهربانۍ او د حقونو د مراعاتولو سپارښتنه کوي. د ځانګړو کورنیو او فقهي مسئلو لپاره د باوري عالم یا اړوند متخصص مشوره ګټوره ده."
+},
+
+{
+    id: 36,
+    question: "د قرآن کریم تلاوت",
+    keywords: ["تلاوت", "قرآن لوستل", "تجوید", "قرآن زده کړه"],
+    answer:
+"د قرآن کریم تلاوت په ارامۍ، ادب او د سم تلفظ د زده کړې په هڅه وکړئ. که تجوید زده کوئ، له باوري استاد یا صحیح تعلیمي سرچینې څخه استفاده وکړئ."
+},
+
+{
+    id: 37,
+    question: "د رسول الله ﷺ پر درود ویل",
+    keywords: ["درود", "صلوات", "اللهم صل", "محمد ﷺ"],
+    answer:
+"پر رسول الله ﷺ درود ویل د مسلمانانو له غوره عبادتونو څخه دي. د درود یوه مشهوره بڼه دا ده: «اللهم صل على محمد وعلى آل محمد». د بشپړ درود ابراهیمي متن د لمانځه په کتابونو کې موندل کېږي."
+},
+
+{
+    id: 38,
+    question: "الله دې خیر درکړي",
+    keywords: ["مننه", "تشکر", "جزاک الله", "خیر", "ډیره مننه"],
+    answer:
+"هر کله! الله تعالی دې درته خیر، برکت او بریا درکړي. که بله پوښتنه لرې، ویې لیکه."
+},
+
+{
+    id: 39,
+    question: "ته څوک یې",
+    keywords: ["ته څوک یې", "ستا نوم", "څوک یې", "معرفي"],
+    answer:
+"زه د اسلامي پښتو AI په نوم یو محلي پوښتنو او ځوابونو سیستم یم. د دې نسخې ځوابونه د مخکې ثبت شوو معلوماتو پر بنسټ جوړېږي؛ نو زه د هرې پوښتنې د دقیق ځواب تضمین نه شم کولای."
+},
+
+{
+    id: 40,
+    question: "د الله تعالی د رحمت په اړه",
+    keywords: ["رحمت", "رحمن", "رحیم", "د الله مهرباني"],
+    answer:
+"په اسلامي عقیده کې د الله تعالی رحمت ډېر پراخ دی. قرآن کریم انسانان د الله له رحمت څخه د ناامېدۍ پر ځای توبې، نېک عمل او د هغه د بښنې غوښتلو ته رابولي."
+},
+
+{
+    id: 41,
+    question: "د ایمان څو رکنونه دي",
+    keywords: ["د ایمان رکنونه", "شپږ رکنونه", "اصول ایمان", "ایمان څو برخې"],
+    answer: "د ایمان مشهور شپږ رکنونه دا دي: پر الله تعالی، ملایکو، اسماني کتابونو، رسولانو، د آخرت پر ورځې او د الله تعالی پر تقدیر ایمان لرل."
+},
+
+{
+    id: 42,
+    question: "ملایکې څوک دي",
+    keywords: ["ملایکې", "فرښتې", "ملائکه", "د الله ملایکې"],
+    answer: "ملایکې د الله تعالی مخلوقات دي چې د هغه فرمانونه مني او سرغړونه یې نه کوي. مسلمانان پر ملایکو ایمان لري، لکه جبرائیل علیه السلام."
+},
+
+{
+    id: 43,
+    question: "جبرائیل علیه السلام څوک و",
+    keywords: ["جبرائیل", "جبریل", "روح الامین", "وحې راوړونکی"],
+    answer: "جبرائیل علیه السلام له سترو ملایکو څخه دی. په اسلامي عقیده کې هغه د الله تعالی په اجازه پیغمبرانو ته د وحې رسولو دنده لرله."
+},
+
+{
+    id: 44,
+    question: "د اسماني کتابونو پر ایمان څه معنی لري",
+    keywords: ["اسماني کتابونه", "کتابونو ایمان", "تورات", "انجیل", "زبور"],
+    answer: "پر اسماني کتابونو ایمان د ایمان له رکنونو څخه دی. په قرآن کریم کې د تورات، زبور، انجیل او قرآن یادونه شوې ده. مسلمانان قرآن کریم د الله تعالی وروستی نازل شوی کتاب ګڼي."
+},
+
+{
+    id: 45,
+    question: "وحې څه شی ده",
+    keywords: ["وحې", "وحي", "د الله پیغام", "وحې معنی"],
+    answer: "وحې هغه الهي لارښوونه ده چې الله تعالی یې خپلو پیغمبرانو ته د خپلې ارادې مطابق رسوي. قرآن کریم د رسول الله ﷺ پر زړه د وحې له لارې نازل شوی."
+},
+
+{
+    id: 46,
+    question: "د آخرت پر ورځ ایمان څه معنی لري",
+    keywords: ["آخرت", "قیامت", "د آخرت ورځ", "قیامت ایمان"],
+    answer: "پر آخرت ایمان د دې باور دی چې د دنیا ژوند پای لري او انسانان به د الله تعالی په وړاندې د خپلو اعمالو حساب ورکوي. مسلمانان پر بیا ژوندي کېدو، حساب او جزا ایمان لري."
+},
+
+{
+    id: 47,
+    question: "تقدیر څه شی دی",
+    keywords: ["تقدیر", "قضا او قدر", "د الله تقدیر", "تقدیر معنی"],
+    answer: "تقدیر په اسلامي عقیده کې د الله تعالی پر علم او ټاکنې ایمان ته ویل کېږي. د تقدیر ایمان د انسان د مسؤلیت او اختیار د انکار معنی نه لري؛ د دې موضوع تفصیل د عقیدې په کتابونو کې بیان شوی."
+},
+
+{
+    id: 48,
+    question: "شرک څه شی دی",
+    keywords: ["شرک", "مشرک", "الله سره شریک", "شرک تعریف"],
+    answer: "شرک دا دی چې د الله تعالی په ځانګړو حقونو، عبادت یا الوهيت کې بل څوک ورسره شریک وګڼل شي. اسلام له شرک څخه منع کوي. د ځانګړو اعمالو شرعي حکم باید د پوهې او احتیاط له مخې وڅېړل شي."
+},
+
+{
+    id: 49,
+    question: "توحید څه شی دی",
+    keywords: ["توحید", "الله یو دی", "وحدانیت", "د الله یووالی"],
+    answer: "توحید د الله تعالی پر یووالي باور او یوازې د هغه عبادت کولو ته ویل کېږي. مسلمانان باور لري چې الله تعالی شریک نه لري او د عبادت وړ یوازې هماغه دی."
+},
+
+{
+    id: 50,
+    question: "نفاق څه شی دی",
+    keywords: ["نفاق", "منافق", "دوه مخي", "نفاق معنی"],
+    answer: "نفاق په عمومي معنا کې د ظاهر او باطن ترمنځ مخالفت ته ویل کېږي. په اسلامي عقیده کې د اعتقادي نفاق او عملي نفاق ترمنځ توپیر شته. د خلکو په اړه د داسې حکم کولو لپاره باید بې‌احتیاطي ونه شي."
+},
+
+{
+    id: 51,
+    question: "ریا څه شی ده",
+    keywords: ["ریا", "ځان ښودنه", "عبادت ریا", "د خلکو لپاره عبادت"],
+    answer: "ریا هغه وخت وي چې انسان خپل عبادت یا نېک عمل د خلکو د ستاینې او شهرت لپاره ښکاره کړي. مسلمان باید خپل عبادت د الله تعالی د رضا لپاره وکړي."
+},
+
+{
+    id: 52,
+    question: "اخلاص څه شی دی",
+    keywords: ["اخلاص", "پاک نیت", "د الله رضا", "اخلاص معنی"],
+    answer: "اخلاص دا دی چې انسان خپل عبادت او نېک عمل د الله تعالی د رضا لپاره ترسره کړي، نه یوازې د خلکو د ستاینې او شهرت لپاره."
+},
+
+{
+    id: 53,
+    question: "تقوا څه معنی لري",
+    keywords: ["تقوا", "متقي", "له ګناه ځان ساتل", "تقوا تعریف"],
+    answer: "تقوا د الله تعالی د فرمانونو مراعاتول او له ګناهونو څخه ځان ساتلو ته ویل کېږي. متقي انسان هڅه کوي چې په پټه او ښکاره خپل عملونه د الله تعالی له لارښوونو سره برابر کړي."
+},
+
+{
+    id: 54,
+    question: "صبر څه شی دی",
+    keywords: ["صبر", "صابر", "زغم", "صبر فضیلت"],
+    answer: "صبر د ستونزو پر مهال زغم، د نېکو کارونو دوام او له ګناه څخه د ځان ساتلو ته ویل کېږي. اسلام مسلمانان د صبر او له الله تعالی څخه د مرستې غوښتلو ته رابولي."
+},
+
+{
+    id: 55,
+    question: "شکر څه شی دی",
+    keywords: ["شکر", "شکر ایستل", "الحمدلله", "د نعمتونو شکر"],
+    answer: "شکر د الله تعالی د نعمتونو منل او د هغه ستاینه کول دي. شکر یوازې په ژبه نه وي؛ د نعمتونو په سمه توګه کارول او د الله تعالی د حکمونو مراعاتول هم د شکر برخه ده."
+},
+
+{
+    id: 56,
+    question: "توکل څه شی دی",
+    keywords: ["توکل", "پر الله باور", "الله ته سپارل", "توکل معنی"],
+    answer: "توکل پر الله تعالی د باور کولو او په پایلو کې پر هغه تکیه کولو ته ویل کېږي. توکل دا نه دی چې انسان هڅه پرېږدي؛ بلکې باید مشروعې وسیلې وکاروي او پایله الله تعالی ته وسپاري."
+},
+
+{
+    id: 57,
+    question: "د الله تعالی د نومونو زده کړه",
+    keywords: ["اسماء الحسنی", "د الله نومونه", "الله ښکلي نومونه", "۹۹ نومونه"],
+    answer: "اسماء الحسنی د الله تعالی ښکلي نومونه دي چې په قرآن کریم او صحیح سنتو کې راغلي دي. مسلمانان د دغو نومونو په زده کړه د الله تعالی د صفاتو او رحمت په اړه پوهه ترلاسه کوي."
+},
+
+{
+    id: 58,
+    question: "د الله تعالی نوم الرحمن څه معنی لري",
+    keywords: ["الرحمن", "رحمن معنی", "د الله نوم الرحمن"],
+    answer: "الرحمن د الله تعالی له ښکلو نومونو څخه دی او د هغه پر پراخ رحمت دلالت کوي. مسلمانان د الله تعالی له رحمت څخه هیله لري او له هغه څخه د خیر غوښتنه کوي."
+},
+
+{
+    id: 59,
+    question: "د الله تعالی نوم الغفور څه معنی لري",
+    keywords: ["الغفور", "غفور معنی", "د الله بښنه"],
+    answer: "الغفور د الله تعالی له ښکلو نومونو څخه دی او د هغه د پراخې بښنې معنا لري. انسان باید له ګناه وروسته رښتینې توبه وباسي او د الله تعالی له بښنې څخه هیله ولري."
+},
+
+{
+    id: 60,
+    question: "د الله تعالی نوم الرزاق څه معنی لري",
+    keywords: ["الرزاق", "رزاق معنی", "روزي ورکوونکی", "رزق"],
+    answer: "الرزاق د الله تعالی له ښکلو نومونو څخه دی، یعنې هغه ذات چې خپلو مخلوقاتو ته روزي ورکوي. مسلمان باید حلاله روزي وغواړي، هڅه وکړي او د الله تعالی شکر ادا کړي."
+},
+
+{
+    id: 61,
+    question: "د قرآن کریم لومړی نازل شوی پیغام کوم و",
+    keywords: ["لومړی وحې", "اقرأ", "لومړی نازل شوی آیت", "د وحې پیل"],
+    answer: "د صحیح بخاري د وحې د پیل په روایت کې راغلي چې د قرآن کریم د نزول پیل د سورة العلق د لومړنیو آیتونو په نازل کېدو سره وشو. د دغو آیتونو پیل «اقرأ باسم ربك الذي خلق» دی."
+},
+
+{
+    id: 62,
+    question: "سورة الفاتحه ولې مهمه ده",
+    keywords: ["فاتحه اهمیت", "سورة الفاتحه", "الحمدلله رب العالمین"],
+    answer: "سورة الفاتحه د قرآن کریم لومړی سورت دی. په دې سورت کې د الله تعالی ستاینه، د هغه د رحمت یادونه او د سمې لارې غوښتنه بیان شوې ده. مسلمانان یې په لمانځه کې لولي."
+},
+
+{
+    id: 63,
+    question: "آیت الکرسي په کوم سورت کې دی",
+    keywords: ["آیت الکرسي", "البقره ۲۵۵", "د کرسي آیت", "آیت الکرسي ځای"],
+    answer: "آیت الکرسي د قرآن کریم د سورة البقرة په ۲۵۵م آیت کې دی. په دې آیت کې د الله تعالی د یووالي، علم، قدرت او واک یادونه شوې ده."
+},
+
+{
+    id: 64,
+    question: "سورة الاخلاص څه بیانوي",
+    keywords: ["سورة الاخلاص", "قل هو الله احد", "اخلاص سورت"],
+    answer: "سورة الاخلاص د الله تعالی د یووالي او بې‌ساري والي په اړه ده. دا سورت بیانوي چې الله تعالی یو دی، بې‌نیازه دی او نه یې څوک زېږولي او نه دی زېږول شوی."
+},
+
+{
+    id: 65,
+    question: "سورة الفلق د څه لپاره لوستل کېږي",
+    keywords: ["سورة الفلق", "قل اعوذ برب الفلق", "له شره پناه"],
+    answer: "سورة الفلق د قرآن کریم له وروستیو سورتونو څخه دی. په دې سورت کې انسان له الله تعالی څخه د مخلوقاتو د شر، تیارې او حسد له شره پناه غواړي."
+},
+
+{
+    id: 66,
+    question: "سورة الناس څه پیغام لري",
+    keywords: ["سورة الناس", "قل اعوذ برب الناس", "وسوسه", "شیطان وسوسه"],
+    answer: "سورة الناس انسان ته ورښيي چې د خلکو له رب، پاچا او معبود الله تعالی څخه د پټو وسوسو او د وسوسه اچوونکي له شره پناه وغواړي."
+},
+
+{
+    id: 67,
+    question: "د قرآن کریم تفسیر څه شی دی",
+    keywords: ["تفسیر", "د قرآن تفسیر", "آیت تشریح", "مفسر"],
+    answer: "تفسیر د قرآن کریم د آیتونو د معنا، پیغام او اړوند وضاحت بیانولو ته ویل کېږي. د قرآن د سمې پوهې لپاره د باوري مفسرینو کتابونه او د عربي ژبې اصول مهم دي."
+},
+
+{
+    id: 68,
+    question: "تجوید څه شی دی",
+    keywords: ["تجوید", "د قرآن تلفظ", "د تلاوت اصول", "مخارج"],
+    answer: "تجوید د قرآن کریم د تورو له سمو مخرجونو او اړوندو قواعدو سره د تلاوت زده کړې علم دی. د تجوید زده کړه د قرآن د تلاوت د تلفظ په ښه کولو کې مرسته کوي."
+},
+
+{
+    id: 69,
+    question: "مکي او مدني سورتونه څه توپیر لري",
+    keywords: ["مکي سورتونه", "مدني سورتونه", "مکي مدني توپیر"],
+    answer: "د قرآن کریم په عام علمي وېش کې مکي آیتونه او سورتونه هغه دي چې د هجرت څخه مخکې نازل شوي، او مدني هغه دي چې له هجرت وروسته نازل شوي دي. دا وېش یوازې د مکې او مدینې د جغرافیایي ځای له مخې نه دی."
+},
+
+{
+    id: 70,
+    question: "د قرآن کریم د نزول موخه څه وه",
+    keywords: ["قرآن نزول", "د قرآن موخه", "قرآن لارښوونه"],
+    answer: "قرآن کریم د انسانانو لپاره د الهي لارښوونې کتاب دی. پکې د ایمان، عبادت، اخلاقو، عدالت، د خلکو د حقونو او د آخرت د ژوند په اړه لارښوونې شته."
+},
+
+{
+    id: 71,
+    question: "د رسول الله ﷺ پلار څوک و",
+    keywords: ["د محمد پلار", "عبدالله", "د رسول الله پلار"],
+    answer: "د رسول الله ﷺ پلار عبدالله بن عبدالمطلب نومېده. د سیرت په مشهور روایتونو کې راغلي چې هغه د رسول الله ﷺ له زېږېدو مخکې وفات شوی و."
+},
+
+{
+    id: 72,
+    question: "د رسول الله ﷺ مور څوک وه",
+    keywords: ["د محمد مور", "آمنه", "آمنه بنت وهب"],
+    answer: "د رسول الله ﷺ مور آمنه بنت وهب وه. د اسلامي سیرت د روایتونو له مخې هغې د رسول الله ﷺ په ماشومتوب کې وفات وکړ."
+},
+
+{
+    id: 73,
+    question: "د رسول الله ﷺ نیکه څوک و",
+    keywords: ["د محمد نیکه", "عبدالمطلب", "نیکه رسول الله"],
+    answer: "د رسول الله ﷺ نیکه عبدالمطلب نومېده. د هغه له وفات وروسته د رسول الله ﷺ پالنه د هغه تره ابو طالب پر غاړه واخیسته."
+},
+
+{
+    id: 74,
+    question: "د رسول الله ﷺ لومړۍ مېرمن څوک وه",
+    keywords: ["لومړۍ مېرمن", "خدیجه", "خدیجه رضی الله عنها"],
+    answer: "د رسول الله ﷺ لومړۍ مېرمن خدیجه بنت خویلد رضی الله عنها وه. هغې د اسلام په لومړیو کلونو کې د رسول الله ﷺ ملاتړ وکړ."
+},
+
+{
+    id: 75,
+    question: "د رسول الله ﷺ د زېږېدو ځای کوم دی",
+    keywords: ["د محمد د زېږېدو ځای", "مکه", "مکه مکرمه", "مولد النبي"],
+    answer: "حضرت محمد ﷺ په مکه مکرمه کې زېږېدلی و. د هغه د زېږېدو د دقیقې ورځې په اړه د سیرت په روایتونو کې اختلاف شته."
+},
+
+{
+    id: 76,
+    question: "رسول الله ﷺ مدینې ته ولې هجرت وکړ",
+    keywords: ["هجرت ولې", "مدینې هجرت", "د مسلمانانو هجرت"],
+    answer: "رسول الله ﷺ او مسلمانانو د مکې د سختو ځورونو او د دین د آزاد عبادت د ستونزو په شرایطو کې مدینې ته هجرت وکړ. هلته د اسلامي ټولنې د جوړېدو لپاره نوی پړاو پیل شو."
+},
+
+{
+    id: 77,
+    question: "د بدر غزا څه وه",
+    keywords: ["بدر", "غزوه بدر", "د بدر جګړه", "اسلامي تاریخ بدر"],
+    answer: "د بدر غزا د اسلامي تاریخ یوه مهمه جګړه وه چې د هجرت په دویم کال د مسلمانانو او د مکې د قریشو ترمنځ وشوه. د دې پېښې تفصیل د سیرت او اسلامي تاریخ په باوري کتابونو کې موندل کېږي."
+},
+
+{
+    id: 78,
+    question: "د احد غزا څه وه",
+    keywords: ["احد", "غزوه احد", "د احد جګړه"],
+    answer: "د احد غزا د هجرت په درېیم کال د مسلمانانو او د مکې د قریشو ترمنځ وشوه. دا پېښه د اطاعت، صبر او د جګړې د ستونزو په اړه د سیرت یوه مهمه برخه ده."
+},
+
+{
+    id: 79,
+    question: "د خندق غزا څه وه",
+    keywords: ["خندق", "غزوه خندق", "احزاب", "د خندق جګړه"],
+    answer: "د خندق غزا چې د احزاب غزا په نوم هم یادېږي، د مدینې د مسلمانانو او د هغوی د مخالفو ډلو ترمنځ پېښه شوه. د مدینې د دفاع لپاره د خندق د کیندلو تدبیر وکارول شو."
+},
+
+{
+    id: 80,
+    question: "د حدیبیې تړون څه و",
+    keywords: ["حدیبیه", "صلح حدیبیه", "حدیبیې تړون"],
+    answer: "د حدیبیې تړون د رسول الله ﷺ او د مکې د قریشو ترمنځ د هجرت په شپږم کال وشو. دا تړون د اسلامي تاریخ مهمه پېښه ده او وروسته یې د دعوت او اړیکو لپاره زمینه برابره کړه."
+},
+
+{
+    id: 81,
+    question: "فتح مکه څه وه",
+    keywords: ["فتح مکه", "مکه فتح", "د مکې فتح"],
+    answer: "فتح مکه د هجرت په اتم کال وشوه، کله چې رسول الله ﷺ او مسلمانان مکې ته ننوتل. دا پېښه د اسلامي تاریخ له مهمو پېښو څخه ده."
+},
+
+{
+    id: 82,
+    question: "د رسول الله ﷺ هجرت په کوم کال و",
+    keywords: ["د هجرت کال", "هجرت تاریخ", "هجري کال پیل"],
+    answer: "د رسول الله ﷺ له مکې څخه مدینې ته هجرت په میلادي ۶۲۲ کال کې وشو. هجري قمري کلیزه د همدې هجرت له پېښې سره تړلې ده."
+},
+
+{
+    id: 83,
+    question: "د رسول الله ﷺ د نبوت پیل څه وخت و",
+    keywords: ["د نبوت پیل", "لومړۍ وحې وخت", "نبوت پیل"],
+    answer: "د سیرت د مشهور روایت له مخې، رسول الله ﷺ شاوخوا د څلوېښت کلنۍ په عمر کې د حرا په غار کې لومړۍ وحې ترلاسه کړه. د وحې د پیل تفصیل په صحیح حدیثونو او د سیرت په کتابونو کې بیان شوی."
+},
+
+{
+    id: 84,
+    question: "د رسول الله ﷺ د ژوند مطالعه ولې مهمه ده",
+    keywords: ["سیرت النبي", "د رسول ژوند", "د سیرت اهمیت"],
+    answer: "د رسول الله ﷺ د ژوند مطالعه مسلمانانو ته د هغه د دعوت، صبر، اخلاقو، عدالت او له خلکو سره د چلند په اړه پوهه ورکوي. د سیرت د زده کړې لپاره باوري کتابونه غوره کړئ."
+},
+
+{
+    id: 85,
+    question: "د رسول الله ﷺ اخلاق څنګه وو",
+    keywords: ["د محمد اخلاق", "نبوي اخلاق", "د رسول چلند"],
+    answer: "په قرآن کریم او صحیح روایتونو کې د رسول الله ﷺ د ښو اخلاقو، نرم چلند، رښتینولۍ، امانتدارۍ او رحمت یادونه شوې ده. مسلمانان هڅه کوي چې په خپل ژوند کې د هغه له ښو اخلاقو پیروي وکړي."
+},
+
+{
+    id: 86,
+    question: "د حضرت ابوبکر رضی الله عنه په اړه معلومات",
+    keywords: ["ابوبکر", "صدیق", "لومړی خلیفه", "ابوبکر صدیق"],
+    answer: "حضرت ابوبکر صدیق رضی الله عنه د رسول الله ﷺ له نږدې ملګرو څخه و او د رسول الله ﷺ له وفات وروسته د مسلمانانو لومړی خلیفه شو. هغه د اسلامي تاریخ په لومړیو کلونو کې مهم رول درلود."
+},
+
+{
+    id: 87,
+    question: "حضرت عمر رضی الله عنه څوک و",
+    keywords: ["عمر فاروق", "حضرت عمر", "دویم خلیفه"],
+    answer: "حضرت عمر بن الخطاب رضی الله عنه د مسلمانانو دویم خلیفه و. په اسلامي تاریخ کې د عدالت، ادارې او د اسلامي دولت د پراختیا په اړه د هغه د دورې یادونه کېږي."
+},
+
+{
+    id: 88,
+    question: "حضرت عثمان رضی الله عنه څوک و",
+    keywords: ["عثمان", "عثمان بن عفان", "درېیم خلیفه"],
+    answer: "حضرت عثمان بن عفان رضی الله عنه د مسلمانانو درېیم خلیفه و. د قرآن کریم د مصحفونو د یو شان لیکدود د خپرولو هڅې د هغه د خلافت له مهمو تاریخي پېښو څخه ګڼل کېږي."
+},
+
+{
+    id: 89,
+    question: "حضرت علي رضی الله عنه څوک و",
+    keywords: ["علي", "علي بن ابي طالب", "څلورم خلیفه"],
+    answer: "حضرت علي بن ابي طالب رضی الله عنه د رسول الله ﷺ د تره زوی او زوم و او د مسلمانانو څلورم راشد خلیفه ګڼل کېږي. هغه د اسلامي علم او تاریخ له مهمو شخصیتونو څخه دی."
+},
+
+{
+    id: 90,
+    question: "خلفای راشدین څوک دي",
+    keywords: ["خلفای راشدین", "څلور خلیفه", "راشدین"],
+    answer: "خلفای راشدین په مشهور اسلامي اصطلاح کې حضرت ابوبکر، حضرت عمر، حضرت عثمان او حضرت علي رضی الله عنهم ته ویل کېږي. دوی د رسول الله ﷺ له وفات وروسته د مسلمانانو مشران وو."
+},
+
+{
+    id: 91,
+    question: "د حضرت نوح علیه السلام کیسه څه ده",
+    keywords: ["نوح", "حضرت نوح", "د نوح کیسه", "کښتۍ"],
+    answer: "حضرت نوح علیه السلام د الله تعالی له پیغمبرانو څخه و. قرآن کریم بیانوي چې هغه خپل قوم د الله تعالی عبادت ته راوباله او د اوږدې مودې دعوت یې وکړ. د طوفان او کښتۍ کیسه یې په سورة هود او نورو سورتونو کې راغلې ده."
+},
+
+{
+    id: 92,
+    question: "د حضرت ابراهیم علیه السلام کیسه څه ده",
+    keywords: ["ابراهیم", "حضرت ابراهیم", "د ابراهیم کیسه", "کعبه"],
+    answer: "حضرت ابراهیم علیه السلام د الله تعالی له سترو پیغمبرانو څخه و. قرآن کریم د هغه د توحید دعوت، د بتانو د عبادت مخالفت او د حضرت اسماعیل علیه السلام سره د کعبې د بنسټونو د پورته کولو یادونه کوي."
+},
+
+{
+    id: 93,
+    question: "د حضرت اسماعیل علیه السلام په اړه معلومات",
+    keywords: ["اسماعیل", "حضرت اسماعیل", "د ابراهیم زوی"],
+    answer: "حضرت اسماعیل علیه السلام د حضرت ابراهیم علیه السلام زوی او د الله تعالی پیغمبر و. قرآن کریم د هغه د صبر، وفادارۍ او د کعبې د بنسټونو په پورته کولو کې د خپل پلار سره د مرستې یادونه کوي."
+},
+
+{
+    id: 94,
+    question: "د حضرت یوسف علیه السلام کیسه څه ده",
+    keywords: ["یوسف", "حضرت یوسف", "سورة یوسف", "د یوسف کیسه"],
+    answer: "د حضرت یوسف علیه السلام کیسه په سورة یوسف کې په تفصیل بیان شوې ده. په دې کیسه کې د حسد، ستونزو، صبر، پاک لمنۍ، بښنې او د الله تعالی پر تدبیر د باور درسونه شته."
+},
+
+{
+    id: 95,
+    question: "د حضرت موسی علیه السلام په اړه معلومات",
+    keywords: ["موسی", "حضرت موسی", "فرعون", "بني اسرائیل"],
+    answer: "حضرت موسی علیه السلام د الله تعالی له پیغمبرانو څخه و. قرآن کریم د فرعون پر وړاندې د هغه د دعوت، د بني اسرائیلو د خلاصون او د الله تعالی د مرستې په اړه معلومات بیانوي."
+},
+
+{
+    id: 96,
+    question: "د حضرت عیسی علیه السلام په اړه معلومات",
+    keywords: ["عیسی", "حضرت عیسی", "مریم", "انجیل"],
+    answer: "حضرت عیسی علیه السلام د الله تعالی پیغمبر دی او په قرآن کریم کې یې یادونه شوې ده. مسلمانان باور لري چې هغه د حضرت مریم رضی الله عنها زوی دی او د الله تعالی په اجازه یې معجزې ترسره کړې."
+},
+
+{
+    id: 97,
+    question: "حضرت آدم علیه السلام څوک و",
+    keywords: ["آدم", "حضرت آدم", "لومړی انسان", "آدم علیه السلام"],
+    answer: "په اسلامي عقیده کې حضرت آدم علیه السلام د انسانانو لومړنی انسان او د الله تعالی پیغمبر و. قرآن کریم د هغه د پیدا کېدو، د ملایکو د سجود او د توبې د کیسې یادونه کوي."
+},
+
+{
+    id: 98,
+    question: "د حضرت ایوب علیه السلام کیسه څه ده",
+    keywords: ["ایوب", "حضرت ایوب", "صبر ایوب", "د ایوب کیسه"],
+    answer: "حضرت ایوب علیه السلام د الله تعالی پیغمبر و. قرآن کریم د هغه د سختې ازموینې، صبر او د الله تعالی د رحمت له لارې د ستونزو د لرې کېدو یادونه کوي."
+},
+
+{
+    id: 99,
+    question: "د حضرت یونس علیه السلام کیسه څه ده",
+    keywords: ["یونس", "حضرت یونس", "د کب کیسه", "ذوالنون"],
+    answer: "حضرت یونس علیه السلام د الله تعالی پیغمبر و. قرآن کریم د هغه د قوم، د کب په نس کې د هغه د دعا او د الله تعالی د ژغورنې یادونه کوي. د هغه له دعا سره تړلی مشهور قرآني ذکر په سورة الانبیاء کې راغلی دی."
+},
+
+{
+    id: 100,
+    question: "د حضرت سلیمان علیه السلام په اړه معلومات",
+    keywords: ["سلیمان", "حضرت سلیمان", "ملکه سبا", "د سلیمان کیسه"],
+    answer: "حضرت سلیمان علیه السلام د الله تعالی پیغمبر او پاچا و. قرآن کریم د هغه د ځانګړو نعمتونو، حکمت، د مرغانو د ژبې د پوهېدو او د سبا د ملکې د کیسې یادونه کوي."
+},
+
+{
+    id: 101,
+    question: "د اوداسه ماتونکي څه دي",
+    keywords: ["اودس ماتول", "اودس ماتونکي", "وضو ماتونکي", "اودس باطل"],
+    answer: "د اوداسه ماتونکي د فقهي مذهب له مخې په ځینو جزئیاتو کې توپیر لري. په عمومي ډول د بول او غایطه موادو وتل د اوداسه له ماتونکو څخه دي. د وینې، خوب او نورو حالتونو په اړه د خپل فقهي مذهب باوري لارښود وګورئ."
+},
+
+{
+    id: 102,
+    question: "تیمم څه شی دی",
+    keywords: ["تیمم", "اودس پرته", "د تیمم طریقه", "پاکوالی"],
+    answer: "تیمم په ځانګړو شرعي شرایطو کې د اوبو د نه شتون یا د اوبو د کارولو د زیان په صورت کې د پاکې خاورې یا د ځمکې له جنس څخه په ټاکلې طریقه د پاکوالي بدیل دی. د هغه دقیق شرایط او طریقه د فقهي مذهب له مخې زده کړئ."
+},
+
+{
+    id: 103,
+    question: "غسل څه شی دی",
+    keywords: ["غسل", "غسل جنابت", "شرعي غسل", "د غسل طریقه"],
+    answer: "غسل د ټول بدن د شرعي طریقې مطابق مینځلو ته ویل کېږي. په ځینو حالتونو کې غسل واجبېږي. د غسل د فرضونو او سنتونو تفصیل د فقهي مذهبونو په کتابونو کې بیان شوی."
+},
+
+{
+    id: 104,
+    question: "د لمانځه شرطونه څه دي",
+    keywords: ["د لمانځه شرطونه", "شرطونه نماز", "طهارت", "قبله"],
+    answer: "د لمانځه له مهمو شرطونو څخه د بدن، جامو او ځای پاکوالی، د لمانځه د وخت داخلېدل، د عورت پټول او قبلې ته مخ کول دي. د نیت او نورو شرطونو فقهي تفصیل له باوري لارښود څخه زده کړئ."
+},
+
+{
+    id: 105,
+    question: "قبله څه شی ده",
+    keywords: ["قبله", "کعبه", "قبله موندل", "قبلې لوری"],
+    answer: "قبله هغه لوری دی چې مسلمانان د لمانځه پر مهال ورته مخ کوي. د مسلمانانو قبله په مکه مکرمه کې کعبه ده. د لیرې ځایونو لپاره د قبلې د لوري معلومولو معتبره وسیله کارول کېدای شي."
+},
+
+{
+    id: 106,
+    question: "د اذان معنی څه ده",
+    keywords: ["اذان", "د اذان معنی", "مؤذن", "اذان ولې کېږي"],
+    answer: "اذان د لمانځه د وخت د اعلان او مسلمانانو د لمانځه بلنې ته ویل کېږي. د اذان الفاظ د الله تعالی لویوالی، د هغه یووالی او د رسول الله ﷺ رسالت بیانوي."
+},
+
+{
+    id: 107,
+    question: "اقامت څه شی دی",
+    keywords: ["اقامت", "د لمانځه اقامت", "اذان او اقامت توپیر"],
+    answer: "اقامت هغه اعلان دی چې د فرض لمانځه د جماعت له پیل څخه مخکې ویل کېږي. د اقامت الفاظ او د هغه د ویلو طریقه د اسلامي فقهي لارښوونو له مخې زده کېږي."
+},
+
+{
+    id: 108,
+    question: "د لمانځه جماعت څه ګټه لري",
+    keywords: ["جماعت", "په جماعت لمونځ", "د جماعت فضیلت"],
+    answer: "په جماعت لمونځ د مسلمانانو د یووالي، ورورولۍ او د عبادت د منظم ادا کولو سبب کېږي. د جماعت د فضیلت په اړه صحیح احادیث راغلي دي."
+},
+
+{
+    id: 109,
+    question: "د مسافر لمونځ څه ډول دی",
+    keywords: ["مسافر لمونځ", "قصر لمونځ", "د سفر نماز", "قصر"],
+    answer: "په سفر کې د څلور رکعتي فرض لمونځونو د قصر کولو ځانګړي شرعي احکام شته. د سفر فاصله، موده او نور شرایط د فقهي مذهب له مخې توپیر کولی شي؛ د خپل مذهب له باوري عالم څخه یې زده کړئ."
+},
+
+{
+    id: 110,
+    question: "د سهوې سجده څه ده",
+    keywords: ["سجده سهو", "د سهوې سجده", "په لمانځه کې تېروتنه"],
+    answer: "د سهوې سجده په لمانځه کې د ځینو تېروتنو د جبران لپاره ترسره کېږي. دا چې په کوم حالت کې واجبېږي او څنګه ادا کېږي، د فقهي مذهب له مخې تفصیل لري."
+},
+
+{
+    id: 111,
+    question: "د تراویح لمونځ څه دی",
+    keywords: ["تراویح", "د رمضان لمونځ", "د تراویح حکم"],
+    answer: "د تراویح لمونځ د رمضان په شپو کې ادا کېدونکی نفلي لمونځ دی. مسلمانان یې عموماً د شپې له عشاء وروسته ادا کوي. د رکعتونو او جماعت په اړه د فقهي مذهبونو تفصیل شته."
+},
+
+{
+    id: 112,
+    question: "تهجد لمونځ څه شی دی",
+    keywords: ["تهجد", "د شپې لمونځ", "قیام اللیل", "نفلي لمونځ"],
+    answer: "تهجد د شپې له نفلي لمونځونو څخه دی. مسلمان کولای شي د شپې په مناسب وخت کې لمونځ وکړي، دعا وغواړي او د الله تعالی یاد وکړي. د وخت او طریقې تفصیل په فقهي کتابونو کې موندل کېږي."
+},
+
+{
+    id: 113,
+    question: "وتر لمونځ څه دی",
+    keywords: ["وتر", "د وتر لمونځ", "وتر رکعتونه"],
+    answer: "وتر د شپې له لمانځه سره تړلی ځانګړی لمونځ دی. د هغه د حکم، رکعتونو او طریقې په اړه د فقهي مذهبونو ترمنځ توپیر شته؛ د خپل مذهب لارښود تعقیب کړئ."
+},
+
+{
+    id: 114,
+    question: "د جمعې د ورځې اهمیت څه دی",
+    keywords: ["جمعه اهمیت", "د جمعې ورځ", "جمعه فضیلت"],
+    answer: "جمعه د مسلمانانو لپاره یوه مهمه ورځ ده. په دې ورځ د جمعې لمونځ، خطبه، دعا، ذکر او د رسول الله ﷺ پر درود ویلو ته ځانګړې پاملرنه کېږي."
+},
+
+{
+    id: 115,
+    question: "د لمانځه په وخت کې خبرې کول",
+    keywords: ["په لمانځه کې خبرې", "خبرې کول نماز", "د لمانځه باطلېدل"],
+    answer: "په لمانځه کې قصدي عادي خبرې کول د لمانځه له جدي منع شوو کارونو څخه دي او د لمانځه پر صحت اغېز کوي. د هېرېدو، ناپوهۍ او نورو ځانګړو حالتونو حکم د فقهي مذهب له مخې وپوښتئ."
+},
+
+{
+    id: 116,
+    question: "روژه په کوم وخت پیلېږي",
+    keywords: ["د روژې پیل", "سحر", "سهار صادق", "د روژې وخت"],
+    answer: "د رمضان روژه د سهار صادق له داخلېدو څخه پیلېږي او تر لمر لوېدو پورې دوام کوي. د سحر او افطار دقیق وخت باید د خپل ځای له باوري تقویم یا جومات څخه معلوم شي."
+},
+
+{
+    id: 117,
+    question: "افطار څه شی دی",
+    keywords: ["افطار", "روژه ماتول", "د افطار وخت"],
+    answer: "افطار د روژې له پای ته رسېدو وروسته د خوراک او څښاک له لارې د روژې ماتولو ته ویل کېږي. روژه د لمر له لوېدو وروسته ماتېږي؛ د وخت د معلومولو لپاره باوري سیمه‌ییز تقویم وګورئ."
+},
+
+{
+    id: 118,
+    question: "سحري څه شی ده",
+    keywords: ["سحري", "د سحر خوراک", "د روژې سحري"],
+    answer: "سحري هغه خوراک دی چې مسلمانان یې د روژې له پیل مخکې خوري. په صحیح حدیثونو کې د سحري د برکت یادونه شوې ده."
+},
+
+{
+    id: 119,
+    question: "اعتکاف څه شی دی",
+    keywords: ["اعتکاف", "د رمضان اعتکاف", "جومات اعتکاف"],
+    answer: "اعتکاف په جومات کې د عبادت لپاره د ځانګړي نیت سره د پاتې کېدو عبادت دی. د اعتکاف د مودې، شرطونو او اړوندو احکامو تفصیل د فقهي مذهب له مخې زده کېږي."
+},
+
+{
+    id: 120,
+    question: "د لیلة القدر معنی څه ده",
+    keywords: ["لیلة القدر", "د قدر شپه", "قدر شپه معنی"],
+    answer: "لیلة القدر د رمضان له مبارکو شپو څخه ده. قرآن کریم په دې شپه کې د قرآن د نزول یادونه کوي او د دې شپې عبادت ته ځانګړی فضیلت بیانوي."
+},
+
+{
+    id: 121,
+    question: "فطرانه څه شی دی",
+    keywords: ["فطرانه", "زکات الفطر", "د اختر صدقه"],
+    answer: "فطرانه یا زکات الفطر هغه صدقه ده چې د رمضان له پای سره تړاو لري. د هغې د ورکړې اندازه، وخت او پر چا واجبېدل د فقهي مذهب له مخې معلومېږي."
+},
+
+{
+    id: 122,
+    question: "د روژې قضا څه معنی لري",
+    keywords: ["د روژې قضا", "قضا روژه", "پاتې روژه"],
+    answer: "د روژې قضا د هغه فرضې روژې وروسته نیولو ته ویل کېږي چې د شرعي عذر یا بل معتبر سبب له امله په خپل وخت کې نه وي نیول شوې. د قضا د څرنګوالي او نورو احکامو لپاره له باوري عالم څخه پوښتنه وکړئ."
+},
+
+{
+    id: 123,
+    question: "د روژې کفاره څه ده",
+    keywords: ["کفاره", "د روژې کفاره", "روژه ماتول کفاره"],
+    answer: "د روژې کفاره ځانګړي شرعي احکام لري او په هر حالت کې نه واجبېږي. د روژې د ماتېدو سبب، نیت او نور شرایط په دې حکم کې اغېز لري؛ د خپلې پېښې دقیق تفصیل له باوري عالم سره شریک کړئ."
+},
+
+{
+    id: 124,
+    question: "په سفر کې روژه نیول څنګه دي",
+    keywords: ["مسافر روژه", "په سفر روژه", "د روژې سفر حکم"],
+    answer: "اسلام د شرعي سفر په ځینو حالاتو کې د روژې د نه نیولو اجازه ورکوي او وروسته یې د قضا حکم بیانوي. د سفر شرایط، د ستونزې اندازه او د قضا احکام د باوري فقهي لارښود له مخې معلوم کړئ."
+},
+
+{
+    id: 125,
+    question: "د ناروغ لپاره د روژې حکم څه دی",
+    keywords: ["ناروغ روژه", "د ناروغ روژه حکم", "روژه او ناروغي"],
+    answer: "که روژه د ناروغۍ د زیاتېدو یا روغتیا ته د زیان اندېښنه ولري، د شرعي رخصتۍ احکام مطرح کېږي. د ناروغۍ طبي حالت له ډاکټر سره او د روژې شرعي حکم له باوري عالم سره وڅېړئ."
+},
+
+{
+    id: 126,
+    question: "د زکات نصاب څه شی دی",
+    keywords: ["نصاب", "د زکات نصاب", "د مال حد", "زکات حساب"],
+    answer: "نصاب د مال هغه ټاکلی شرعي حد دی چې د زکات د وجوب په شرایطو کې مهم رول لري. د سرو زرو، سپینو زرو، نغدو پیسو او سوداګریزو مالونو د نصاب د حساب جزئیات توپیر لري."
+},
+
+{
+    id: 127,
+    question: "زکات چا ته ورکول کېږي",
+    keywords: ["د زکات مستحقین", "زکات چا ته", "فقیر زکات", "مسکین"],
+    answer: "قرآن کریم د سورة التوبة په ۶۰م آیت کې د زکات د مستحقو ډلو یادونه کوي. د زکات د مستحق کس د ټاکلو لپاره د هغه حالت او شرعي شرایط باید په پام کې ونیول شي."
+},
+
+{
+    id: 128,
+    question: "عمره څه شی ده",
+    keywords: ["عمره", "د عمرې طریقه", "مکه عمره"],
+    answer: "عمره یو عبادت دی چې په مکه مکرمه کې ادا کېږي او د احرام، طواف او سعي په څېر اعمال لري. د عمرې د شرطونو او طریقې تفصیل له باوري فقهي لارښود څخه زده کړئ."
+},
+
+{
+    id: 129,
+    question: "احرام څه شی دی",
+    keywords: ["احرام", "د حج احرام", "د عمرې احرام"],
+    answer: "احرام د حج یا عمرې لپاره د ځانګړي نیت او د اړوندو شرعي احکامو د منلو حالت دی. د احرام جامې او ځینې منع شوي کارونه د نارینه او ښځینه‌وو لپاره په ځانګړو فقهي تفصیلاتو کې بیان شوي."
+},
+
+{
+    id: 130,
+    question: "طواف څه شی دی",
+    keywords: ["طواف", "کعبې طواف", "د کعبې شاوخوا ګرځېدل"],
+    answer: "طواف د کعبې شریفې شاوخوا اووه ځله په ټاکلې طریقه ګرځېدو ته ویل کېږي. طواف د حج او عمرې له مهمو اعمالو څخه دی او د هغه شرطونه باید له باوري لارښود څخه زده شي."
+},
+
+{
+    id: 131,
+    question: "سعي څه شی دی",
+    keywords: ["سعي", "صفا مروه", "د صفا او مروه ترمنځ"],
+    answer: "سعي د صفا او مروه د غونډیو ترمنځ په ټاکلې طریقه تګ ته ویل کېږي. دا د حج او عمرې له مناسکو څخه دی او د حضرت هاجرې رضی الله عنها د کیسې سره تړاو لري."
+},
+
+{
+    id: 132,
+    question: "عرفات څه شی دی",
+    keywords: ["عرفات", "د عرفات میدان", "وقوف عرفات", "حج عرفات"],
+    answer: "عرفات د مکې مکرمه ترڅنګ یو مهم ځای دی چې د حج په مناسکو کې ځانګړی اهمیت لري. د عرفات وقوف د حج له اساسي رکنونو څخه دی."
+},
+
+{
+    id: 133,
+    question: "قرباني څه شی ده",
+    keywords: ["قرباني", "اضحیه", "د اختر قرباني", "قرباني حکم"],
+    answer: "قرباني د لوی اختر په ورځو کې د الله تعالی د رضا لپاره د ځانګړو حیواناتو حلالولو ته ویل کېږي. د قربانۍ د وجوب، حیواناتو، عمر او نورو شرایطو په اړه د فقهي مذهب له باوري لارښود څخه معلومات واخلئ."
+},
+
+{
+    id: 134,
+    question: "حلاله روزي ولې مهمه ده",
+    keywords: ["حلاله روزي", "حلال کسب", "حلال عاید", "حرام عاید"],
+    answer: "اسلام د حلالې روزۍ د ترلاسه کولو او له حرام عاید څخه د ځان ساتلو سپارښتنه کوي. رښتینی تجارت، امانتداري او د خلکو د حقونو مراعاتول د حلال کسب له مهمو اصولو څخه دي."
+},
+
+{
+    id: 135,
+    question: "سود څه شی دی",
+    keywords: ["سود", "ربا", "سودي معامله", "د سود حکم"],
+    answer: "سود یا ربا په اسلامي شریعت کې منع شوی مالي عمل دی. د معاصرو بانکي او مالي معاملو حکم د قرارداد له جزئیاتو سره تړاو لري؛ د یوې ځانګړې معاملې لپاره له باوري اسلامي مالي متخصص یا عالم څخه پوښتنه وکړئ."
+},
+
+{
+    id: 136,
+    question: "امانتداري څه معنی لري",
+    keywords: ["امانت", "امانتداري", "د امانت ساتل", "امانت خیانت"],
+    answer: "امانتداري د خلکو د مال، راز، مسؤلیت او سپارل شوو کارونو په ساتلو کې رښتینولي ده. اسلام امانت ادا کول او له خیانت څخه ځان ساتل مهم ګڼي."
+},
+
+{
+    id: 137,
+    question: "غیبت څه شی دی",
+    keywords: ["غیبت", "د چا تر شا خبرې", "غیبت معنی"],
+    answer: "غیبت دا دی چې د یو انسان په اړه د هغه په نشتون کې داسې خبره وشي چې هغه یې نه خوښوي، که خبره یې رښتیا هم وي. که خبره دروغ وي، د تور او بهتان مسئله هم مطرح کېږي."
+},
+
+{
+    id: 138,
+    question: "بهتان څه شی دی",
+    keywords: ["بهتان", "دروغ تور", "ناحق تور", "تهمت"],
+    answer: "بهتان پر یو انسان د داسې عیب یا عمل تور لګول دي چې هغه یې نه وي کړی. اسلام د بې‌دلیله تورونو او د خلکو د عزت د زیانمنولو څخه منع کوي."
+},
+
+{
+    id: 139,
+    question: "حسد څه شی دی",
+    keywords: ["حسد", "حسادت", "د بل نعمت نه خوښول"],
+    answer: "حسد هغه حالت دی چې انسان د بل چا د نعمت له منځه تلل وغواړي. مسلمان باید د نورو د نعمتونو په اړه له حسد څخه ځان وساتي او د الله تعالی څخه د خیر غوښتنه وکړي."
+},
+
+{
+    id: 140,
+    question: "بښنه کول ولې مهم دي",
+    keywords: ["بښنه", "بخښل", "د خلکو بښل", "عفوه"],
+    answer: "بښنه کول د ښو اخلاقو یوه مهمه برخه ده. اسلام په مناسبو حالاتو کې د بښنې، اصلاح او مهربانۍ ارزښت بیانوي؛ خو د ظلم د دوام مخنیوی او د حقونو ساتنه هم مهم دي."
 }
 
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
+];
 
+/* =====================================================
+   2. عمومي حالت او د خبرو ذخیره
+   ===================================================== */
 
-/* =========================================================
-   RANDOM NORMAL
-========================================================= */
+const STORAGE_KEY = "pashto_islamic_ai_chats_v3";
 
-function randomNormal(){
+let chats = [];
+let currentChatId = null;
 
-    let u = 0;
+/*
+ هره مبهمه پوښتنه خپل جلا انتخابونه لري.
+ که په یوه پیغام کې دوه مبهمې پوښتنې وي،
+ د شمېرې انتخابونه به په خپل ترتیب حل کېږي.
+*/
+let pendingChoices = [];
 
-    let v = 0;
+let isBusy = false;
 
-    while(u === 0){
-        u = Math.random();
-    }
+const chatArea = document.getElementById("chatArea");
+const messagesEl = document.getElementById("messages");
+const welcomeEl = document.getElementById("welcome");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const historyList = document.getElementById("historyList");
+const toastEl = document.getElementById("toast");
 
-    while(v === 0){
-        v = Math.random();
-    }
-
-    return Math.sqrt(
-        -2 * Math.log(u)
-    ) *
-    Math.cos(
-        2 * Math.PI * v
-    );
+function makeId() {
+    return Date.now().toString(36) +
+        Math.random().toString(36).slice(2, 8);
 }
 
-
-/* =========================================================
-   CLAMP
-========================================================= */
-
-function clamp(v,min,max){
-
-    return Math.max(
-        min,
-        Math.min(max,v)
-    );
+function now() {
+    return new Date().toISOString();
 }
 
-
-/* =========================================================
-   MARKET REGIME
-========================================================= */
-
-function chooseRegime(){
-
-    const r = Math.random();
-
-
-    if(r < 0.22){
-
-        trend = 0.000045;
-
-        volatility = 0.00027;
-
-    }
-
-    else if(r < 0.44){
-
-        trend = -0.000045;
-
-        volatility = 0.00027;
-
-    }
-
-    else if(r < 0.68){
-
-        trend = 0;
-
-        volatility = 0.00022;
-
-    }
-
-    else if(r < 0.82){
-
-        trend = 0.000085;
-
-        volatility = 0.00038;
-
-    }
-
-    else{
-
-        trend = -0.000085;
-
-        volatility = 0.00038;
-
-    }
-
-
-    regimeUntil =
-        Date.now() +
-        (
-            5000 +
-            Math.random()*18000
-        );
-}
-
-
-/* =========================================================
-   NEXT TICK PRICE
-========================================================= */
-
-function nextTickPrice(){
-
-    const now =
-        Date.now();
-
-
-    if(now >= regimeUntil){
-
-        chooseRegime();
-
-    }
-
-
-    const distanceFromCenter =
-        (price - 2.50) / 2.50;
-
-
-    let reversal = 0;
-
-
-    if(
-        sameColorStreak >= 3 &&
-        lastCandleDirection !== 0
-    ){
-
-        reversal =
-            -lastCandleDirection *
-            0.000055;
-
-    }
-
-
-    let impulse = 0;
-
-
-    if(Math.random() < 0.008){
-
-        impulse =
-            randomNormal() *
-            0.00075;
-
-    }
-
-
-    const meanReversion =
-        -distanceFromCenter *
-        0.000018;
-
-
-    const momentum =
-        (price - previousPrice) *
-        0.08;
-
-
-    const noise =
-        randomNormal() *
-        volatility;
-
-
-    const returnPct =
-        trend +
-        reversal +
-        meanReversion +
-        momentum +
-        noise +
-        impulse;
-
-
-    previousPrice =
-        price;
-
-
-    price *=
-        Math.exp(returnPct);
-
-
-    price =
-        clamp(
-            price,
-            1.45,
-            3.80
-        );
-
-
-    highPrice =
-        Math.max(
-            highPrice,
-            price
-        );
-
-
-    lowPrice =
-        Math.min(
-            lowPrice,
-            price
-        );
-
-
-    return price;
-}
-
-
-/* =========================================================
-   CREATE INITIAL CANDLES
-========================================================= */
-
-function createInitialCandles(){
-
-    candleData = [];
-
-
-    let p = 2.50;
-
-    let simTrend = 0;
-
-    let simVol = 0.00030;
-
-
-    for(let i=0;i<90;i++){
-
-        if(
-            i === 0 ||
-            Math.random() < 0.10
-        ){
-
-            const r =
-                Math.random();
-
-
-            if(r < 0.25){
-
-                simTrend = 0.00005;
-
-            }
-
-            else if(r < 0.50){
-
-                simTrend = -0.00005;
-
-            }
-
-            else if(r < 0.75){
-
-                simTrend = 0;
-
-            }
-
-            else if(r < 0.875){
-
-                simTrend = 0.00010;
-
-            }
-
-            else{
-
-                simTrend = -0.00010;
-
-            }
-
-
-            simVol =
-                simTrend === 0
-                ? 0.00023
-                : 0.00030 +
-                  Math.random()*0.00010;
+function loadChats() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const parsed = saved ? JSON.parse(saved) : [];
+
+        if (Array.isArray(parsed)) {
+            chats = parsed;
+        } else {
+            chats = [];
         }
-
-
-        const open = p;
-
-        let high = p;
-
-        let low = p;
-
-
-        for(let t=0;t<22;t++){
-
-            const noise =
-                randomNormal()*simVol;
-
-            const mean =
-                -(
-                    (p-2.50)/2.50
-                ) *
-                0.000018;
-
-
-            p *= Math.exp(
-                simTrend +
-                mean +
-                noise
-            );
-
-
-            p =
-                clamp(
-                    p,
-                    1.55,
-                    3.55
-                );
-
-
-            high =
-                Math.max(
-                    high,
-                    p
-                );
-
-
-            low =
-                Math.min(
-                    low,
-                    p
-                );
-
-        }
-
-
-        const close = p;
-
-
-        candleData.push({
-
-            open:open,
-
-            high:high,
-
-            low:low,
-
-            close:close,
-
-            volume:
-                Math.random()*100+20,
-
-            time:
-                Date.now() -
-                (90-i)*60000
-
-        });
-
+    } catch (error) {
+        chats = [];
     }
 
-
-    price = p;
-
-    previousPrice = p;
-
-    startPrice = price;
-
-
-    highPrice =
-        Math.max(
-            ...candleData.map(
-                c => c.high
-            )
-        );
-
-
-    lowPrice =
-        Math.min(
-            ...candleData.map(
-                c => c.low
-            )
-        );
-
-
-    candleStartMs =
-        Date.now();
-
-
-    chooseRegime();
-
-
-    sameColorStreak = 0;
-
-    lastCandleDirection = 0;
-
-
-    for(
-        let i=candleData.length-1;
-        i>=0;
-        i--
-    ){
-
-        const dir =
-            Math.sign(
-                candleData[i].close -
-                candleData[i].open
-            );
-
-
-        if(dir === 0){
-
-            continue;
-
-        }
-
-
-        if(
-            lastCandleDirection === 0
-        ){
-
-            lastCandleDirection =
-                dir;
-
-        }
-
-
-        if(
-            dir ===
-            lastCandleDirection
-        ){
-
-            sameColorStreak++;
-
-        }
-
-        else{
-
-            break;
-
-        }
-
-    }
-
-
-    updateUI();
-
-    drawChart();
-
-}
-
-
-/* =========================================================
-   UPDATE CURRENT CANDLE
-========================================================= */
-
-function updateCandleFromTick(){
-
-    const c =
-        candleData[
-            candleData.length-1
-        ];
-
-
-    const newPrice =
-        nextTickPrice();
-
-
-    c.close =
-        newPrice;
-
-
-    c.high =
-        Math.max(
-            c.high,
-            newPrice
-        );
-
-
-    c.low =
-        Math.min(
-            c.low,
-            newPrice
-        );
-
-
-    c.volume =
-        (c.volume || 0) +
-        (
-            0.5 +
-            Math.random()*2
-        );
-
-
-    if(
-        Date.now() -
-        candleStartMs >=
-        candleDurationMs
-    ){
-
-        const direction =
-            Math.sign(
-                c.close-c.open
-            );
-
-
-        if(direction !== 0){
-
-            if(
-                direction ===
-                lastCandleDirection
-            ){
-
-                sameColorStreak++;
-
-            }
-
-            else{
-
-                sameColorStreak = 1;
-
-                lastCandleDirection =
-                    direction;
-
-            }
-
-        }
-
-
-        candleData.push({
-
-            open:newPrice,
-
-            high:newPrice,
-
-            low:newPrice,
-
-            close:newPrice,
-
-            volume:0,
-
-            time:Date.now()
-
-        });
-
-
-        candleStartMs =
-            Date.now();
-
-
-        if(
-            candleData.length > 180
-        ){
-
-            candleData.shift();
-
-        }
-
-
-        if(
-            sameColorStreak >= 3
-        ){
-
-            reversalBias =
-                -lastCandleDirection *
-                0.00020;
-
-        }
-
-        else{
-
-            reversalBias *= 0.65;
-
-        }
-
-    }
-
-
-    checkPositions();
-
-    updateUI();
-
-    drawChart();
-
-}
-
-
-/* =========================================================
-   NICE PRICE STEP
-   د MEXC/TradingView په شان منظم Price Levels
-========================================================= */
-
-function nicePriceStep(range){
-
-    const targetLevels = 8;
-
-    const rough =
-        range / targetLevels;
-
-
-    if(rough <= 0){
-
-        return 0.01;
-
-    }
-
-
-    const exponent =
-        Math.floor(
-            Math.log10(rough)
-        );
-
-
-    const fraction =
-        rough /
-        Math.pow(
-            10,
-            exponent
-        );
-
-
-    let niceFraction;
-
-
-    if(fraction <= 1){
-
-        niceFraction = 1;
-
-    }
-
-    else if(fraction <= 2){
-
-        niceFraction = 2;
-
-    }
-
-    else if(fraction <= 2.5){
-
-        niceFraction = 2.5;
-
-    }
-
-    else if(fraction <= 5){
-
-        niceFraction = 5;
-
-    }
-
-    else{
-
-        niceFraction = 10;
-
-    }
-
-
-    return (
-        niceFraction *
-        Math.pow(
-            10,
-            exponent
-        )
-    );
-}
-
-
-/* =========================================================
-   PRICE DECIMALS
-========================================================= */
-
-function priceDecimals(step){
-
-    if(step >= 1){
-
-        return 2;
-
-    }
-
-    if(step >= 0.1){
-
-        return 3;
-
-    }
-
-    return 4;
-}
-
-
-/* =========================================================
-   DRAW PRICE SCALE
-========================================================= */
-
-function drawPriceScale(
-    min,
-    max,
-    h
-){
-
-    const scale =
-        document.getElementById(
-            "priceScale"
-        );
-
-
-    scale.innerHTML = "";
-
-
-    const range =
-        max-min;
-
-
-    const step =
-        nicePriceStep(range);
-
-
-    const decimals =
-        priceDecimals(step);
-
-
-    const first =
-        Math.ceil(
-            min/step
-        ) * step;
-
-
-    const last =
-        Math.floor(
-            max/step
-        ) * step;
-
-
-    for(
-        let value=first;
-        value<=last+step*0.001;
-        value+=step
-    ){
-
-        if(
-            value < min-step*0.01 ||
-            value > max+step*0.01
-        ){
-
-            continue;
-
-        }
-
-
-        const ratio =
-            (max-value) /
-            (max-min);
-
-
-        const y =
-            ratio*h;
-
-
-        const label =
-            document.createElement(
-                "div"
-            );
-
-
-        label.className =
-            "priceLevel";
-
-
-        label.style.top =
-            y+"px";
-
-
-        label.innerText =
-            value.toFixed(
-                decimals
-            );
-
-
-        scale.appendChild(
-            label
-        );
-
-    }
-
-}
-
-/* =========================================================
-   CROSSHAIR ELEMENTS
-========================================================= */
-
-const crosshair =
-    document.getElementById(
-        "crosshair"
+    chats = chats.filter(chat =>
+        chat &&
+        typeof chat.id === "string" &&
+        Array.isArray(chat.messages)
     );
 
-const crosshairVertical =
-    document.getElementById(
-        "crosshairVertical"
-    );
-
-const crosshairHorizontal =
-    document.getElementById(
-        "crosshairHorizontal"
-    );
-
-const crosshairCenter =
-    document.getElementById(
-        "crosshairCenter"
-    );
-
-const crosshairPrice =
-    document.getElementById(
-        "crosshairPrice"
-    );
-
-const crosshairTime =
-    document.getElementById(
-        "crosshairTime"
-    );
-
-
-/* =========================================================
-   SHOW CROSSHAIR
-========================================================= */
-
-function showCrosshair(x,y){
-
-    const w =
-        canvas.clientWidth;
-
-    const h =
-        canvas.clientHeight;
-
-
-    crosshairActive = true;
-
-
-    crosshairX =
-        clamp(
-            x,
-            0,
-            w
-        );
-
-
-    crosshairY =
-        clamp(
-            y,
-            0,
-            h
-        );
-
-
-    crosshair.classList.add(
-        "active"
-    );
-
-
-    updateCrosshair();
-
-}
-
-
-/* =========================================================
-   HIDE CROSSHAIR
-========================================================= */
-
-function hideCrosshair(){
-
-    crosshairActive = false;
-
-    crosshair.classList.remove(
-        "active"
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE CROSSHAIR
-========================================================= */
-
-function updateCrosshair(){
-
-    if(!crosshairActive){
-
-        return;
-
-    }
-
-
-    const w =
-        canvas.clientWidth;
-
-    const h =
-        canvas.clientHeight;
-
-
-    crosshairX =
-        clamp(
-            crosshairX,
-            0,
-            w
-        );
-
-
-    crosshairY =
-        clamp(
-            crosshairY,
-            0,
-            h
-        );
-
-
-    /* عمودي */
-
-    crosshairVertical.style.left =
-        crosshairX + "px";
-
-
-    /* افقي */
-
-    crosshairHorizontal.style.top =
-        crosshairY + "px";
-
-
-    /* منځنی نقطه */
-
-    crosshairCenter.style.left =
-        crosshairX + "px";
-
-    crosshairCenter.style.top =
-        crosshairY + "px";
-
-
-    /*
-       Chart price calculation
-       د Chart د اوسني min/max څخه
-    */
-
-    const visibleCountSafe =
-        Math.max(
-            15,
-            Math.min(
-                visibleCount,
-                candleData.length
-            )
-        );
-
-
-    let endIndex =
-        candleData.length -
-        1 -
-        chartOffset;
-
-
-    endIndex =
-        clamp(
-            endIndex,
-            visibleCountSafe-1,
-            candleData.length-1
-        );
-
-
-    let startIndex =
-        endIndex -
-        visibleCountSafe +
-        1;
-
-
-    startIndex =
-        Math.max(
-            0,
-            startIndex
-        );
-
-
-    const visible =
-        candleData.slice(
-            startIndex,
-            endIndex+1
-        );
-
-
-    if(!visible.length){
-
-        return;
-
-    }
-
-
-    let rawMin =
-        Math.min(
-            ...visible.map(
-                c => c.low
-            )
-        );
-
-
-    let rawMax =
-        Math.max(
-            ...visible.map(
-                c => c.high
-            )
-        );
-
-
-    let rawRange =
-        rawMax -
-        rawMin;
-
-
-    if(rawRange <= 0){
-
-        rawRange = 0.05;
-
-    }
-
-
-    let range =
-        rawRange *
-        2.25 /
-        verticalZoom;
-
-
-    let center =
-        (
-            rawMax +
-            rawMin
-        ) / 2;
-
-
-    center +=
-        verticalOffset *
-        rawRange;
-
-
-    const min =
-        center -
-        range/2;
-
-
-    const max =
-        center +
-        range/2;
-
-
-    /*
-       Y څخه Price پیدا کول
-    */
-
-    const priceAtCursor =
-        max -
-        (
-            crosshairY / h
-        ) *
-        (
-            max-min
-        );
-
-
-    /* قیمت ښکاره کول */
-
-    const step =
-        nicePriceStep(
-            max-min
-        );
-
-
-    const decimals =
-        priceDecimals(
-            step
-        );
-
-
-    crosshairPrice.innerText =
-        priceAtCursor.toFixed(
-            decimals
-        );
-
-
-    crosshairPrice.style.top =
-        crosshairY + "px";
-
-
-    /*
-       د X له مخې Candle پیدا کول
-    */
-
-    const chartWidth =
-        w - 68;
-
-
-    const leftSpace = 8;
-
-    const rightSpace = 8;
-
-
-    const usableWidth =
-        chartWidth -
-        leftSpace -
-        rightSpace;
-
-
-    const spacing =
-        usableWidth /
-        Math.max(
-            1,
-            visible.length-1
-        );
-
-
-    let candleIndex =
-        Math.round(
-            (
-                crosshairX -
-                leftSpace
-            ) /
-            spacing
-        );
-
-
-    candleIndex =
-        clamp(
-            candleIndex,
-            0,
-            visible.length-1
-        );
-
-
-    const selectedCandle =
-        visible[candleIndex];
-
-
-    if(selectedCandle){
-
-        const date =
-            new Date(
-                selectedCandle.time
-            );
-
-
-        crosshairTime.innerText =
-            date.toLocaleTimeString(
-                [],
-                {
-                    hour:"2-digit",
-                    minute:"2-digit"
-                }
-            );
-
-    }
-
-
-    crosshairTime.style.left =
-        crosshairX + "px";
-
-}
-
-/* =========================================================
-   DRAW CHART
-========================================================= */
-
-function drawChart(){
-
-    const w =
-        canvas.clientWidth;
-
-    const h =
-        canvas.clientHeight;
-
-
-    ctx.clearRect(
-        0,
-        0,
-        w,
-        h
-    );
-
-
-    if(
-        !candleData.length
-    ){
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       VISIBLE CANDLES
-    ===================================================== */
-
-    let count =
-        Math.max(
-            15,
-            Math.min(
-                visibleCount,
-                candleData.length
-            )
-        );
-
-
-    let endIndex =
-        candleData.length -
-        1 -
-        chartOffset;
-
-
-    endIndex =
-        clamp(
-            endIndex,
-            count-1,
-            candleData.length-1
-        );
-
-
-    let startIndex =
-        endIndex -
-        count +
-        1;
-
-
-    startIndex =
-        Math.max(
-            0,
-            startIndex
-        );
-
-
-    const visible =
-        candleData.slice(
-            startIndex,
-            endIndex+1
-        );
-
-
-    if(
-        !visible.length
-    ){
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       PRICE RANGE
-    ===================================================== */
-
-    let rawMin =
-        Math.min(
-            ...visible.map(
-                c => c.low
-            )
-        );
-
-
-    let rawMax =
-        Math.max(
-            ...visible.map(
-                c => c.high
-            )
-        );
-
-
-    let rawRange =
-        rawMax -
-        rawMin;
-
-
-    if(
-        rawRange <= 0
-    ){
-
-        rawRange = 0.05;
-
-    }
-
-
-    let range =
-        rawRange *
-        2.25 /
-        verticalZoom;
-
-
-    let center =
-        (
-            rawMax +
-            rawMin
-        ) / 2;
-
-
-    /* =====================================================
-       VERTICAL PAN
-    ===================================================== */
-
-    center +=
-        verticalOffset *
-        rawRange;
-
-
-    const min =
-        center -
-        range/2;
-
-
-    const max =
-        center +
-        range/2;
-
-
-    /* =====================================================
-       PRICE TO Y
-    ===================================================== */
-
-    function y(value){
-
-        return h -
-        (
-            (value-min) /
-            (max-min)
-        ) *
-        h;
-
-    }
-
-
-    /* =====================================================
-       CHART WIDTH
-       68px د Price Scale لپاره محفوظ دي
-    ===================================================== */
-
-    const chartWidth =
-        w - 68;
-
-
-    /* =====================================================
-       GRID
-    ===================================================== */
-
-    ctx.strokeStyle =
-        "#17212a";
-
-    ctx.lineWidth = 1;
-
-
-    /* Horizontal Grid */
-
-    for(
-        let i=0;
-        i<=8;
-        i++
-    ){
-
-        const gy =
-            h/8*i;
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            0,
-            gy
-        );
-
-        ctx.lineTo(
-            chartWidth,
-            gy
-        );
-
-        ctx.stroke();
-
-    }
-
-
-    /* Vertical Grid */
-
-    for(
-        let i=0;
-        i<=10;
-        i++
-    ){
-
-        const gx =
-            chartWidth/10*i;
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            gx,
-            0
-        );
-
-        ctx.lineTo(
-            gx,
-            h
-        );
-
-        ctx.stroke();
-
-    }
-
-
-    /* =====================================================
-       PRICE SCALE
-    ===================================================== */
-
-    drawPriceScale(
-        min,
-        max,
-        h
-    );
-
-
-    /* =====================================================
-       CANDLE POSITION
-       وروستی Candle د Price Scale تر څنګ
-    ===================================================== */
-
-    const leftSpace = 8;
-
-    const rightSpace = 8;
-
-
-    const usableWidth =
-        chartWidth -
-        leftSpace -
-        rightSpace;
-
-
-    const spacing =
-        usableWidth /
-        Math.max(
-            1,
-            visible.length-1
-        );
-
-
-    const candleWidth =
-        Math.max(
-            2,
-            Math.min(
-                9,
-                spacing*0.58
-            )
-        );
-
-
-    /* =====================================================
-       DRAW CANDLES
-    ===================================================== */
-
-    visible.forEach(
-        (c,i)=>{
-
-            const x =
-                leftSpace +
-                i*spacing;
-
-
-            const openY =
-                y(c.open);
-
-
-            const closeY =
-                y(c.close);
-
-
-            const highY =
-                y(c.high);
-
-
-            const lowY =
-                y(c.low);
-
-
-            const bullish =
-                c.close >= c.open;
-
-
-            /*
-               یوازې دوه رنګونه:
-               شین = bullish
-               سور = bearish
-            */
-
-            const candleColor =
-                bullish
-                ? "#19d99b"
-                : "#ff5262";
-
-
-            ctx.strokeStyle =
-                candleColor;
-
-
-            ctx.fillStyle =
-                candleColor;
-
-
-            /* =================================================
-               WICK
-            ================================================= */
-
-            ctx.lineWidth = 1.2;
-
-
-            ctx.beginPath();
-
-
-            ctx.moveTo(
-                x,
-                highY
-            );
-
-
-            ctx.lineTo(
-                x,
-                lowY
-            );
-
-
-            ctx.stroke();
-
-
-            /* =================================================
-               BODY
-            ================================================= */
-
-            const top =
-                Math.min(
-                    openY,
-                    closeY
-                );
-
-
-            const bodyHeight =
-                Math.max(
-                    2,
-                    Math.abs(
-                        closeY-openY
-                    )
-                );
-
-
-            ctx.fillRect(
-
-                x -
-                candleWidth/2,
-
-                top,
-
-                candleWidth,
-
-                bodyHeight
-
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       CURRENT CANDLE COLOR
-       یوازې شین / سور
-    ===================================================== */
-
-    const currentCandle =
-        candleData[
-            candleData.length-1
-        ];
-
-
-    const currentColor =
-        currentCandle.close >=
-        currentCandle.open
-
-        ? "#19d99b"
-
-        : "#ff5262";
-
-
-    /* =====================================================
-       CURRENT PRICE Y
-    ===================================================== */
-
-    const currentY =
-        y(price);
-
-
-    /* =====================================================
-       CURRENT PRICE DOTTED LINE
-       
-       مهم:
-       دا اوس په Canvas کې رسمېږي،
-       نو د Candle له Y position سره
-       هېڅکله نه جلا کېږي.
-    ===================================================== */
-
-    if(
-        currentY >= 0 &&
-        currentY <= h
-    ){
-
-        ctx.save();
-
-
-        ctx.strokeStyle =
-            currentColor;
-
-
-        ctx.lineWidth = 1;
-
-
-        /*
-           MEXC-style dashed line
-        */
-
-        ctx.setLineDash([
-            2,
-            3
-        ]);
-
-
-        ctx.beginPath();
-
-
-        ctx.moveTo(
-            0,
-            currentY
-        );
-
-
-        ctx.lineTo(
-            chartWidth,
-            currentY
-        );
-
-
-        ctx.stroke();
-
-
-        ctx.setLineDash([]);
-
-
-        ctx.restore();
-
-    }
-
-
-    /* =====================================================
-       CURRENT PRICE BOX
-    ===================================================== */
-
-    const tag =
-        document.getElementById(
-            "priceTag"
-        );
-
-
-    if(
-        currentY >= -20 &&
-        currentY <= h+20
-    ){
-
-        tag.style.top =
-            Math.max(
-                0,
-                Math.min(
-                    h-22,
-                    currentY-11
-                )
-            ) +
-            "px";
-
-
-        tag.innerText =
-            price.toFixed(4);
-
-
-        tag.style.background =
-            currentColor;
-
-
-        if(
-            currentColor ===
-            "#19d99b"
-        ){
-
-            tag.style.color =
-                "#06110d";
-
-        }
-        
-        if(crosshairActive){
-
-    updateCrosshair();
-
-}
-
-        else{
-
-            tag.style.color =
-                "#ffffff";
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   UPDATE UI
-========================================================= */
-
-function updateUI(){
-
-    document.getElementById(
-        "topPrice"
-    ).innerText =
-        price.toFixed(4);
-
-
-    document.getElementById(
-        "markPrice"
-    ).innerText =
-        price.toFixed(4);
-
-
-    document.getElementById(
-        "highPrice"
-    ).innerText =
-        highPrice.toFixed(4);
-
-
-    document.getElementById(
-        "lowPrice"
-    ).innerText =
-        lowPrice.toFixed(4);
-
-
-    const change =
-        (
-            (price-startPrice) /
-            startPrice
-        ) *
-        100;
-
-
-    const sign =
-        change >= 0
-        ? "+"
-        : "";
-
-
-    const changeEl =
-        document.getElementById(
-            "change"
-        );
-
-
-    const statChange =
-        document.getElementById(
-            "statChange"
-        );
-
-
-    changeEl.innerText =
-        sign +
-        change.toFixed(2) +
-        "%";
-
-
-    statChange.innerText =
-        sign +
-        change.toFixed(2) +
-        "%";
-
-
-    changeEl.style.color =
-        change >= 0
-        ? "#19d99b"
-        : "#ff5262";
-
-
-    statChange.style.color =
-        change >= 0
-        ? "#19d99b"
-        : "#ff5262";
-
-
-    document.getElementById(
-        "chartMode"
-    ).innerText =
-        "SIMULATED MARKET · " +
-        currentTimeframe;
-
-
-    calculateTrade();
-
-    renderPositions();
-
-    renderHistory();
-
-}
-
-
-/* =========================================================
-   LEVERAGE
-========================================================= */
-
-function setLeverage(value){
-
-    leverage = value;
-
-
-    document
-    .querySelectorAll(".lev")
-    .forEach(btn=>{
-
-        btn.classList.toggle(
-            "active",
-            btn.innerText ===
-            value+"x"
-        );
-
+    chats.forEach(chat => {
+        if (!chat.title) chat.title = "نوې خبرې";
+        if (!chat.createdAt) chat.createdAt = now();
+        if (!chat.updatedAt) chat.updatedAt = chat.createdAt;
     });
-
-
-    calculateTrade();
-
 }
 
-
-/* =========================================================
-   CALCULATOR
-========================================================= */
-
-function calculateTrade(){
-
-    const margin =
-        parseFloat(
-            document.getElementById(
-                "marginInput"
-            ).value
-        ) || 0;
-
-
-    const notional =
-        margin *
-        leverage;
-
-
-    const size =
-        notional /
-        price;
-
-
-    const fee =
-        notional *
-        0.0004;
-
-
-    document.getElementById(
-        "calcEntry"
-    ).innerText =
-        price.toFixed(4);
-
-
-    document.getElementById(
-        "calcSize"
-    ).innerText =
-        size.toFixed(3) +
-        " XRP";
-
-
-    document.getElementById(
-        "calcNotional"
-    ).innerText =
-        notional.toFixed(2) +
-        " USDT";
-
-
-    document.getElementById(
-        "calcMargin"
-    ).innerText =
-        margin.toFixed(2) +
-        " USDT";
-
-
-    document.getElementById(
-        "calcFee"
-    ).innerText =
-        fee.toFixed(4) +
-        " USDT";
-
+function saveChats() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+    } catch (error) {
+        showToast("د ذخیرې ستونزه: د موبایل حافظه وګورئ.");
+    }
 }
 
+function getCurrentChat() {
+    return chats.find(chat => chat.id === currentChatId) || null;
+}
 
-/* =========================================================
-   OPEN POSITION
-========================================================= */
-
-function openPosition(side){
-
-    const margin =
-        parseFloat(
-            document.getElementById(
-                "marginInput"
-            ).value
-        ) || 0;
-
-
-    if(margin <= 0){
-
-        alert(
-            "Margin باید له 0 څخه زیاته وي."
-        );
-
-        return;
-
-    }
-
-
-    if(margin > balance){
-
-        alert(
-            "Insufficient balance."
-        );
-
-        return;
-
-    }
-
-
-    const entry =
-        price;
-
-
-    const notional =
-        margin *
-        leverage;
-
-
-    const size =
-        notional /
-        entry;
-
-
-    const slValue =
-        parseFloat(
-            document.getElementById(
-                "slInput"
-            ).value
-        );
-
-
-    const tpValue =
-        parseFloat(
-            document.getElementById(
-                "tpInput"
-            ).value
-        );
-
-
-    const position = {
-
-        id:Date.now(),
-
-        symbol:"XRPUSDT",
-
-        side:side,
-
-        entry:entry,
-
-        size:size,
-
-        notional:notional,
-
-        margin:margin,
-
-        leverage:leverage,
-
-        sl:
-            isNaN(slValue)
-            ? null
-            : slValue,
-
-        tp:
-            isNaN(tpValue)
-            ? null
-            : tpValue,
-
-        openedAt:
-            new Date()
-            .toLocaleTimeString(),
-
-        pnl:0,
-
-        roe:0
-
+function createChat() {
+    const chat = {
+        id: makeId(),
+        title: "نوې خبرې",
+        createdAt: now(),
+        updatedAt: now(),
+        messages: []
     };
 
+    chats.unshift(chat);
+    currentChatId = chat.id;
+    pendingChoices = [];
 
-    positions.push(
-        position
+    saveChats();
+    renderChat();
+    renderHistory();
+    closeSidebar();
+
+    return chat;
+}
+
+function ensureChat() {
+    let chat = getCurrentChat();
+
+    if (!chat) {
+        chat = createChat();
+    }
+
+    return chat;
+}
+
+/* =====================================================
+   3. د متن پاکول او د پښتو عددونو پېژندل
+   ===================================================== */
+
+function convertDigitsToEnglish(text) {
+    const map = {
+        "۰": "0",
+        "۱": "1",
+        "۲": "2",
+        "۳": "3",
+        "۴": "4",
+        "۵": "5",
+        "۶": "6",
+        "۷": "7",
+        "۸": "8",
+        "۹": "9"
+    };
+
+    return String(text).replace(/[۰-۹]/g, digit => map[digit]);
+}
+
+function normalize(text) {
+    return convertDigitsToEnglish(String(text || ""))
+        .toLowerCase()
+        .replace(/[ًٌٍَُِّْٰـ]/g, "")
+        .replace(/[إأآٱ]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ک/g, "ك")
+        .replace(/ي/g, "ی")
+        .replace(/ة/g, "ه")
+        .replace(/[؟?!.,،؛:()[\]{}"'«»ـ\-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function tokenize(text) {
+    return normalize(text)
+        .split(/\s+/)
+        .filter(Boolean);
+}
+
+const stopWords = new Set([
+    "څه", "څوک", "څنګه", "ولې", "چیرته", "کوم", "کومه",
+    "دی", "ده", "دي", "شو", "شي", "کوي", "کړي", "کړه",
+    "د", "په", "کې", "له", "نه", "او", "یا", "را", "زه",
+    "ته", "تاسو", "موږ", "زما", "ستا", "ستاسو", "یې",
+    "دا", "هغه", "هم", "خو", "چې", "به", "و", "وو",
+    "لري", "لره", "یې", "رانه", "کوم", "مهرباني",
+    "ماته", "راته", "وایه", "ووایه", "تشریح", "کړئ",
+    "معنی", "مطلب", "تعریف", "کومه", "کومې"
+]);
+
+function meaningfulWords(text) {
+    return tokenize(text).filter(word =>
+        word.length > 1 && !stopWords.has(word)
     );
-
-
-    balance -=
-        margin;
-
-
-    history.unshift({
-
-        type:"OPEN",
-
-        side:side,
-
-        price:entry,
-
-        size:size,
-
-        time:
-            new Date()
-            .toLocaleTimeString()
-
-    });
-
-
-    updateUI();
-
 }
 
+/* =====================================================
+   4. د ورته والي حساب
+   ===================================================== */
 
-/* =========================================================
-   PNL
-========================================================= */
+function similarity(a, b) {
+    const wordsA = new Set(meaningfulWords(a));
+    const wordsB = new Set(meaningfulWords(b));
 
-function calculatePnL(position){
-
-    let pnl;
-
-
-    if(
-        position.side ===
-        "LONG"
-    ){
-
-        pnl =
-            (
-                price -
-                position.entry
-            ) *
-            position.size;
-
+    if (wordsA.size === 0 || wordsB.size === 0) {
+        return 0;
     }
 
-    else{
+    let intersection = 0;
 
-        pnl =
-            (
-                position.entry -
-                price
-            ) *
-            position.size;
-
+    for (const word of wordsA) {
+        if (wordsB.has(word)) intersection++;
     }
 
+    const union = new Set([...wordsA, ...wordsB]).size;
 
-    position.pnl =
-        pnl;
+    const jaccard = intersection / union;
+    const coverageA = intersection / wordsA.size;
+    const coverageB = intersection / wordsB.size;
 
-
-    position.roe =
-        (
-            pnl /
-            position.margin
-        ) *
-        100;
-
-
-    return pnl;
-
+    return Math.max(
+        jaccard,
+        coverageA * 0.85,
+        coverageB * 0.85
+    );
 }
 
+function scoreEntry(query, entry) {
+    const q = normalize(query);
+    const mainQuestion = normalize(entry.question);
 
-/* =========================================================
-   SL / TP
-========================================================= */
+    if (q === mainQuestion) {
+        return 1;
+    }
 
-function checkPositions(){
+    let score = similarity(q, entry.question);
 
-    positions
-    .slice()
-    .forEach(position=>{
+    for (const keyword of (entry.keywords || [])) {
+        const k = normalize(keyword);
 
-        calculatePnL(
-            position
-        );
-
-
-        if(
-            position.side ===
-            "LONG"
-        ){
-
-            if(
-                position.sl !== null &&
-                price <= position.sl
-            ){
-
-                closePosition(
-                    position.id,
-                    "STOP LOSS"
-                );
-
-            }
-
-            else if(
-                position.tp !== null &&
-                price >= position.tp
-            ){
-
-                closePosition(
-                    position.id,
-                    "TAKE PROFIT"
-                );
-
-            }
-
+        if (q === k) {
+            score = Math.max(score, 1);
+        } else if (k && q.includes(k)) {
+            score = Math.max(score, 0.94);
+        } else {
+            score = Math.max(score, similarity(q, k) * 0.95);
         }
-
-
-        else{
-
-            if(
-                position.sl !== null &&
-                price >= position.sl
-            ){
-
-                closePosition(
-                    position.id,
-                    "STOP LOSS"
-                );
-
-            }
-
-            else if(
-                position.tp !== null &&
-                price <= position.tp
-            ){
-
-                closePosition(
-                    position.id,
-                    "TAKE PROFIT"
-                );
-
-            }
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
-   CLOSE POSITION
-========================================================= */
-
-function closePosition(
-    id,
-    reason="MANUAL"
-){
-
-    const index =
-        positions.findIndex(
-            p => p.id === id
-        );
-
-
-    if(index === -1){
-
-        return;
-
     }
 
-
-    const position =
-        positions[index];
-
-
-    calculatePnL(
-        position
-    );
-
-
-    balance +=
-        position.margin +
-        position.pnl;
-
-
-    history.unshift({
-
-        type:"CLOSE",
-
-        side:
-            position.side,
-
-        price:
-            price,
-
-        size:
-            position.size,
-
-        pnl:
-            position.pnl,
-
-        reason:
-            reason,
-
-        time:
-            new Date()
-            .toLocaleTimeString()
-
-    });
-
-
-    positions.splice(
-        index,
-        1
-    );
-
-
-    updateUI();
-
+    return score;
 }
 
+function findMatches(query) {
+    return knowledgeBase
+        .map(entry => ({
+            entry,
+            score: scoreEntry(query, entry)
+        }))
+        .sort((a, b) => b.score - a.score);
+}
 
-/* =========================================================
-   POSITIONS UI
-========================================================= */
+/* =====================================================
+   5. د سلام او عامو خبرو پېژندل
+   ===================================================== */
 
-function renderPositions(){
+function getSmallTalk(query) {
+    const q = normalize(query);
 
-    const container =
-        document.getElementById(
-            "positions"
-        );
+    const greetings = [
+        "سلام",
+        "السلام علیکم",
+        "سلامونه",
+        "وعلیکم السلام",
+        "salam"
+    ];
 
-
-    if(
-        positions.length === 0
-    ){
-
-        container.innerHTML =
-            '<div class="empty">No open positions</div>';
-
-        return;
-
+    if (greetings.some(item => q === normalize(item))) {
+        return "وعلیکم السلام ورحمة الله وبرکاته! ښه راغلاست. خپله پوښتنه ولیکه، زه به د موجودو معلوماتو له مخې مرسته درسره وکړم.";
     }
 
-
-    container.innerHTML = "";
-
-
-    positions.forEach(
-        position=>{
-
-            calculatePnL(
-                position
-            );
-
-
-            const pnlColor =
-                position.pnl >= 0
-                ? "#19d99b"
-                : "#ff5262";
-
-
-            const sideClass =
-                position.side === "LONG"
-                ? "sideLong"
-                : "sideShort";
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "positionCard";
-
-
-            card.innerHTML = `
-
-                <div class="positionTop">
-
-                    <div>
-
-                        <span class="${sideClass}">
-                            ${position.side}
-                        </span>
-
-                        <span style="color:#7d8994">
-                            ${position.leverage}x
-                        </span>
-
-                        <span style="color:#6f7c87">
-                            XRPUSDT
-                        </span>
-
-                    </div>
-
-
-                    <b style="color:${pnlColor}">
-
-                        ${
-                            position.pnl >= 0
-                            ? "+"
-                            : ""
-                        }
-
-                        ${position.pnl.toFixed(3)}
-                        USDT
-
-                    </b>
-
-                </div>
-
-
-                <div class="positionGrid">
-
-                    <div class="posItem">
-
-                        <small>
-                            Entry
-                        </small>
-
-                        <b>
-                            ${position.entry.toFixed(4)}
-                        </b>
-
-                    </div>
-
-
-                    <div class="posItem">
-
-                        <small>
-                            Mark
-                        </small>
-
-                        <b>
-                            ${price.toFixed(4)}
-                        </b>
-
-                    </div>
-
-
-                    <div class="posItem">
-
-                        <small>
-                            Size
-                        </small>
-
-                        <b>
-                            ${position.size.toFixed(3)}
-                        </b>
-
-                    </div>
-
-
-                    <div class="posItem">
-
-                        <small>
-                            Margin
-                        </small>
-
-                        <b>
-                            ${position.margin.toFixed(2)}
-                        </b>
-
-                    </div>
-
-
-                    <div class="posItem">
-
-                        <small>
-                            ROE
-                        </small>
-
-                        <b style="color:${pnlColor}">
-
-                            ${
-                                position.roe >= 0
-                                ? "+"
-                                : ""
-                            }
-
-                            ${position.roe.toFixed(2)}%
-
-                        </b>
-
-                    </div>
-
-
-                    <div class="posItem">
-
-                        <small>
-                            SL / TP
-                        </small>
-
-                        <b>
-
-                            ${
-                                position.sl !== null
-                                ? position.sl.toFixed(4)
-                                : "-"
-                            }
-
-                            /
-
-                            ${
-                                position.tp !== null
-                                ? position.tp.toFixed(4)
-                                : "-"
-                            }
-
-                        </b>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="closeBtn"
-                    onclick="closePosition(${position.id})">
-
-                    Close Position
-
-                </button>
-
-            `;
-
-
-            container.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   HISTORY UI
-========================================================= */
-
-function renderHistory(){
-
-    const container =
-        document.getElementById(
-            "history"
-        );
-
-
-    if(
-        history.length === 0
-    ){
-
-        container.innerHTML =
-            '<div class="empty">No trades yet</div>';
-
-        return;
-
+    if (
+        q === "مننه" ||
+        q === "ډیره مننه" ||
+        q === "ډېره مننه" ||
+        q === "تشکر"
+    ) {
+        return "هر کله! الله تعالی دې درته خیر او برکت درکړي.";
     }
 
+    if (
+        q === "ته څنګه یې" ||
+        q === "څنګه یې" ||
+        q === "څنګه یاست"
+    ) {
+        return "مننه! زه چمتو یم چې ستا پوښتنو ته د موجودو معلوماتو له مخې ځواب ووایم.";
+    }
 
-    container.innerHTML = "";
-
-
-    history
-    .slice(0,20)
-    .forEach(item=>{
-
-        const pnl =
-            item.pnl !== undefined
-            ? item.pnl.toFixed(3)
-            : "-";
-
-
-        const color =
-            item.pnl !== undefined
-            ? (
-                item.pnl >= 0
-                ? "#19d99b"
-                : "#ff5262"
-              )
-            : "#aaa";
-
-
-        const row =
-            document.createElement(
-                "div"
-            );
-
-
-        row.className =
-            "historyRow";
-
-
-        row.innerHTML = `
-
-            <div>
-
-                <b>
-                    ${item.type}
-                </b>
-
-                <br>
-
-                <span style="color:#788592">
-
-                    ${item.reason || ""}
-
-                </span>
-
-            </div>
-
-
-            <div>
-
-                ${item.side}
-
-                <br>
-
-                ${item.price.toFixed(4)}
-
-            </div>
-
-
-            <div style="color:${color}">
-
-                ${pnl}
-
-                <br>
-
-                ${item.time}
-
-            </div>
-
-        `;
-
-
-        container.appendChild(
-            row
-        );
-
-    });
-
+    return null;
 }
 
+/* =====================================================
+   6. د یوې پوښتنې حل کول
+   ===================================================== */
 
-/* =========================================================
-   SIMULATION
-========================================================= */
+function resolveSingleQuestion(question) {
+    const q = normalize(question);
 
-let timer = null;
+    if (!q) {
+        return {
+            type: "unknown",
+            question,
+            answer: ""
+        };
+    }
 
+    const smallTalk = getSmallTalk(q);
 
-function startSimulation(){
+    if (smallTalk) {
+        return {
+            type: "answer",
+            question,
+            answer: smallTalk
+        };
+    }
 
-    clearInterval(
-        timer
-    );
-
+    const matches = findMatches(q);
+    const best = matches[0];
 
     /*
-       هر 1 ثانیه یو tick
+      د ډېر قوي ورته والي په صورت کې مستقیم ځواب.
     */
+    if (best && best.score >= 0.76) {
+        return {
+            type: "answer",
+            question,
+            answer: best.entry.answer,
+            entryId: best.entry.id
+        };
+    }
 
-    timer =
-        setInterval(
-            ()=>{
+    /*
+      که پوښتنه نیمه ورته وي، د انتخابونو وړاندیز.
+    */
+    const suggestions = matches
+        .filter(item => item.score >= 0.22)
+        .slice(0, 5)
+        .map(item => ({
+            id: item.entry.id,
+            question: item.entry.question,
+            answer: item.entry.answer,
+            score: item.score
+        }));
 
-                if(running){
+    if (suggestions.length > 0) {
+        return {
+            type: "suggestions",
+            question,
+            suggestions
+        };
+    }
 
-                    updateCandleFromTick();
-
-                }
-
-            },
-            1000
-        );
-
+    return {
+        type: "unknown",
+        question,
+        answer:
+"بښنه غواړم، د دې پوښتنې لپاره په محلي معلوماتو کې مناسب ځواب پیدا نه شو. پوښتنه لږه روښانه ولیکه یا یې په بل ډول بیان کړه."
+    };
 }
 
+/* =====================================================
+   7. په یوه پیغام کې د څو پوښتنو جلا کول
+   ===================================================== */
 
-/* =========================================================
-   PAUSE / START
-========================================================= */
+function splitQuestions(text) {
+    let input = String(text || "").trim();
 
-function toggleSimulation(){
+    if (!input) return [];
 
-    running =
-        !running;
+    // پښتو او انګلیسي د پوښتنې نښې، نقطې او نوې کرښې
+    // د جلا کولو لپاره پېژني.
+    let parts = input
+        .split(/[؟?!؛;\n]+/)
+        .map(part => part.trim())
+        .filter(Boolean);
 
+    const starters = [
+        "اسلام",
+        "قرآن",
+        "قران",
+        "الله",
+        "رسول",
+        "محمد",
+        "ایمان",
+        "لمونځ",
+        "نماز",
+        "اودس",
+        "روژه",
+        "زکات",
+        "حج",
+        "جنت",
+        "دوزخ",
+        "حدیث",
+        "سنت",
+        "توبه",
+        "دعا",
+        "استغفار",
+        "مسلمان",
+        "هجرت",
+        "صدقه",
+        "اخلاق",
+        "درود",
+        "حلال",
+        "حرام",
+        "جمعه",
+        "اختر",
+        "سورت",
+        "سوره",
+        "مور",
+        "پلار",
+        "ذکر"
+    ];
 
-    document.getElementById(
-        "simText"
-    ).innerText =
-        running
-        ? "Pause"
-        : "Start";
+    const output = [];
 
-}
+    for (const part of parts) {
+        let segments = [part];
 
+        for (const starter of starters) {
+            const nextSegments = [];
 
-/* =========================================================
-   RESET
-========================================================= */
+            for (const segment of segments) {
+                const escaped = starter.replace(
+                    /[.*+?^${}()|[\]\\]/g,
+                    "\\$&"
+                );
 
-function resetMarket(){
+                const regex = new RegExp(
+                    "\\s+(او)\\s+(?=" + escaped + ")",
+                    "g"
+                );
 
-    price = 2.5000;
+                nextSegments.push(...segment.split(regex));
+            }
 
-    chartOffset = 0;
-
-    visibleCount = 60;
-
-    verticalOffset = 0;
-
-    verticalZoom = 1;
-
-
-    startPrice = price;
-
-    highPrice = price;
-
-    lowPrice = price;
-
-    previousPrice = price;
-
-
-    balance = 1000;
-
-    positions = [];
-
-    history = [];
-
-
-    sameColorStreak = 0;
-
-    lastCandleDirection = 0;
-
-    reversalBias = 0;
-
-
-    createInitialCandles();
-
-    updateUI();
-
-    drawChart();
-
-}
-
-
-/* =========================================================
-   TIMEFRAME
-========================================================= */
-
-document
-.querySelectorAll(".tf")
-.forEach(button=>{
-
-    button.addEventListener(
-        "click",
-        ()=>{
-
-            document
-            .querySelectorAll(".tf")
-            .forEach(
-                b =>
-                b.classList.remove(
-                    "active"
-                )
-            );
-
-
-            button.classList.add(
-                "active"
-            );
-
-
-            currentTimeframe =
-                button.dataset.tf;
-
-
-            candleDurationMs =
-                timeframeMs[
-                    currentTimeframe
-                ];
-
-
-            chartOffset = 0;
-
-            visibleCount = 60;
-
-            verticalOffset = 0;
-
-            verticalZoom = 1;
-
-
-            createInitialCandles();
-
+            segments = nextSegments;
         }
+
+        for (const segment of segments) {
+            const clean = segment.trim();
+
+            if (
+                clean &&
+                (
+                    meaningfulWords(clean).length > 0 ||
+                    getSmallTalk(clean)
+                )
+            ) {
+                output.push(clean);
+            }
+        }
+    }
+
+    return output;
+}
+/* =====================================================
+   8. د شمېرې له لارې د وړاندیز انتخاب
+   ===================================================== */
+
+function getNumericSelection(text) {
+    const value = normalize(text);
+
+    if (!/^[1-5]$/.test(value)) {
+        return null;
+    }
+
+    return Number(value);
+}
+
+function answerSelectedChoice(number) {
+    if (!pendingChoices.length) {
+        return null;
+    }
+
+    const group = pendingChoices[0];
+
+    if (!group || !Array.isArray(group.suggestions)) {
+        pendingChoices.shift();
+        return null;
+    }
+
+    const selected = group.suggestions[number - 1];
+
+    if (!selected) {
+        return {
+            type: "answer",
+            answer: "مهرباني وکړه، د ۱ او ۵ ترمنځ یوه موجوده شمېره وټاکه."
+        };
+    }
+
+    pendingChoices.shift();
+
+    return {
+        type: "answer",
+        answer: selected.answer,
+        selectedQuestion: selected.question
+    };
+}
+
+/* =====================================================
+   9. د ځواب جوړول، د څو پوښتنو ملاتړ
+   ===================================================== */
+
+function getAnswer(userText) {
+    const number = getNumericSelection(userText);
+
+    /*
+      که کاروونکي یوازې ۱، ۲، ۳، ۴ یا ۵ ولیکل،
+      دا د لومړۍ نا حل شوې پوښتنې انتخاب ګڼل کېږي.
+    */
+    if (number !== null && pendingChoices.length > 0) {
+        const selected = answerSelectedChoice(number);
+
+        if (selected) {
+            let answer = selected.answer;
+
+            if (selected.selectedQuestion) {
+                answer =
+                    "ستاسې انتخاب: " + selected.selectedQuestion +
+                    "\n\n" + answer;
+            }
+
+            if (pendingChoices.length > 0) {
+                answer +=
+                    "\n\nیادونه: لا هم " +
+                    pendingChoices.length +
+                    " نا حل شوې پوښتنه پاتې ده. د هغې د انتخاب لپاره ۱–۵ ولیکه.";
+            }
+
+            return answer;
+        }
+    }
+
+    /*
+      د نوې پوښتنې په راتلو سره پخواني انتخابونه پاکوو،
+      څو زړې شمېرې له نوې پوښتنې سره ګډې نه شي.
+    */
+    pendingChoices = [];
+
+    const questions = splitQuestions(userText);
+
+    if (questions.length === 0) {
+        return "مهرباني وکړه، یوه پوښتنه ولیکه.";
+    }
+
+    const results = questions.map(question =>
+        resolveSingleQuestion(question)
     );
 
+    const output = [];
+
+    results.forEach((result, index) => {
+        if (questions.length > 1) {
+            output.push("پوښتنه " + (index + 1) + ": " + result.question);
+        }
+
+        if (result.type === "answer") {
+            output.push(result.answer);
+        } else if (result.type === "suggestions") {
+            output.push(
+                "ستا د پوښتنې لپاره څو نږدې موضوعات پیدا شول:"
+            );
+
+            result.suggestions.forEach((item, i) => {
+                output.push((i + 1) + ". " + item.question);
+            });
+
+            pendingChoices.push({
+                originalQuestion: result.question,
+                suggestions: result.suggestions
+            });
+
+            output.push(
+                "د دې پوښتنې د سم ځواب لپاره د پورته انتخابونو شمېره ولیکه."
+            );
+        } else {
+            output.push(result.answer);
+        }
+
+        if (questions.length > 1 && index < results.length - 1) {
+            output.push("");
+        }
+    });
+
+    if (pendingChoices.length > 1) {
+        output.push(
+            "\nیادونه: د څو پوښتنو لپاره انتخابونه شته. " +
+            "لومړی د لومړۍ نا حل شوې پوښتنې شمېره وټاکه؛ " +
+            "وروسته به د بلې پوښتنې انتخاب ته ورسېږو."
+        );
+    }
+
+    return output.join("\n");
+}
+
+/* =====================================================
+   10. د خبرو او پیغامونو رسمول
+   ===================================================== */
+
+function escapeHTML(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+/* =====================================================
+   د ځواب ژوندی ټایپ کولو انیمېشن
+   ===================================================== */
+
+function typeWriter(element, fullText) {
+    element.textContent = "";
+
+    let index = 0;
+
+    // د پښتو او عربي حروفو د سم ښودلو لپاره
+    const characters = Array.from(fullText);
+
+    // هر ځل څو توري ولیکل شي
+    const speed = 18;
+
+    function writeNext() {
+        if (index >= characters.length) {
+            return;
+        }
+
+        element.textContent += characters[index];
+        index++;
+
+        // د متن له لیکلو سره سکرین لاندې حرکت کوي
+        scrollToBottom();
+
+        setTimeout(writeNext, speed);
+    }
+
+    writeNext();
+}
+
+function renderMessage(message) {
+    const isUser = message.role === "user";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "message " + (isUser ? "user" : "assistant");
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = isUser ? "👤" : "☪";
+
+    const bubbleWrap = document.createElement("div");
+    bubbleWrap.className = "bubble-wrap";
+
+    const sender = document.createElement("div");
+    sender.className = "sender";
+    sender.textContent = isUser ? "تاسو" : "اسلامي پښتو AI";
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = message.text || "";
+
+    bubbleWrap.appendChild(sender);
+    bubbleWrap.appendChild(bubble);
+
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(bubbleWrap);
+
+    messagesEl.appendChild(wrapper);
+
+    // د مرستیال د ځواب لپاره د ټایپ کولو انیمېشن
+    if (message.role === "assistant" && message.animate === true) {
+        typeWriter(bubble, message.text || "");
+    }
+}
+
+function renderChat() {
+    messagesEl.innerHTML = "";
+
+    const chat = getCurrentChat();
+
+    if (!chat || chat.messages.length === 0) {
+        welcomeEl.style.display = "flex";
+    } else {
+        welcomeEl.style.display = "none";
+
+        chat.messages.forEach(message => {
+            renderMessage(message);
+        });
+    }
+
+    scrollToBottom();
+}
+
+function scrollToBottom() {
+    requestAnimationFrame(() => {
+        chatArea.scrollTop = chatArea.scrollHeight;
+    });
+}
+
+function addMessage(role, text) {
+    const chat = ensureChat();
+
+    const message = {
+    id: makeId(),
+    role,
+    text,
+    time: now(),
+    animate: role === "assistant"
+};
+
+    chat.messages.push(message);
+    chat.updatedAt = now();
+
+    if (
+        role === "user" &&
+        (chat.title === "نوې خبرې" || !chat.title)
+    ) {
+        chat.title = text.length > 32
+            ? text.slice(0, 32) + "…"
+            : text;
+    }
+
+    saveChats();
+    renderChat();
+    renderHistory();
+
+    return message;
+}
+
+/* =====================================================
+   11. د ټایپ کولو انیمېشن
+   ===================================================== */
+
+function showTyping() {
+    const wrapper = document.createElement("div");
+    wrapper.className = "message assistant";
+    wrapper.id = "typingMessage";
+
+    wrapper.innerHTML = `
+        <div class="avatar">☪</div>
+        <div class="bubble-wrap">
+            <div class="sender">اسلامي پښتو AI</div>
+            <div class="bubble">
+                <div class="typing">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    messagesEl.appendChild(wrapper);
+    scrollToBottom();
+}
+
+function removeTyping() {
+    const typing = document.getElementById("typingMessage");
+
+    if (typing) typing.remove();
+}
+
+/* =====================================================
+   12. د پیغام لېږل
+   ===================================================== */
+
+async function sendMessage(text) {
+    text = String(text || "").trim();
+
+    if (!text || isBusy) return;
+
+    isBusy = true;
+    sendBtn.disabled = true;
+
+    ensureChat();
+
+    addMessage("user", text);
+
+    userInput.value = "";
+    autoResizeInput();
+
+    showTyping();
+
+    /*
+      لنډ ځنډ یوازې د انیمېشن لپاره دی.
+      اصلي ځوابونه د محلي معلوماتو له بانک څخه راځي.
+    */
+    await new Promise(resolve => setTimeout(resolve, 450));
+
+    removeTyping();
+
+    const answer = getAnswer(text);
+
+    addMessage("assistant", answer);
+
+    isBusy = false;
+    sendBtn.disabled = false;
+    userInput.focus();
+}
+
+/* =====================================================
+   13. د تاریخچې رسمول او خلاصول
+   ===================================================== */
+
+function renderHistory() {
+    historyList.innerHTML = "";
+
+    if (chats.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-history";
+        empty.textContent = "تر اوسه کومې خبرې نه شته.";
+        historyList.appendChild(empty);
+        return;
+    }
+
+    const sortedChats = [...chats].sort((a, b) =>
+        new Date(b.updatedAt) - new Date(a.updatedAt)
+    );
+
+    sortedChats.forEach(chat => {
+        const row = document.createElement("div");
+        row.className = "history-item";
+
+        const openButton = document.createElement("button");
+        openButton.className =
+            "history-open" +
+            (chat.id === currentChatId ? " active" : "");
+
+        openButton.textContent = chat.title;
+        openButton.title = chat.title;
+
+        openButton.addEventListener("click", () => {
+            currentChatId = chat.id;
+            pendingChoices = [];
+            renderChat();
+            renderHistory();
+            closeSidebar();
+        });
+
+        const menuButton = document.createElement("button");
+        menuButton.className = "history-menu";
+        menuButton.textContent = "⋮";
+        menuButton.setAttribute("aria-label", "د خبرو اختیارونه");
+
+        menuButton.addEventListener("click", () => {
+            showChatOptions(chat.id);
+        });
+
+        row.appendChild(openButton);
+        row.appendChild(menuButton);
+
+        historyList.appendChild(row);
+    });
+}
+
+function showChatOptions(chatId) {
+    const chat = chats.find(item => item.id === chatId);
+
+    if (!chat) return;
+
+    const action = prompt(
+        "د خبرو لپاره یو انتخاب ولیکه:\n1 = نوم بدلول\n2 = حذف کول"
+    );
+
+    if (action === "1" || action === "۱") {
+        renameChat(chatId);
+    } else if (action === "2" || action === "۲") {
+        deleteChat(chatId);
+    }
+}
+
+function renameChat(chatId) {
+    const chat = chats.find(item => item.id === chatId);
+
+    if (!chat) return;
+
+    const newName = prompt("د خبرو نوی نوم ولیکه:", chat.title);
+
+    if (newName === null) return;
+
+    const cleanName = newName.trim();
+
+    if (!cleanName) {
+        showToast("د خبرو نوم تش نه شي پاتې کېدای.");
+        return;
+    }
+
+    chat.title = cleanName.slice(0, 80);
+    chat.updatedAt = now();
+
+    saveChats();
+    renderHistory();
+    showToast("د خبرو نوم بدل شو.");
+}
+
+function deleteChat(chatId) {
+    const chat = chats.find(item => item.id === chatId);
+
+    if (!chat) return;
+
+    const confirmed = confirm(
+        "ایا غواړې دا خبرې د تل لپاره حذف کړې؟"
+    );
+
+    if (!confirmed) return;
+
+    chats = chats.filter(item => item.id !== chatId);
+
+    if (currentChatId === chatId) {
+        currentChatId = null;
+        pendingChoices = [];
+
+        if (chats.length > 0) {
+            currentChatId = chats[0].id;
+        } else {
+            createChat();
+        }
+    }
+
+    saveChats();
+    renderChat();
+    renderHistory();
+
+    showToast("خبرې حذف شوې.");
+}
+
+/* =====================================================
+   14. د مینو کنټرول
+   ===================================================== */
+
+function openSidebar() {
+    sidebar.classList.add("open");
+    overlay.classList.add("show");
+}
+
+function closeSidebar() {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+}
+
+document.getElementById("menuBtn").addEventListener(
+    "click", openSidebar
+);
+
+document.getElementById("closeMenuBtn").addEventListener(
+    "click", closeSidebar
+);
+
+overlay.addEventListener("click", closeSidebar);
+
+document.getElementById("newChatBtn").addEventListener(
+    "click", createChat
+);
+
+document.getElementById("sidebarNewBtn").addEventListener(
+    "click", createChat
+);
+
+document.getElementById("renameBtn").addEventListener("click", () => {
+    const chat = getCurrentChat();
+
+    if (!chat) {
+        showToast("لومړی خبرې پیل کړه.");
+        return;
+    }
+
+    renameChat(chat.id);
 });
 
+document.getElementById("deleteCurrentBtn").addEventListener("click", () => {
+    const chat = getCurrentChat();
 
-/* =========================================================
-   TOUCH HELPERS
-========================================================= */
+    if (!chat) {
+        showToast("د حذف کولو لپاره خبرې نشته.");
+        return;
+    }
 
-function distanceBetweenTouches(
-    t1,
-    t2
-){
+    deleteChat(chat.id);
+});
 
-    const dx =
-        t1.clientX -
-        t2.clientX;
+/* د ټولو خبرو د حذف کولو تڼۍ */
+document.getElementById("deleteAllBtn").addEventListener("click", () => {
+    if (chats.length === 0) {
+        showToast("د حذف کولو لپاره خبرې نشته.");
+        return;
+    }
 
-
-    const dy =
-        t1.clientY -
-        t2.clientY;
-
-
-    return Math.sqrt(
-        dx*dx +
-        dy*dy
+    const confirmed = confirm(
+        "ایا ډاډه یې چې ټولې خبرې حذف کړې؟ دا کار بېرته نه شي راګرځېدای."
     );
 
+    if (!confirmed) return;
+
+    chats = [];
+    currentChatId = null;
+    pendingChoices = [];
+
+    saveChats();
+    createChat();
+    renderHistory();
+
+    showToast("ټولې خبرې حذف شوې.");
+});
+
+/* =====================================================
+   15. د متن ساحه او د لېږلو تڼۍ
+   ===================================================== */
+
+document.getElementById("chatForm").addEventListener("submit", event => {
+    event.preventDefault();
+    sendMessage(userInput.value);
+});
+
+userInput.addEventListener("input", autoResizeInput);
+
+userInput.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage(userInput.value);
+    }
+});
+
+function autoResizeInput() {
+    userInput.style.height = "43px";
+
+    const newHeight = Math.min(userInput.scrollHeight, 130);
+
+    userInput.style.height = newHeight + "px";
 }
 
+/* د پیل پاڼې وړاندیزونه */
 
-/* =========================================================
-   TOUCH START
-   LONG PRESS CROSSHAIR
-========================================================= */
+document.querySelectorAll(".suggestion-card").forEach(button => {
+    button.addEventListener("click", () => {
+        const question = button.getAttribute("data-question");
 
-canvas.addEventListener(
-    "touchstart",
-    function(e){
-
-        if(e.cancelable){
-
-            e.preventDefault();
-
+        if (question) {
+            sendMessage(question);
         }
+    });
+});
 
+/* =====================================================
+   16. خبرتیا
+   ===================================================== */
 
-        /* ============================
-           TWO FINGER PINCH
-        ============================ */
+let toastTimer = null;
 
-        if(
-            e.touches.length === 2
-        ){
+function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.classList.add("show");
 
-            clearTimeout(
-                longPressTimer
-            );
+    clearTimeout(toastTimer);
 
+    toastTimer = setTimeout(() => {
+        toastEl.classList.remove("show");
+    }, 2500);
+}
 
-            hideCrosshair();
+/* =====================================================
+   17. د اپلیکیشن پیل
+   ===================================================== */
 
+function initializeApp() {
+    loadChats();
 
-            pinchStartDistance =
-                distanceBetweenTouches(
-                    e.touches[0],
-                    e.touches[1]
-                );
-
-
-            pinchStartVisible =
-                visibleCount;
-
-
-            pinchStartZoom =
-                verticalZoom;
-
-
-            isDragging = false;
-
-            return;
-
-        }
-
-
-        /* ============================
-           ONE FINGER
-        ============================ */
-
-        if(
-            e.touches.length === 1
-        ){
-
-            const touch =
-                e.touches[0];
-
-
-            isDragging = true;
-
-
-            dragStartX =
-                touch.clientX;
-
-
-            dragStartY =
-                touch.clientY;
-
-
-            longPressStartX =
-                touch.clientX;
-
-
-            longPressStartY =
-                touch.clientY;
-
-
-            startOffset =
-                chartOffset;
-
-
-            startVerticalOffset =
-                verticalOffset;
-
-
-            /*
-               600ms Long Press
-            */
-
-            clearTimeout(
-                longPressTimer
-            );
-
-
-            longPressTimer =
-                setTimeout(
-                    ()=>{
-
-                        /*
-                           که تر اوسه ګوته
-                           تقریباً هماغه ځای کې وي
-                        */
-
-                        if(
-                            Math.abs(
-                                dragStartX -
-                                longPressStartX
-                            ) < 12 &&
-                            Math.abs(
-                                dragStartY -
-                                longPressStartY
-                            ) < 12
-                        ){
-
-                            isDragging = false;
-
-
-                            showCrosshair(
-                                longPressStartX -
-                                canvas.getBoundingClientRect().left,
-
-                                longPressStartY -
-                                canvas.getBoundingClientRect().top
-                            );
-
-                        }
-
-                    },
-                    LONG_PRESS_TIME
-                );
-
-        }
-
-    },
-    {
-        passive:false
-    }
-);
-
-
-/* =========================================================
-   TOUCH MOVE
-========================================================= */
-
-canvas.addEventListener(
-    "touchmove",
-    function(e){
-
-        if(e.cancelable){
-
-            e.preventDefault();
-
-        }
-
-
-        /* ============================
-           PINCH
-        ============================ */
-
-        if(
-            e.touches.length === 2
-        ){
-
-            clearTimeout(
-                longPressTimer
-            );
-
-
-            hideCrosshair();
-
-
-            const currentDistance =
-                distanceBetweenTouches(
-                    e.touches[0],
-                    e.touches[1]
-                );
-
-
-            if(
-                pinchStartDistance <= 0
-            ){
-
-                return;
-
-            }
-
-
-            const scale =
-                currentDistance /
-                pinchStartDistance;
-
-
-            visibleCount =
-                Math.round(
-                    pinchStartVisible /
-                    scale
-                );
-
-
-            visibleCount =
-                clamp(
-                    visibleCount,
-                    15,
-                    100
-                );
-
-
-            verticalZoom =
-                clamp(
-                    pinchStartZoom *
-                    scale,
-                    0.5,
-                    5
-                );
-
-
-            chartOffset =
-                clamp(
-                    chartOffset,
-                    0,
-                    Math.max(
-                        0,
-                        candleData.length -
-                        visibleCount
-                    )
-                );
-
-
-            drawChart();
-
-            return;
-
-        }
-
-
-        /* ============================
-           ONE FINGER
-        ============================ */
-
-        if(
-            e.touches.length === 1
-        ){
-
-            const touch =
-                e.touches[0];
-
-
-            const dx =
-                touch.clientX -
-                dragStartX;
-
-
-            const dy =
-                touch.clientY -
-                dragStartY;
-
-
-            /* =========================
-               CROSSHAIR ACTIVE
-            ========================= */
-
-            if(crosshairActive){
-
-                crosshairX =
-                    touch.clientX -
-                    canvas.getBoundingClientRect().left;
-
-
-                crosshairY =
-                    touch.clientY -
-                    canvas.getBoundingClientRect().top;
-
-
-                updateCrosshair();
-
-                return;
-
-            }
-
-
-            /* =========================
-               LONG PRESS CANCEL
-            ========================= */
-
-            if(
-                Math.abs(dx) > 10 ||
-                Math.abs(dy) > 10
-            ){
-
-                clearTimeout(
-                    longPressTimer
-                );
-
-            }
-
-
-            /* =========================
-               NORMAL PAN
-            ========================= */
-
-            if(isDragging){
-
-                const pixelsPerCandle =
-                    canvas.clientWidth /
-                    visibleCount;
-
-
-                chartOffset =
-                    startOffset +
-                    Math.round(
-                        dx /
-                        pixelsPerCandle
-                    );
-
-
-                chartOffset =
-                    clamp(
-                        chartOffset,
-                        0,
-                        Math.max(
-                            0,
-                            candleData.length -
-                            visibleCount
-                        )
-                    );
-
-
-                verticalOffset =
-                    startVerticalOffset +
-                    dy /
-                    canvas.clientHeight /
-                    verticalZoom;
-
-
-                drawChart();
-
-            }
-
-        }
-
-    },
-    {
-        passive:false
-    }
-);
-
-
-/* =========================================================
-   TOUCH END
-========================================================= */
-
-canvas.addEventListener(
-    "touchend",
-    function(e){
-
-        clearTimeout(
-            longPressTimer
+    if (chats.length > 0) {
+        const sorted = [...chats].sort((a, b) =>
+            new Date(b.updatedAt) - new Date(a.updatedAt)
         );
 
-
-        /*
-           که Crosshair فعاله،
-           د ګوتې په پورته کولو سره
-           Crosshair پټ شي
-        */
-
-        if(
-            crosshairActive &&
-            e.touches.length === 0
-        ){
-
-            hideCrosshair();
-
-        }
-
-
-        if(
-            e.touches.length === 0
-        ){
-
-            isDragging = false;
-
-            pinchStartDistance = 0;
-
-        }
-
-    },
-    {
-        passive:false
+        currentChatId = sorted[0].id;
+    } else {
+        createChat();
     }
-);
 
-/* =========================================================
-   MOUSE DOWN
-========================================================= */
+    renderChat();
+    renderHistory();
+}
 
-canvas.addEventListener(
-    "mousedown",
-    function(e){
-
-        isDragging = true;
-
-        dragStartX =
-            e.clientX;
-
-        dragStartY =
-            e.clientY;
-
-        startOffset =
-            chartOffset;
-
-        startVerticalOffset =
-            verticalOffset;
-
-    }
-);
-
-
-/* =========================================================
-   MOUSE MOVE
-========================================================= */
-
-canvas.addEventListener(
-    "mousemove",
-    function(e){
-
-        if(!isDragging){
-
-            return;
-
-        }
-
-
-        const dx =
-            e.clientX -
-            dragStartX;
-
-
-        const dy =
-            e.clientY -
-            dragStartY;
-
-
-        const pixelsPerCandle =
-            canvas.clientWidth /
-            visibleCount;
-
-
-        chartOffset =
-            startOffset +
-            Math.round(
-                dx /
-                pixelsPerCandle
-            );
-
-
-        chartOffset =
-            clamp(
-                chartOffset,
-                0,
-                Math.max(
-                    0,
-                    candleData.length -
-                    visibleCount
-                )
-            );
-
-
-        verticalOffset =
-            startVerticalOffset +
-            dy /
-            canvas.clientHeight /
-            verticalZoom;
-
-
-        drawChart();
-
-    }
-);
-
-
-/* =========================================================
-   MOUSE UP
-========================================================= */
-
-canvas.addEventListener(
-    "mouseup",
-    ()=>{
-        isDragging = false;
-    }
-);
-
-
-canvas.addEventListener(
-    "mouseleave",
-    ()=>{
-        isDragging = false;
-    }
-);
-
-
-/* =========================================================
-   WHEEL ZOOM
-========================================================= */
-
-canvas.addEventListener(
-    "wheel",
-    function(e){
-
-        if(e.cancelable){
-
-            e.preventDefault();
-
-        }
-
-
-        if(e.deltaY < 0){
-
-            visibleCount -= 5;
-
-            verticalZoom *= 1.10;
-
-        }
-
-        else{
-
-            visibleCount += 5;
-
-            verticalZoom /= 1.10;
-
-        }
-
-
-        visibleCount =
-            clamp(
-                visibleCount,
-                15,
-                100
-            );
-
-
-        verticalZoom =
-            clamp(
-                verticalZoom,
-                0.5,
-                5
-            );
-
-
-        chartOffset =
-            clamp(
-                chartOffset,
-                0,
-                Math.max(
-                    0,
-                    candleData.length -
-                    visibleCount
-                )
-            );
-
-
-        drawChart();
-
-    },
-    {
-        passive:false
-    }
-);
-
-
-/* =========================================================
-   START
-========================================================= */
-
-createInitialCandles();
-
-resizeCanvas();
-
-updateUI();
-
-startSimulation();
+initializeApp();
 
 </script>
 
