@@ -47,11 +47,11 @@ button {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative; /* ⭐️ اضافه شد */
     background:
         radial-gradient(circle at top right, rgba(24,199,139,.07), transparent 35%),
         var(--bg);
 }
-
 /* HEADER */
 
 .header {
@@ -63,6 +63,8 @@ button {
     padding: 0 15px;
     border-bottom: 1px solid var(--border);
     background: rgba(6,26,20,.95);
+    flex-shrink: 0; /* ⭐️ اضافه شد */
+    z-index: 5; /* ⭐️ اضافه شد */
 }
 
 .icon-btn {
@@ -119,6 +121,7 @@ button {
     flex: 1;
     overflow-y: auto;
     padding: 22px 16px 25px;
+    min-height: 0; /* ⭐️ اضافه شد: بسیار مهم برای جلوگیری از به هم ریختگی */
 }
 
 .welcome {
@@ -283,6 +286,9 @@ button {
     padding: 12px 14px 15px;
     background: rgba(6,26,20,.98);
     border-top: 1px solid var(--border);
+    flex-shrink: 0; /* ⭐️ اضافه شد: جلوگیری از فشرده شدن */
+    z-index: 5; /* ⭐️ اضافه شد */
+    position: relative; /* ⭐️ اضافه شد */
 }
 
 .input-box {
@@ -2044,15 +2050,19 @@ function showToast(message) {
 function initializeApp() {
     loadChats();
 
-    if (chats.length > 0) {
-        const sorted = [...chats].sort((a, b) =>
-            new Date(b.updatedAt) - new Date(a.updatedAt)
-        );
-        currentChatId = sorted[0].id;
-    } else {
-        createChat(true);
-        saveChats();
-    }
+    // ⭐️ ۱. حل مشکل انیمیشن: اگر اپ رفرش شد، پیام‌های قبلی دیگر تایپ نشوند
+    chats.forEach(chat => {
+        if (chat.messages && chat.messages.length > 0) {
+            chat.messages.forEach(msg => {
+                msg.animate = false; 
+            });
+        }
+    });
+
+    // ⭐️ ۲. حل مشکل چت جدید: همیشه یک چت خالی جدید در شروع بساز
+    const newChat = createChat(true);
+    currentChatId = newChat.id;
+    saveChats();
 
     renderChat();
     renderHistory();
