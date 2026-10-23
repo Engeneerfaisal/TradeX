@@ -28,11 +28,12 @@
 html, body {
     background: var(--bg);
     color: var(--text-main);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     height: 100%;
     width: 100%;
-    overflow: hidden; /* ⭐️ قفل کردن صفحه اصلی */
     margin: 0;
+    overflow: hidden; /* جلوگیری از اسکرول */
+    position: fixed; /* قفل کردن کل صفحه */
 }
 
 button, input, textarea {
@@ -47,28 +48,27 @@ button {
 
 /* APP CONTAINER */
 .app {
-    height: 100dvh;
+    height: 100%;
     width: 100%;
     max-width: 900px;
     margin: auto;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden; /* ⭐️ جلوگیری از بیرون زدن محتوا */
+    position: relative; /* برای موقعیت‌دهی هدر و فوتر */
     background: var(--bg);
 }
 
 /* HEADER */
 .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 56px;
-    min-height: 56px;
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 0 16px;
     background: var(--bg);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    flex-shrink: 0; /* ⭐️ جلوگیری از فشرده شدن هدر */
     z-index: 10;
 }
 
@@ -128,11 +128,15 @@ button {
 
 /* CHAT AREA */
 .chat-area {
-    flex: 1;
+    position: absolute;
+    top: 56px; /* زیر هدر */
+    bottom: 80px; /* بالای نوار ورودی */
+    left: 0;
+    right: 0;
     overflow-y: auto;
     padding: 16px 20px;
     scroll-behavior: smooth;
-    min-height: 0; /* ⭐️ بسیار مهم برای اسکرول صحیح */
+    -webkit-overflow-scrolling: touch; /* اسکرول نرم در iOS/Android */
 }
 
 /* Scrollbar Customization */
@@ -356,10 +360,17 @@ button {
 
 /* INPUT AREA */
 .input-area {
-    padding: 10px 16px 16px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    padding: 10px 16px;
     background: var(--bg);
-    flex-shrink: 0; /* ⭐️ جلوگیری از فشرده شدن */
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .input-box {
