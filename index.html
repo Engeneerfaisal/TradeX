@@ -2214,6 +2214,44 @@ function initializeApp() {
 
 initializeApp();
 
+/* =====================================================
+   20. حل مشکل کیبورد در اپلیکیشن اندروید (WebView)
+   ===================================================== */
+
+// این تابع ارتفاع واقعی صفحه را با باز و بسته شدن کیبورد تنظیم می‌کند
+function handleKeyboardResize() {
+    const app = document.querySelector('.app');
+    // window.innerHeight ارتفاعی است که با باز شدن کیبورد تغییر می‌کند
+    app.style.height = window.innerHeight + 'px';
+    scrollToBottom();
+}
+
+// تنظیم ارتفاع اولیه هنگام باز شدن اپلیکیشن
+handleKeyboardResize();
+
+// گوش دادن به تغییرات ارتفاع صفحه (زمانی که کیبورد باز یا بسته می‌شود)
+window.addEventListener('resize', handleKeyboardResize);
+
+// برای برخی از نسخه‌های قدیمی اندروید
+window.addEventListener('orientationchange', handleKeyboardResize);
+
+// وقتی کاربر روی فیلد ورودی کلیک می‌کند (کیبورد باز می‌شود)
+userInput.addEventListener('focus', () => {
+    setTimeout(handleKeyboardResize, 300); // با کمی تاخیر برای اینکه کیبورد کاملاً باز شود
+});
+
+// وقتی کاربر از فیلد ورودی خارج می‌شود (کیبورد بسته می‌شود)
+userInput.addEventListener('blur', () => {
+    setTimeout(handleKeyboardResize, 100);
+});
+
+// قفل کردن کل صفحه اصلی برای جلوگیری از اسکرول ناخواسته
+document.documentElement.style.overflow = 'hidden';
+document.body.style.overflow = 'hidden';
+document.body.style.position = 'fixed';
+document.body.style.width = '100%';
+document.body.style.height = '100%';
+
 </script>
 
 </body>
