@@ -1,2269 +1,1958 @@
 <!DOCTYPE html>
-<html lang="ps" dir="rtl">
+<html lang="ps">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اسلامي پښتو AI</title>
-
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Advanced Pashto-English Dictionary</title>
 <style>
 :root {
-    --bg: #ffffff;
-    --surface: #ffffff;
-    --text-main: #1f1f1f;
-    --text-muted: #5e5e5e;
-    --border: #e3e3e3;
-    --user-bubble: #f0f4f9;
-    --primary-blue: #1b72e8;
-    --primary-blue-hover: #1557b0;
-    --danger: #d93025;
+    --green-dark: #0b5d3b;
+    --green-main: #0f7b4f;
+    --green-light: #1aa36f;
+    --white: #ffffff;
+    --gray-bg: #f2f2f2;
+    --shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    -webkit-tap-highlight-color: transparent;
+    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
-html, body {
-    background: var(--bg);
-    color: var(--text-main);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    overflow: hidden; /* جلوگیری از اسکرول */
-    position: fixed; /* قفل کردن کل صفحه */
+body {
+    background: linear-gradient(180deg, var(--green-dark), var(--green-main));
+    min-height: 100vh;
 }
 
-button, input, textarea {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-    border: none;
-    background: none;
-}
-
-/* APP CONTAINER */
-.app {
-    height: 100%;
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-    position: relative; /* برای موقعیت‌دهی هدر و فوتر */
-    background: var(--bg);
-}
-
-/* HEADER */
-.header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 16px;
-    background: var(--bg);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    z-index: 10;
-}
-
-.icon-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    color: #444746;
-    font-size: 20px;
-    display: grid;
-    place-items: center;
-    transition: background 0.2s ease;
-}
-
-.icon-btn:hover {
-    background: #f1f3f4;
-}
-
-.logo {
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: #e8f0fe;
-    color: var(--primary-blue);
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.header-title {
-    flex: 1;
-    min-width: 0;
-}
-
-.header-title h1 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1f1f1f;
-}
-
-.header-title p {
-    font-size: 11px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-}
-
-.status {
-    width: 7px;
-    height: 7px;
-    display: inline-block;
-    background: #1e8e3e;
-    border-radius: 50%;
-    margin-left: 6px;
-}
-
-/* CHAT AREA */
-.chat-area {
-    position: absolute;
-    top: 56px; /* زیر هدر */
-    bottom: 80px; /* بالای نوار ورودی */
-    left: 0;
-    right: 0;
-    overflow-y: auto;
-    padding: 16px 20px;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch; /* اسکرول نرم در iOS/Android */
-}
-
-/* Scrollbar Customization */
-.chat-area::-webkit-scrollbar,
-.history-list::-webkit-scrollbar {
-    width: 6px;
-}
-.chat-area::-webkit-scrollbar-thumb,
-.history-list::-webkit-scrollbar-thumb {
-    background: #e0e0e0;
-    border-radius: 10px;
-}
-
-/* WELCOME SCREEN */
-.welcome {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px 0;
-    animation: fadeIn 0.3s ease;
-}
-
-.welcome-logo {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-size: 32px;
-    color: var(--primary-blue);
-    background: #e8f0fe;
-    margin-bottom: 16px;
-}
-
-.welcome h2 {
-    font-size: 26px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #1f1f1f;
-}
-
-.welcome p {
-    max-width: 440px;
-    line-height: 1.6;
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-.suggestions-grid {
-    width: 100%;
-    max-width: 600px;
-    margin-top: 28px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.suggestion-card {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: #f8f9fa;
-    padding: 16px;
-    text-align: right;
-    color: var(--text-main);
-    line-height: 1.5;
-    font-size: 13px;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.suggestion-card:hover {
-    background: #f1f3f4;
-    border-color: #d0d0d0;
-}
-
-.suggestion-card span {
-    font-size: 20px;
-}
-
-/* MESSAGES (GEMINI STYLE) */
-.message {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 24px;
-    animation: fadeIn 0.25s ease;
-    max-width: 100%;
-}
-
-/* USER MESSAGE */
-.message.user {
-    align-items: flex-end;
-}
-
-.message.user .sender {
-    display: none;
-}
-
-.message.user .bubble {
-    background: var(--user-bubble);
-    color: #1f1f1f;
-    border-radius: 22px;
-    padding: 14px 20px;
-    max-width: 82%;
-    font-size: 15px;
-    line-height: 1.7;
-}
-
-/* ASSISTANT MESSAGE */
-.message.assistant {
-    align-items: flex-start;
-}
-
-.message.assistant .sender {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-}
-
-.message.assistant .bubble {
-    background: transparent;
-    border: none;
-    padding: 0;
-    color: #1f1f1f;
-    font-size: 15px;
-    line-height: 1.8;
-    max-width: 100%;
-}
-
-.bubble {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-.bubble strong {
-    color: var(--primary-blue);
-}
-
-/* ACTION BUTTONS (LIKE / DISLIKE / COPY) */
-.message-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    animation: fadeIn 0.3s ease; /* ⭐️ انیمیشن نرم کله چې پیدا شي */
-}
-
-.action-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #5e5e5e;
-    transition: all 0.2s ease;
-}
-
-.action-btn:hover {
-    background: #f1f3f4;
-    color: #1f1f1f;
-}
-
-.action-btn svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: all 0.2s ease;
-}
-
-/* Filled State for Like/Dislike */
-.action-btn.active-like {
-    color: var(--primary-blue);
-}
-.action-btn.active-like svg {
-    fill: var(--primary-blue);
-    stroke: var(--primary-blue);
-}
-
-.action-btn.active-dislike {
-    color: var(--danger);
-}
-.action-btn.active-dislike svg {
-    fill: var(--danger);
-    stroke: var(--danger);
-}
-
-/* TYPING INDICATOR */
-.typing {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 0;
-}
-
-.typing span {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--primary-blue);
-    animation: bounce 0.8s infinite alternate;
-}
-
-.typing span:nth-child(2) {
-    animation-delay: 0.15s;
-}
-
-.typing span:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-/* INPUT AREA */
-.input-area {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    padding: 10px 16px;
-    background: var(--bg);
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.input-box {
-    max-width: 800px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    background: #f8f9fa;
-    padding: 6px 8px 6px 16px;
-    transition: all 0.2s ease;
-}
-
-.input-box:focus-within {
-    background: #ffffff;
-    border-color: #c6c6c6;
-    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.18);
-}
-
-#userInput {
-    flex: 1;
-    min-width: 0;
-    max-height: 120px;
-    min-height: 38px;
-    resize: none;
-    outline: none;
-    border: none;
-    background: transparent;
-    color: var(--text-main);
-    padding: 8px 4px;
-    line-height: 1.5;
-    font-size: 15px;
-}
-
-#userInput::placeholder {
-    color: #757575;
-}
-
-/* CIRCULAR SEND BUTTON */
-.send-btn {
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--primary-blue);
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(27, 114, 232, 0.3);
-}
-
-.send-btn svg {
-    width: 22px;
-    height: 22px;
-    fill: currentColor;
-}
-
-.send-btn:hover:not(:disabled) {
-    background: var(--primary-blue-hover);
-    transform: scale(1.05);
-}
-
-.send-btn:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-    background: #c6c6c6;
-    box-shadow: none;
-}
-
-.footer-note {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 11px;
-    margin-top: 8px;
-}
-
-/* SIDEBAR */
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 20;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-}
-
-.overlay.show {
-    display: block;
-    opacity: 1;
-}
-
-.sidebar {
-    position: fixed;
-    z-index: 25;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: min(300px, 85vw);
-    background: #ffffff;
-    border-left: 1px solid var(--border);
-    transform: translateX(105%);
-    transition: transform 0.25s ease;
-    display: flex;
-    flex-direction: column;
-    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
-}
-
-.sidebar.open {
-    transform: translateX(0);
-}
-
-.sidebar-header {
-    padding: 16px;
+header {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--border);
 }
 
-.sidebar-header h2 {
-    font-size: 15px;
-    font-weight: 600;
+.menu {
+    font-size: 26px;
+    cursor: pointer;
 }
 
-.sidebar-actions {
-    padding: 12px;
-    display: grid;
-    gap: 8px;
-}
-
-.side-btn {
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: #f8f9fa;
-    color: var(--text-main);
-    text-align: right;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    transition: background 0.15s ease;
-}
-
-.side-btn:hover {
-    background: #f1f3f4;
-}
-
-.side-btn svg {
-    width: 16px;
-    height: 16px;
-    stroke: currentColor;
-    stroke-width: 2;
-    fill: none;
-}
-
-.side-btn.primary {
-    background: #e8f0fe;
-    color: var(--primary-blue);
-    font-weight: 600;
-    border-color: #d2e3fc;
-}
-
-.side-btn.primary:hover {
-    background: #d2e3fc;
-}
-
-.history-title {
-    padding: 8px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-}
-
-.history-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 8px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.history-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.history-open {
-    flex: 1;
-    min-width: 0;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: var(--text-main);
-    text-align: right;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13px;
-}
-
-.history-open:hover {
-    background: #f1f3f4;
-}
-
-.history-open.active {
-    background: #e8f0fe;
-    color: var(--primary-blue);
-}
-
-.history-menu {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    color: var(--text-muted);
-    border-radius: 50%;
-    font-size: 16px;
-    display: grid;
-    place-items: center;
-}
-
-.history-menu:hover {
-    background: #f1f3f4;
-    color: var(--text-main);
-}
-
-.empty-history {
-    text-align: center;
-    padding: 24px 10px;
-    color: var(--text-muted);
-    font-size: 13px;
-}
-
-/* TOAST NOTIFICATION */
-.toast {
-    position: fixed;
-    z-index: 40;
-    bottom: 85px;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: #323232;
-    color: #ffffff;
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-size: 13px;
-    display: none;
-    max-width: 90%;
-    text-align: center;
-    opacity: 0;
-    transition: all 0.2s ease;
-}
-
-.toast.show {
-    display: block;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* MODAL */
-.modal-overlay {
+.overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 50;
+    background: rgba(0,0,0,0.6);
     display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
+    z-index: 100;
 }
 
-.modal-overlay.show {
-    display: flex;
-}
-
-.modal {
-    background: #ffffff;
-    border-radius: 16px;
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100%;
+    background: white;
+    transition: 0.3s;
+    z-index: 101;
     padding: 20px;
-    max-width: 360px;
-    width: 100%;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-.modal h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 12px;
+.side-menu.active { left: 0; }
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.modal input {
+.menu-header img {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
+    height: 160px;
+    border-radius: 50%;
+}
+
+.menu-btn {
+    display: block;
+    padding: 15px;
+    background: var(--green-main);
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+/* ABOUT US */
+.about {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: none;
+    z-index: 200;
+    padding: 20px;
+}
+.about h2 { color: var(--green-main); }
+.about button {
+    margin-top: 20px;
+    padding: 10px;
+    background: var(--green-main);
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.about img{
+    display: block;
+    width: 130px;
+    height: 130px;
+    margin: 20px auto;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #0f7b4f;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.fav {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.search-box {
+    background: var(--green-main);
+    padding: 15px;
+}
+
+.search-container {
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.search-container input {
+    flex: 1;
+    background: transparent;
+    border: none;
     outline: none;
+    font-size: 16px;
+    color: var(--white);
+}
+
+.search-container input::placeholder {
+    color: #e0e0e0;
+}
+
+.search-container .icon {
+    font-size: 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.lang-switch {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px;
+    color: var(--white);
+}
+
+.lang-switch label {
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.content {
+    background: var(--gray-bg);
+    border-radius: 25px 25px 0 0;
+    padding: 20px;
+    min-height: 70vh;
+}
+
+.word-day {
+    background: var(--green-main);
+    color: var(--white);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.word-day-header {
+    display: flex;
+    justify-content: space-between;
     font-size: 14px;
 }
 
-.modal input:focus {
-    border-color: var(--primary-blue);
+.word-day-main {
+    margin-top: 15px;
+    font-size: 26px;
+    font-weight: bold;
 }
 
-.modal-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
+.word-day-meaning {
+    margin-top: 5px;
+    font-size: 16px;
 }
 
-.modal-btn {
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: #f8f9fa;
-    color: var(--text-main);
-    font-size: 13px;
-    font-weight: 500;
+.result-card {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: var(--shadow);
+    margin-bottom: 15px;
 }
 
-.modal-btn.primary {
-    background: var(--primary-blue);
-    color: white;
-    border: none;
+.result-word {
+    font-size: 22px;
+    color: var(--green-dark);
+    font-weight: bold;
 }
 
-.modal-btn.danger {
-    background: var(--danger);
-    color: white;
-    border: none;
+.result-meaning {
+    margin-top: 8px;
+    font-size: 18px;
 }
 
-/* DROPDOWN MENU */
-.chat-dropdown {
-    position: fixed;
-    z-index: 60;
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    padding: 6px;
-    display: none;
-    flex-direction: column;
-    min-width: 130px;
+.result-example {
+    margin-top: 8px;
+    font-style: italic;
+    color: #555;
 }
 
-.chat-dropdown.show {
-    display: flex;
-}
-
-.chat-dropdown button {
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    padding: 8px 12px;
-    text-align: right;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-}
-
-.chat-dropdown button:hover {
-    background: #f1f3f4;
-}
-
-.chat-dropdown button svg {
-    width: 14px;
-    height: 14px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-}
-
-.chat-dropdown button.danger {
-    color: var(--danger);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bounce {
-    from { transform: translateY(0); opacity: 0.4; }
-    to { transform: translateY(-4px); opacity: 1; }
-}
-
-@media (max-width: 520px) {
-    .chat-area {
-        padding: 12px;
-    }
-    .welcome h2 {
-        font-size: 22px;
-    }
-    .suggestions-grid {
-        grid-template-columns: 1fr;
-    }
-    .message.user .bubble {
-        max-width: 90%;
-    }
+.footer-btn {
+    background: var(--green-main);
+    color: var(--white);
+    text-align: center;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 20px;
 }
 </style>
 </head>
-
 <body>
+<header>
+    <div class="menu" onclick="openMenu()">☰</div>
+    <div class="title">Dictionary</div>
+    <div class="fav">♡</div>
+</header>
 
-<div class="app">
-
-    <header class="header">
-        <button class="icon-btn" id="menuBtn" aria-label="مینو">☰</button>
-
-        <div class="logo">☪</div>
-
-        <div class="header-title">
-            <h1>اسلامي پښتو AI</h1>
-            <p><span class="status"></span> محلي اسلامي مرستیال</p>
-        </div>
-
-        <button class="icon-btn" id="newChatBtn" aria-label="نوې خبرې">＋</button>
-    </header>
-
-    <main class="chat-area" id="chatArea">
-        <section class="welcome" id="welcome">
-            <div class="welcome-logo">☪</div>
-            <h2>السلام علیکم!</h2>
-            <p>
-                اسلامي پښتو مرستیال ته ښه راغلاست.
-                خپله پوښتنه ولیکئ؛ زه به د موجودو معلوماتو له مخې
-                د ځواب هڅه وکړم.
-            </p>
-
-            <div class="suggestions-grid">
-                <button class="suggestion-card" data-question="اسلام څه شی دی؟">
-                    <span>📖</span>
-                    اسلام څه شی دی؟
-                </button>
-
-                <button class="suggestion-card" data-question="قرآن کریم څه شی دی؟">
-                    <span>📗</span>
-                    قرآن کریم څه شی دی؟
-                </button>
-
-                <button class="suggestion-card" data-question="د اسلام پنځه ارکان کوم دي؟">
-                    <span>🕌</span>
-                    د اسلام پنځه ارکان
-                </button>
-
-                <button class="suggestion-card" data-question="اودس څنګه کیږي؟">
-                    <span>💧</span>
-                    د اوداسه طریقه
-                </button>
-            </div>
-        </section>
-
-        <div id="messages"></div>
-    </main>
-
-    <footer class="input-area">
-        <form class="input-box" id="chatForm">
-            <textarea
-                id="userInput"
-                rows="1"
-                placeholder="خپله پوښتنه دلته ولیکئ..."
-                aria-label="خپله پوښتنه ولیکئ"
-            ></textarea>
-
-            <button class="send-btn" id="sendBtn" type="submit" aria-label="لېږل">
-                <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
-            </button>
-        </form>
-
-        <div class="footer-note">
-            د مهمو شرعي مسایلو لپاره له باوري عالم سره هم مشوره وکړئ.
-        </div>
-    </footer>
-
+<div class="overlay" onclick="closeMenu()"></div>
+<div class="side-menu" id="sideMenu">
+    <div class="menu-header">
+        <img src="poto/logo.png">
+        <p>Dictionary App</p>
+    </div>
+    <div class="menu-btn" onclick="openAbout()">About Us</div>
+    <div class="menu-btn">More Apps</div>
+    <div class="menu-btn" onclick="closeMenu()">Close</div>
 </div>
 
-<div class="overlay" id="overlay"></div>
-
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <h2>☪ د خبرو تاریخچه</h2>
-        <button class="icon-btn" id="closeMenuBtn" aria-label="بندول">×</button>
-    </div>
-
-    <div class="sidebar-actions">
-        <button class="side-btn primary" id="sidebarNewBtn">
-            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            نوې خبرې
-        </button>
-        <button class="side-btn" id="renameBtn">
-            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-            د خبرو نوم بدلول
-        </button>
-        <button class="side-btn" id="deleteCurrentBtn">
-            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            دا خبرې حذف کول
-        </button>
-        <button class="side-btn" id="deleteAllBtn">
-            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            حذف ټولې خبرې
-        </button>
-    </div>
-
-    <div class="history-title">پخوانۍ خبرې</div>
-    <div class="history-list" id="historyList"></div>
-</aside>
-
-<div class="toast" id="toast"></div>
-
-<!-- منوی شناور -->
-<div class="chat-dropdown" id="chatDropdown">
-    <button id="dropdownRenameBtn">
-        <svg viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-        نوم بدلول
-    </button>
-    <button id="dropdownDeleteBtn" class="danger">
-        <svg viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-        حذف کول
-    </button>
+<div class="about" id="about">
+    <h2>About Us</h2>
+    <img src="poto/faisal1.png">
+    <p dir="rtl">
+        دا ډیکشنري د فیصل احمدی له خوا د پښتو او انګلیسي ژبو د زده کړې لپاره جوړه شوې ده.
+        هدف یې دا دی چې زده کوونکو ته اسانه، چټکه او ښکلي تجربه ورکړي.
+    </p>
+    <button onclick="closeAbout()">Back</button>
 </div>
 
-<!-- مودال سفارشی -->
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-        <h3 id="modalTitle"></h3>
-        <input type="text" id="modalInput" />
-        <div class="modal-actions" id="modalActions"></div>
+<div class="search-box">
+    <div class="search-container">
+        <span class="icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search word...">
+        <span class="icon" onclick="speak()">🎤</span>
     </div>
 </div>
 
+<div class="lang-switch">
+    <label>
+        <input type="radio" name="lang" value="en2ps" checked>
+         English→Pashto
+    </label>
+    <label>
+        <input type="radio" name="lang" value="ps2en">
+      Pashto → English
+    </label>
+</div>
+
+<div class="content">
+
+    <div class="word-day">
+        <strong>Word of the Day</strong>
+        <div id="wotdWord"></div>
+        <div id="wotdMeaning"></div>
+    </div>
+
+    <div id="results"></div>
+
+    <div class="footer-btn">
+        Pashto Idioms<br>پښتو متلونه
+    </div>
+</div>
 <script>
-"use strict";
+const dictionary = [
+{ en:"love", ps:"مینه", example:"Love is powerful." },
+{ en:"peace", ps:"سوله", example:"We want peace." },
+{ en:"team", ps:"ټیم", example:"The team won the match." },
+{ en:"talk", ps:"خبرې کول", example:"We need to talk." },
+{ en:"violation", ps:"سرغړونه", example:"Human rights violation." },
+{ en:"knowledge", ps:"پوهه", example:"Knowledge is power." },
+{ en:"freedom", ps:"ازادي", example:"Freedom is a right." },
+{ en:"success", ps:"بریا", example:"Success needs effort." },
+{ en:"Denmark", ps:"ډنمارک", example:"Denmark is a country." },
+{ en:"love", ps:"مینه", example:"Love is powerful." },
+{ en:"peace", ps:"سوله", example:"We want peace." },
+{ en:"knowledge", ps:"پوهه", example:"Knowledge is power." },
+{ en:"freedom", ps:"ازادي", example:"Freedom is a human right." },
+{ en:"success", ps:"بریا", example:"Success needs hard work." },
+{ en:"hope", ps:"هیله", example:"Never lose hope." },
+{ en:"life", ps:"ژوند", example:"Life is beautiful." },
+{ en:"time", ps:"وخت", example:"Time is precious." },
+{ en:"friend", ps:"ملګری", example:"A friend helps you." },
+{ en:"family", ps:"کورنۍ", example:"Family is important." },
+{ en:"education", ps:"زده کړه", example:"Education changes lives." },
+{ en:"health", ps:"روغتیا", example:"Health is wealth." },
+{ en:"money", ps:"پیسې", example:"Money is necessary." },
+{ en:"work", ps:"کار", example:"Work brings success." },
+{ en:"effort", ps:"هڅه", example:"Effort leads to success." },
+{ en:"truth", ps:"ریښتیا", example:"Truth always wins." },
+{ en:"power", ps:"ځواک", example:"Knowledge is power." },
+{ en:"patience", ps:"صبر", example:"Patience is a virtue." },
+{ en:"respect", ps:"درناوی", example:"Respect others." },
+{ en:"honesty", ps:"ایمانداري", example:"Honesty builds trust." },
+{ en:"teacher", ps:"ښوونکی", example:"A teacher guides students." },
+{ en:"student", ps:"زده کوونکی", example:"The student studies hard." },
+{ en:"school", ps:"ښوونځی", example:"Children go to school." },
+{ en:"book", ps:"کتاب", example:"Books give knowledge." },
+{ en:"pen", ps:"قلم", example:"Write with a pen." },
+{ en:"computer", ps:"کمپیوټر", example:"I use a computer." },
+{ en:"phone", ps:"موبایل", example:"The phone is ringing." },
+{ en:"internet", ps:"انټرنېټ", example:"Internet connects people." },
+{ en:"technology", ps:"ټکنالوژي", example:"Technology is advancing." },
+{ en:"science", ps:"ساینس", example:"Science explains nature." },
+{ en:"country", ps:"هېواد", example:"Afghanistan is a country." },
+{ en:"city", ps:"ښار", example:"This city is big." },
+{ en:"village", ps:"کلی", example:"I live in a village." },
+{ en:"home", ps:"کور", example:"Home is peaceful." },
+{ en:"market", ps:"بازار", example:"The market is crowded." },
+{ en:"road", ps:"سړک", example:"The road is long." },
+{ en:"car", ps:"موټر", example:"The car is fast." },
+{ en:"bus", ps:"بس", example:"Take the bus." },
+{ en:"travel", ps:"سفر", example:"I like to travel." },
+{ en:"journey", ps:"سفر", example:"Life is a journey." },
+{ en:"food", ps:"خواړه", example:"Food is necessary." },
+{ en:"water", ps:"اوبه", example:"Drink clean water." },
+{ en:"bread", ps:"ډوډۍ", example:"Bread is basic food." },
+{ en:"tea", ps:"چای", example:"I drink tea." },
+{ en:"fruit", ps:"میوه", example:"Fruit is healthy." },
+{ en:"meat", ps:"غوښه", example:"Meat has protein." },
+{ en:"morning", ps:"سهار", example:"Good morning!" },
+{ en:"night", ps:"شپه", example:"Good night!" },
+{ en:"day", ps:"ورځ", example:"Today is a good day." },
+{ en:"week", ps:"اوونۍ", example:"This week is busy." },
+{ en:"happy", ps:"خوشحال", example:"I am happy." },
+{ en:"sad", ps:"خفه", example:"He feels sad." },
+{ en:"angry", ps:"قهرجن", example:"Do not be angry." },
+{ en:"brave", ps:"زړور", example:"He is brave." },
+{ en:"strong", ps:"قوي", example:"She is strong." },
+{ en:"weak", ps:"کمزوری", example:"He feels weak." },
+{ en:"fast", ps:"چټک", example:"The car is fast." },
+{ en:"slow", ps:"ورو", example:"Walk slowly." },
+{ en:"easy", ps:"اسانه", example:"This is easy." },
+{ en:"difficult", ps:"سخت", example:"This task is difficult." },
+{ en:"accept", ps:"منل", example:"I accept your offer." },
+{ en:"achieve", ps:"ترلاسه کول", example:"She achieved success." },
+{ en:"action", ps:"عمل", example:"Action speaks louder." },
+{ en:"active", ps:"فعال", example:"He is very active." },
+{ en:"advice", ps:"مشوره", example:"Take my advice." },
+{ en:"affect", ps:"اغېز کول", example:"This affects me." },
+{ en:"against", ps:"پر ضد", example:"Fight against injustice." },
+{ en:"agree", ps:"موافق کېدل", example:"I agree with you." },
+{ en:"allow", ps:"اجازه ورکول", example:"Allow me to help." },
+{ en:"answer", ps:"ځواب", example:"Give me an answer." },
+{ en:"appear", ps:"ښکاره کېدل", example:"He appeared suddenly." },
+{ en:"apply", ps:"درخواست ورکول", example:"Apply for the job." },
+{ en:"argue", ps:"بحث کول", example:"Do not argue." },
+{ en:"arrive", ps:"رسېدل", example:"They arrived early." },
+{ en:"attack", ps:"برید", example:"The attack was sudden." },
+{ en:"avoid", ps:"ډډه کول", example:"Avoid bad habits." },
+{ en:"balance", ps:"توازن", example:"Keep balance." },
+{ en:"behave", ps:"چلند کول", example:"Behave well." },
+{ en:"believe", ps:"باور کول", example:"I believe you." },
+{ en:"benefit", ps:"ګټه", example:"This brings benefit." },
+{ en:"beyond", ps:"هاخوا", example:"Beyond imagination." },
+{ en:"bother", ps:"ځورول", example:"Do not bother me." },
+{ en:"build", ps:"جوړول", example:"Build a house." },
+{ en:"cancel", ps:"لغوه کول", example:"Cancel the meeting." },
+{ en:"careful", ps:"احتیاطی", example:"Be careful." },
+{ en:"chance", ps:"چانس", example:"Give me a chance." },
+{ en:"change", ps:"بدلون", example:"Change is good." },
+{ en:"choose", ps:"غوره کول", example:"Choose wisely." },
+{ en:"clear", ps:"روښانه", example:"The sky is clear." },
+{ en:"compare", ps:"پرتله کول", example:"Compare both options." },
+{ en:"complete", ps:"بشپړ", example:"The work is complete." },
+{ en:"consider", ps:"په پام کې نیول", example:"Consider this idea." },
+{ en:"continue", ps:"دوام ورکول", example:"Continue working." },
+{ en:"control", ps:"کنټرول", example:"Control your anger." },
+{ en:"correct", ps:"سم", example:"Your answer is correct." },
+{ en:"create", ps:"جوړول", example:"Create something new." },
+{ en:"damage", ps:"زیان", example:"The storm caused damage." },
+{ en:"decide", ps:"فیصله کول", example:"Decide quickly." },
+{ en:"depend", ps:"تکیه کول", example:"It depends on you." },
+{ en:"ability", ps:"وړتیا", example:"He showed great ability." },
+{ en:"absence", ps:"نشتوالی", example:"His absence was noticed." },
+{ en:"absolute", ps:"مطلق", example:"Absolute truth matters." },
+{ en:"academic", ps:"علمي", example:"Academic success is important." },
+{ en:"access", ps:"لاس رسی", example:"Access to education matters." },
+{ en:"accident", ps:"پیښه", example:"It was an accident." },
+{ en:"accomplish", ps:"ترسره کول", example:"She accomplished her goal." },
+{ en:"account", ps:"حساب", example:"Open a bank account." },
+{ en:"accurate", ps:"دقیق", example:"The result is accurate." },
+{ en:"accuse", ps:"تور لګول", example:"They accused him wrongly." },
+{ en:"achieve", ps:"ترلاسه کول", example:"You can achieve success." },
+{ en:"acknowledge", ps:"منل", example:"He acknowledged the mistake." },
+{ en:"acquire", ps:"ترلاسه کول", example:"She acquired new skills." },
+{ en:"adapt", ps:"عیارېدل", example:"Adapt to changes." },
+{ en:"adequate", ps:"کافي", example:"The food was adequate." },
+{ en:"adjust", ps:"برابرول", example:"Adjust the settings." },
+{ en:"admire", ps:"ستاینه کول", example:"I admire your work." },
+{ en:"admit", ps:"اعتراف کول", example:"He admitted the truth." },
+{ en:"adopt", ps:"منل", example:"They adopted the plan." },
+{ en:"advance", ps:"پرمختګ", example:"Technology advances fast." },
+{ en:"advantage", ps:"ګټه", example:"Education is an advantage." },
+{ en:"adventure", ps:"ماجرا", example:"Life is an adventure." },
+{ en:"advertise", ps:"اعلان کول", example:"They advertise products." },
+{ en:"afford", ps:"وس لرل", example:"I cannot afford it." },
+{ en:"agency", ps:"اداره", example:"A travel agency helps." },
+{ en:"aggressive", ps:"تهاجمي", example:"His behavior was aggressive." },
+{ en:"aid", ps:"مرسته", example:"They sent aid." },
+{ en:"aim", ps:"موخه", example:"Set a clear aim." },
+{ en:"alarm", ps:"خبرتیا", example:"The alarm rang." },
+{ en:"alter", ps:"بدلول", example:"Do not alter the plan." },
+{ en:"analysis", ps:"تحلیل", example:"Data analysis is needed." },
+{ en:"announce", ps:"اعلان کول", example:"They announced the result." },
+{ en:"annual", ps:"کلنی", example:"Annual meeting is held." },
+{ en:"anticipate", ps:"تمه کول", example:"We anticipate success." },
+{ en:"anxiety", ps:"اندېښنه", example:"Anxiety affects health." },
+{ en:"apparent", ps:"څرګند", example:"The mistake was apparent." },
+{ en:"appeal", ps:"غوښتنه", example:"They made an appeal." },
+{ en:"appoint", ps:"ټاکل", example:"He was appointed manager." },
+{ en:"appreciate", ps:"قدرداني کول", example:"I appreciate your help." },
+{ en:"approach", ps:"لار", example:"This approach works." },
+{ en:"appropriate", ps:"مناسب", example:"Wear appropriate clothes." },
+{ en:"approve", ps:"منظورول", example:"They approved the plan." },
+{ en:"argue", ps:"بحث کول", example:"They argue often." },
+{ en:"arrangement", ps:"ترتیب", example:"Make an arrangement." },
+{ en:"assess", ps:"ارزونه کول", example:"Assess the situation." },
+{ en:"assign", ps:"سپارل", example:"Assign the task." },
+{ en:"assist", ps:"مرسته کول", example:"Assist the teacher." },
+{ en:"assume", ps:"فرض کول", example:"Do not assume things." },
+{ en:"assure", ps:"ډاډ ورکول", example:"I assure you." },
+{ en:"atmosphere", ps:"فضا", example:"The atmosphere is calm." },
+{ en:"attempt", ps:"هڅه", example:"He made an attempt." },
+{ en:"attend", ps:"ګډون کول", example:"Attend the meeting." },
+{ en:"attract", ps:"جذب کول", example:"Flowers attract bees." },
+{ en:"authority", ps:"واکن", example:"Respect authority." },
+{ en:"available", ps:"شتون لرونکی", example:"The service is available." },
+{ en:"aware", ps:"خبر", example:"Be aware of risks." },
+{ en:"background", ps:"شالید", example:"Check his background." },
+{ en:"barrier", ps:"خنډ", example:"Remove barriers." },
+{ en:"beneficial", ps:"ګټور", example:"Exercise is beneficial." },
+{ en:"bias", ps:"تعصب", example:"Avoid bias." },
+{ en:"bond", ps:"اړیکه", example:"Family bond is strong." },
+{ en:"boost", ps:"لوړول", example:"Boost your confidence." },
+{ en:"boundary", ps:"پوله", example:"Respect boundaries." },
+{ en:"brief", ps:"لنډ", example:"Give a brief answer." },
+{ en:"capable", ps:"توان لرونکی", example:"She is capable." },
+{ en:"capacity", ps:"ظرفیت", example:"The hall has capacity." },
+{ en:"capture", ps:"نیول", example:"Capture the moment." },
+{ en:"category", ps:"ډله", example:"Choose a category." },
+{ en:"challenge", ps:"ستونزه", example:"Life is a challenge." },
+{ en:"circumstance", ps:"حالت", example:"Under these circumstances." },
+{ en:"clarify", ps:"روښانه کول", example:"Clarify your point." },
+{ en:"collapse", ps:"نړېدل", example:"The building collapsed." },
+{ en:"combine", ps:"یوځای کول", example:"Combine both ideas." },
+{ en:"comfort", ps:"ارامي", example:"Music brings comfort." },
+{ en:"commit", ps:"ژمن کېدل", example:"Commit to your goal." },
+{ en:"communicate", ps:"اړیکه نیول", example:"Communicate clearly." },
+{ en:"community", ps:"ټولنه", example:"Help the community." },
+{ en:"concentrate", ps:"تمرکز کول", example:"Concentrate on work." },
+{ en:"concept", ps:"مفهوم", example:"Understand the concept." },
+{ en:"conduct", ps:"چلند", example:"His conduct was good." },
+{ en:"confidence", ps:"باور", example:"Confidence helps success." },
+{ en:"confirm", ps:"تاییدول", example:"Please confirm the date." },
+{ en:"conflict", ps:"شخړه", example:"Avoid conflict." },
+{ en:"confuse", ps:"مغشوش کول", example:"Do not confuse me." },
+{ en:"connect", ps:"نښلول", example:"Connect the device." },
+{ en:"consequence", ps:"پایله", example:"Every action has consequences." },
+{ en:"consideration", ps:"غور", example:"Take it into consideration." },
+{ en:"consistent", ps:"دوامدار", example:"Be consistent." },
+{ en:"construct", ps:"جوړول", example:"Construct a building." },
+{ en:"consume", ps:"مصرف کول", example:"Do not consume too much." },
+{ en:"contact", ps:"اړیکه", example:"Contact me later." },
+{ en:"contain", ps:"لرل", example:"The box contains books." },
+{ en:"context", ps:"چوکاټ", example:"Understand the context." },
+{ en:"contribute", ps:"ونډه اخیستل", example:"Contribute to society." },
+{ en:"convince", ps:"قانع کول", example:"He convinced me." },
+{ en:"cooperate", ps:"همکاري کول", example:"Cooperate with others." },
+{ en:"core", ps:"اصلي", example:"This is the core issue." },
+{ en:"crisis", ps:"بحران", example:"The country faces a crisis." },
+{ en:"criteria", ps:"معیارونه", example:"Meet the criteria." },
+{ en:"critical", ps:"مهم", example:"This is critical." },
+{ en:"culture", ps:"کلتور", example:"Respect the culture." },
+{ en:"curious", ps:"تلوسه لرونکی", example:"Children are curious." },
+{ en:"custom", ps:"رواج", example:"This is a local custom." },
+{ en:"cycle", ps:"دور", example:"Life is a cycle." },
+{ en:"debate", ps:"مناظره", example:"They held a debate." },
+{ en:"decade", ps:"لسیزه", example:"Last decade changed much." },
+{ en:"declare", ps:"اعلان کول", example:"They declared independence." },
+{ en:"decline", ps:"کمېدل", example:"Sales declined." },
+{ en:"dedicate", ps:"ځان وقف کول", example:"He dedicated his life." },
+{ en:"define", ps:"تعریف کول", example:"Define the term." },
+{ en:"delay", ps:"ځنډ", example:"There is a delay." },
+{ en:"deliver", ps:"سپارل", example:"Deliver the package." },
+{ en:"demand", ps:"غوښتنه", example:"Demand justice." },
+{ en:"demonstrate", ps:"ښودل", example:"Demonstrate the skill." },
+{ en:"deny", ps:"انکار کول", example:"He denied the claim." },
+{ en:"dependence", ps:"تکیه", example:"Reduce dependence." },
+{ en:"deserve", ps:"وړ اوسېدل", example:"You deserve success." },
+{ en:"design", ps:"ډیزاین", example:"Design the app." },
+{ en:"destroy", ps:"له منځه وړل", example:"War destroys lives." },
+{ en:"determine", ps:"ټاکل", example:"Determine the cause." },
+{ en:"develop", ps:"پرمختګ کول", example:"Develop skills." },
+{ en:"device", ps:"اله", example:"Use this device." },
+{ en:"devote", ps:"وقف کول", example:"Devote time to study." },
+{ en:"difference", ps:"توپیر", example:"Know the difference." },
+{ en:"digital", ps:"ډیجیټل", example:"Digital technology grows." },
+{ en:"direct", ps:"مستقیم", example:"Take the direct road." },
+{ en:"discipline", ps:"نظم", example:"Discipline builds character." },
+{ en:"discover", ps:"موندل", example:"Discover new ideas." },
+{ en:"display", ps:"ښودل", example:"Display the result." },
+{ en:"distribute", ps:"وېشل", example:"Distribute food." },
+{ en:"document", ps:"سند", example:"Sign the document." },
+{ en:"dominate", ps:"واکمن کېدل", example:"He dominates the field." },
+{ en:"doubt", ps:"شک", example:"I have no doubt." },
+{ en:"dramatic", ps:"ډراماتیک", example:"A dramatic change." },
+{ en:"duration", ps:"موده", example:"The duration was short." },
+{ en:"economic", ps:"اقتصادي", example:"Economic growth matters." },
+{ en:"efficient", ps:"موثر", example:"An efficient system." },
+{ en:"emerge", ps:"راڅرګندېدل", example:"Problems emerge." },
+{ en:"emotion", ps:"احساس", example:"Control emotion." },
+{ en:"emphasize", ps:"ټینګار کول", example:"Emphasize honesty." },
+{ en:"enable", ps:"وړ کول", example:"This enables learning." },
+{ en:"encounter", ps:"مخامخ کېدل", example:"We encountered issues." },
+{ en:"encourage", ps:"هڅول", example:"Encourage students." },
+{ en:"energy", ps:"انرژي", example:"Save energy." },
+{ en:"enhance", ps:"ښه کول", example:"Enhance skills." },
+{ en:"ensure", ps:"ډاډمن کول", example:"Ensure safety." },
+{ en:"entire", ps:"ټول", example:"The entire class." },
+{ en:"environment", ps:"چاپېریال", example:"Protect environment." },
+{ en:"equivalent", ps:"برابر", example:"Equivalent value." },
+{ en:"establish", ps:"بنسټ ایښودل", example:"Establish a company." },
+{ en:"estimate", ps:"اټکل", example:"Estimate the cost." },
+{ en:"evaluate", ps:"ارزونه کول", example:"Evaluate performance." },
+{ en:"eventual", ps:"وروستی", example:"Eventual success." },
+{ en:"evidence", ps:"ثبوت", example:"Show evidence." },
+{ en:"evolve", ps:"بدلون موندل", example:"Society evolves." },
+{ en:"expand", ps:"پراخول", example:"Expand business." },
+{ en:"expectation", ps:"تمه", example:"Meet expectations." },
+{ en:"expert", ps:"ماهر", example:"Consult an expert." },
+{ en:"explain", ps:"تشریح کول", example:"Explain clearly." },
+{ en:"explore", ps:"پلټل", example:"Explore ideas." },
+{ en:"fabric", ps:"ټوکر", example:"The fabric is soft." },
+{ en:"facility", ps:"اسانتیا", example:"The facility is modern." },
+{ en:"factor", ps:"فکتور", example:"Cost is a key factor." },
+{ en:"failure", ps:"ناکامي", example:"Failure teaches lessons." },
+{ en:"familiar", ps:"اشنا", example:"This place is familiar." },
+{ en:"feature", ps:"ځانګړنه", example:"This app has many features." },
+{ en:"federal", ps:"فدرالي", example:"Federal law applies." },
+{ en:"feedback", ps:"غبرګون", example:"Give feedback." },
+{ en:"flexible", ps:"انعطاف منونکی", example:"Be flexible." },
+{ en:"focus", ps:"تمرکز", example:"Focus on goals." },
+{ en:"forecast", ps:"وړاندوینه", example:"Weather forecast changed." },
+{ en:"formal", ps:"رسمي", example:"Wear formal clothes." },
+{ en:"former", ps:"پخوانی", example:"He is a former leader." },
+{ en:"foundation", ps:"بنسټ", example:"The foundation is strong." },
+{ en:"frequent", ps:"پرله‌پسې", example:"Frequent visits help." },
+{ en:"function", ps:"دنده", example:"This button has a function." },
+{ en:"fundamental", ps:"بنسټیز", example:"Fundamental rights matter." },
+{ en:"generate", ps:"تولیدول", example:"Generate electricity." },
+{ en:"global", ps:"نړیوال", example:"Global issues concern all." },
+{ en:"gradual", ps:"ورو ورو", example:"Gradual improvement works." },
+{ en:"guarantee", ps:"تضمین", example:"Quality guarantee." },
+{ en:"guideline", ps:"لارښود", example:"Follow the guidelines." },
+{ en:"harmful", ps:"زیانمن", example:"Smoking is harmful." },
+{ en:"heritage", ps:"میراث", example:"Cultural heritage matters." },
+{ en:"highlight", ps:"روښانه کول", example:"Highlight key points." },
+{ en:"hypothesis", ps:"فرضیه", example:"Test the hypothesis." },
+{ en:"identify", ps:"پیژندل", example:"Identify the problem." },
+{ en:"illustrate", ps:"بیانول", example:"Illustrate with examples." },
+{ en:"impact", ps:"اغېز", example:"The impact was huge." },
 
-/* =====================================================
-   1. د اسلامي معلوماتو محلي بانک
-   ===================================================== */
+{ en:"improve", ps:"ښه کول", example:"Improve performance." },
+{ en:"incentive", ps:"انګېزه", example:"Offer incentives." },
+{ en:"incident", ps:"پېښه", example:"An incident occurred." },
+{ en:"income", ps:"عاید", example:"Increase income." },
+{ en:"independent", ps:"خپلواک", example:"Independent decision." },
+{ en:"indicate", ps:"ښودل", example:"Results indicate success." },
+{ en:"inevitable", ps:"نه مخنیوی کېدونکی", example:"Change is inevitable." },
+{ en:"influence", ps:"اغېز", example:"Influence opinions." },
+{ en:"inform", ps:"خبرول", example:"Inform the team." },
+{ en:"initial", ps:"لومړنی", example:"Initial phase started." },
+{ en:"innovative", ps:"نوښتګر", example:"Innovative ideas win." },
+{ en:"input", ps:"ننوت", example:"User input required." },
+{ en:"insight", ps:"ژور پوهه", example:"Gain insight." },
+{ en:"instance", ps:"بیلګه", example:"For instance, this works." },
+{ en:"integrate", ps:"یوځای کول", example:"Integrate systems." },
+{ en:"intellectual", ps:"فکري", example:"Intellectual growth." },
+{ en:"interpret", ps:"تشریح کول", example:"Interpret data." },
+{ en:"interval", ps:"وقفه", example:"Take an interval." },
+{ en:"investigate", ps:"څېړل", example:"Investigate the issue." },
+{ en:"justify", ps:"توجیه کول", example:"Justify the decision." },
+{ en:"legitimate", ps:"قانوني", example:"Legitimate authority." },
+{ en:"maintain", ps:"ساتل", example:"Maintain quality." },
+{ en:"majority", ps:"اکثریت", example:"Majority agreed." },
+{ en:"manipulate", ps:"لاس وهنه کول", example:"Do not manipulate facts." },
+{ en:"marginal", ps:"حاشیوي", example:"Marginal improvement." },
+{ en:"maximize", ps:"اعظمي کول", example:"Maximize output." },
+{ en:"mechanism", ps:"میکانیزم", example:"Understand the mechanism." },
+{ en:"mediate", ps:"منځګړیتوب کول", example:"Mediate the conflict." },
+{ en:"minimize", ps:"کم کول", example:"Minimize risks." },
+{ en:"monitor", ps:"څارنه کول", example:"Monitor progress." },
+{ en:"motivate", ps:"هڅول", example:"Motivate the team." },
+{ en:"neutral", ps:"بې پرې", example:"Remain neutral." },
+{ en:"notion", ps:"تصور", example:"Common notion." },
+{ en:"objective", ps:"موخه", example:"Set clear objectives." },
+{ en:"observe", ps:"کتل", example:"Observe carefully." },
+{ en:"obtain", ps:"ترلاسه کول", example:"Obtain permission." },
+{ en:"occupy", ps:"نیول", example:"Occupy the space." },
+{ en:"ongoing", ps:"روان", example:"Ongoing project." },
+{ en:"option", ps:"اختیار", example:"Choose an option." },
+{ en:"outcome", ps:"پایله", example:"Positive outcome." },
+{ en:"overall", ps:"ټولیز", example:"Overall result." },
+{ en:"parallel", ps:"موازي", example:"Parallel lines." },
+{ en:"participate", ps:"ګډون کول", example:"Participate actively." },
+{ en:"perceive", ps:"درک کول", example:"Perceive changes." },
+{ en:"persist", ps:"دوام کول", example:"Persist despite challenges." },
+{ en:"perspective", ps:"لیدلوری", example:"New perspective helps." },
+{ en:"precise", ps:"کره", example:"Precise measurement." },
+{ en:"predict", ps:"وړاندوینه کول", example:"Predict outcomes." },
+{ en:"priority", ps:"لومړیتوب", example:"Set priorities." },
+{ en:"process", ps:"بهیر", example:"Follow the process." },
+{ en:"produce", ps:"تولیدول", example:"Factories produce goods." },
+{ en:"productive", ps:"ګټور", example:"Be productive today." },
+{ en:"progress", ps:"پرمختګ", example:"Progress takes time." },
+{ en:"prohibit", ps:"منع کول", example:"Smoking is prohibited." },
+{ en:"promote", ps:"وده ورکول", example:"Promote good habits." },
+{ en:"proposal", ps:"وړاندیز", example:"Accept the proposal." },
+{ en:"protect", ps:"ساتنه کول", example:"Protect the environment." },
+{ en:"protocol", ps:"طرزالعمل", example:"Follow the protocol." },
+{ en:"provide", ps:"برابرول", example:"Provide support." },
+{ en:"publish", ps:"خپرول", example:"Publish the article." },
+{ en:"purchase", ps:"پېرودل", example:"Purchase supplies." },
+{ en:"pursue", ps:"تعقیبول", example:"Pursue your dreams." },
+{ en:"qualify", ps:"وړ کېدل", example:"Qualify for the exam." },
+{ en:"quantity", ps:"اندازه", example:"Check the quantity." },
+{ en:"questionnaire", ps:"پوښتنلیک", example:"Fill the questionnaire." },
+{ en:"random", ps:"تصادفي", example:"Random choice." },
+{ en:"range", ps:"حد", example:"Within range." },
+{ en:"rapid", ps:"چټک", example:"Rapid growth." },
+{ en:"rational", ps:"معقول", example:"Make rational decisions." },
+{ en:"react", ps:"غبرګون ښودل", example:"React calmly." },
+{ en:"recover", ps:"بیا رغېدل", example:"Recover quickly." },
+{ en:"reduce", ps:"کمول", example:"Reduce costs." },
+{ en:"reference", ps:"حواله", example:"Use references." },
+{ en:"reflect", ps:"انعکاس کول", example:"Reflect on actions." },
+{ en:"reform", ps:"اصلاح", example:"Reform the system." },
+{ en:"regulate", ps:"تنظیمول", example:"Regulate traffic." },
+{ en:"reinforce", ps:"پیاوړی کول", example:"Reinforce learning." },
+{ en:"reject", ps:"رد کول", example:"Reject the offer." },
+{ en:"relevant", ps:"اړوند", example:"Relevant information." },
+{ en:"rely", ps:"تکیه کول", example:"Rely on facts." },
+{ en:"remain", ps:"پاتې کېدل", example:"Remain calm." },
+{ en:"remarkable", ps:"د پام وړ", example:"Remarkable progress." },
+{ en:"remedy", ps:"درملنه", example:"Find a remedy." },
+{ en:"remote", ps:"لرې", example:"Remote area." },
+{ en:"remove", ps:"لېرې کول", example:"Remove obstacles." },
+{ en:"replace", ps:"بدیل کول", example:"Replace the part." },
+{ en:"requirement", ps:"اړتیا", example:"Meet requirements." },
+{ en:"researcher", ps:"څېړونکی", example:"The researcher published." },
+{ en:"resign", ps:"استعفا ورکول", example:"He resigned today." },
+{ en:"resolve", ps:"حل کول", example:"Resolve the issue." },
+{ en:"resource", ps:"سرچینه", example:"Natural resources." },
+{ en:"respond", ps:"ځواب ورکول", example:"Respond quickly." },
+{ en:"restore", ps:"بیا راګرځول", example:"Restore peace." },
+{ en:"restrict", ps:"محدودول", example:"Restrict access." },
+{ en:"retain", ps:"ساتل", example:"Retain information." },
+{ en:"reveal", ps:"ښکاره کول", example:"Reveal the truth." },
+{ en:"revenue", ps:"عایدات", example:"Increase revenue." },
+{ en:"review", ps:"بیاکتنه", example:"Review the document." },
+{ en:"revise", ps:"سمون کول", example:"Revise notes." },
+{ en:"rigid", ps:"سخت", example:"Rigid rules." },
+{ en:"role", ps:"ونډه", example:"Play your role." },
+{ en:"route", ps:"لار", example:"Choose a route." },
+{ en:"routine", ps:"ورځنی کار", example:"Daily routine." },
+{ en:"schedule", ps:"مهالویش", example:"Follow schedule." },
+{ en:"scheme", ps:"پلان", example:"Government scheme." },
+{ en:"scope", ps:"ساحه", example:"Project scope." },
+{ en:"secure", ps:"خوندي", example:"Secure data." },
+{ en:"segment", ps:"برخه", example:"Market segment." },
+{ en:"select", ps:"انتخاب کول", example:"Select an option." },
 
-const knowledgeBase = [
+{ en:"sequence", ps:"لړۍ", example:"Follow the sequence." },
+{ en:"shift", ps:"بدلون", example:"Shift focus." },
+{ en:"significant", ps:"مهم", example:"Significant change." },
+{ en:"simulate", ps:"تمثیل کول", example:"Simulate results." },
+{ en:"site", ps:"ځای", example:"Construction site." },
+{ en:"scenario", ps:"سناریو", example:"Worst-case scenario." },
+{ en:"source", ps:"سرچینه", example:"Reliable source." },
+{ en:"specify", ps:"مشخص کول", example:"Specify details." },
+{ en:"stable", ps:"ثابت", example:"Stable condition." },
+{ en:"strategy", ps:"تګلاره", example:"Winning strategy." },
+{ en:"structure", ps:"جوړښت", example:"Strong structure." },
+{ en:"submit", ps:"سپارل", example:"Submit the form." },
+{ en:"sufficient", ps:"کافي", example:"Sufficient resources." },
+{ en:"summary", ps:"لنډیز", example:"Write a summary." },
+{ en:"supervise", ps:"څارنه کول", example:"Supervise workers." },
+{ en:"supply", ps:"عرضه", example:"Supply chains." },
+{ en:"sustain", ps:"ساتل", example:"Sustain growth." },
+{ en:"symbol", ps:"نښه", example:"National symbol." },
+{ en:"target", ps:"موخه", example:"Hit the target." },
+{ en:"task", ps:"دنده", example:"Complete the task." },
+{ en:"temporary", ps:"لنډمهاله", example:"This is a temporary solution." },
+{ en:"terminate", ps:"پای ته رسول", example:"Terminate the contract." },
+{ en:"theory", ps:"نظریه", example:"Test the theory." },
+{ en:"thorough", ps:"بشپړ", example:"Do a thorough check." },
+{ en:"threshold", ps:"حد", example:"Cross the threshold." },
+{ en:"timeline", ps:"مهالوېش", example:"Follow the timeline." },
+{ en:"tolerate", ps:"زغمل", example:"I cannot tolerate noise." },
+{ en:"trace", ps:"نښه موندل", example:"Trace the source." },
+{ en:"transform", ps:"بدلول", example:"Transform the system." },
+{ en:"transition", ps:"لېږد", example:"Smooth transition." },
+{ en:"transparent", ps:"شفاف", example:"Transparent policy." },
+{ en:"trigger", ps:"پارول", example:"Trigger the alarm." },
+{ en:"ultimate", ps:"وروستی", example:"The ultimate goal." },
+{ en:"uncertain", ps:"نامعلوم", example:"The future is uncertain." },
+{ en:"undergo", ps:"تېرېدل", example:"Undergo training." },
+{ en:"undertake", ps:"پر غاړه اخیستل", example:"Undertake responsibility." },
+{ en:"uniform", ps:"یو شان", example:"Uniform standards." },
+{ en:"unique", ps:"بې ساری", example:"Each person is unique." },
+{ en:"utilize", ps:"کارول", example:"Utilize resources well." },
+{ en:"valid", ps:"سم", example:"Valid argument." },
+{ en:"variable", ps:"بدلېدونکی", example:"Variable costs." },
+{ en:"verify", ps:"تایید کول", example:"Verify the data." },
+{ en:"viable", ps:"د پلي کېدو وړ", example:"A viable option." },
+{ en:"visible", ps:"ښکاره", example:"Results are visible." },
+{ en:"vision", ps:"لید", example:"A clear vision helps." },
+{ en:"voluntary", ps:"رضاکارانه", example:"Voluntary work matters." },
+{ en:"vulnerable", ps:"زیان منونکی", example:"Protect vulnerable groups." },
+{ en:"welfare", ps:"هوساینه", example:"Public welfare." },
+{ en:"whereas", ps:"په داسې حال کې چې", example:"He stayed, whereas I left." },
+{ en:"widespread", ps:"پراخ", example:"Widespread support." },
+{ en:"withdraw", ps:"شا تګ کول", example:"Withdraw the request." },
+{ en:"witness", ps:"شاهد", example:"He was a witness." },
+{ en:"workforce", ps:"کاري ځواک", example:"Skilled workforce." },
+{ en:"worthwhile", ps:"ارزښتناک", example:"A worthwhile effort." },
+{ en:"yield", ps:"حاصل ورکول", example:"The farm yields crops." },
+{ en:"zone", ps:"ساحه", example:"Danger zone." },
+{ en:"accelerate", ps:"چټکتیا ورکول", example:"Accelerate development." },
+{ en:"accompany", ps:"ملګرتیا کول", example:"He will accompany me." },
+{ en:"accumulate", ps:"راټولول", example:"Accumulate experience." },
+{ en:"allocate", ps:"وېشل", example:"Allocate funds." },
+{ en:"ambitious", ps:"لوړې هیلې لرونکی", example:"She is ambitious." },
+{ en:"analytical", ps:"تحلیلي", example:"Analytical thinking helps." },
+{ en:"artificial", ps:"مصنوعي", example:"Artificial intelligence grows." },
+{ en:"assert", ps:"ټینګار کول", example:"Assert your rights." },
+{ en:"attitude", ps:"چلند", example:"Positive attitude matters." },
+{ en:"authorize", ps:"اجازه ورکول", example:"Authorize the payment." },
+{ en:"collaborate", ps:"ګډ کار کول", example:"Collaborate with teams." },
+{ en:"compensate", ps:"جبران کول", example:"Compensate the loss." },
+{ en:"comprehensive", ps:"هراړخیز", example:"Comprehensive plan." },
+{ en:"comply", ps:"اطاعت کول", example:"Comply with rules." },
+{ en:"conclude", ps:"پای ته رسول", example:"Conclude the meeting." },
+{ en:"concurrent", ps:"هممهاله", example:"Concurrent processes." },
+{ en:"confidential", ps:"محرم", example:"Confidential data." },
+{ en:"consolidate", ps:"یوځای کول", example:"Consolidate resources." },
+{ en:"contradict", ps:"مخالفت کول", example:"Facts contradict claims." },
+{ en:"controversial", ps:"شخړه‌یز", example:"A controversial topic." },
+{ en:"coordinate", ps:"همغږي کول", example:"Coordinate activities." },
+{ en:"cumulative", ps:"ټولیز", example:"Cumulative effect." },
+{ en:"derive", ps:"ترلاسه کول", example:"Derive conclusions." },
+{ en:"distinct", ps:"بېل", example:"Distinct features." },
+{ en:"diverse", ps:"متنوع", example:"A diverse group." },
+{ en:"eliminate", ps:"له منځه وړل", example:"Eliminate errors." },
+{ en:"empower", ps:"واک ورکول", example:"Empower communities." },
+{ en:"feasible", ps:"امکان لرونکی", example:"A feasible plan." },
+{ en:"fluctuate", ps:"بدلون کول", example:"Prices fluctuate." },
+{ en:"infrastructure", ps:"بنسټیز جوړښت", example:"Build infrastructure." },
+{ en:"intensity", ps:"شدت", example:"High intensity." },
+{ en:"intervene", ps:"لاس وهنه کول", example:"Intervene early." },
+{ en:"leverage", ps:"ګټه اخیستل", example:"Leverage technology." },
+{ en:"logistics", ps:"لوژستیک", example:"Manage logistics." },
+{ en:"methodology", ps:"طریقه کار", example:"Research methodology." },
+{ en:"optimize", ps:"اعظمي کول", example:"Optimize performance." },
+{ en:"parameter", ps:"پیمانه", example:"Set parameters." },
+{ en:"resilience", ps:"زغم", example:"Build resilience." },
+{ en:"safeguard", ps:"ساتنه کول", example:"Safeguard data." },
+{ en:"abandon", ps:"پرېښودل", example:"He had to abandon the car." },
+{ en:"abstract", ps:"خلاصه", example:"Abstract ideas are hard to explain." },
+{ en:"academy", ps:"اکادمي", example:"She joined the music academy." },
+{ en:"adaptation", ps:"تطبیق", example:"Adaptation to change is necessary." },
+{ en:"adequacy", ps:"کفایت", example:"Ensure adequacy of resources." },
+{ en:"adjacent", ps:"ګاونډی", example:"The room is adjacent to the hall." },
+{ en:"advocate", ps:"وکیل/مدافع", example:"She advocates for equality." },
+{ en:"aesthetic", ps:"ښکلايي", example:"The painting is aesthetic." },
+{ en:"agenda", ps:"اجنډا", example:"Add it to the meeting agenda." },
+{ en:"alliance", ps:"اتحاد", example:"Countries formed an alliance." },
+{ en:"allocate", ps:"وېشل", example:"Allocate funds to departments." },
+{ en:"alteration", ps:"بدلون", example:"Alteration of plans is necessary." },
+{ en:"ambassador", ps:"سفیر", example:"He is the ambassador to France." },
+{ en:"amend", ps:"سمون کول", example:"Amend the contract." },
+{ en:"analogy", ps:"تشابه", example:"Draw an analogy between concepts." },
+{ en:"announcement", ps:"اعلان", example:"The announcement was made today." },
+{ en:"annual", ps:"کلنی", example:"Annual meetings are important." },
+{ en:"anticipation", ps:"تمه", example:"They waited in anticipation." },
+{ en:"apology", ps:"بخښنه", example:"He gave a formal apology." },
+{ en:"apparatus", ps:"اله", example:"The laboratory apparatus is new." },
+{ en:"appreciation", ps:"قدرداني", example:"Show appreciation to your team." },
+{ en:"approach", ps:"لار", example:"This is the best approach." },
+{ en:"architecture", ps:"معماري", example:"The city's architecture is stunning." },
+{ en:"assessment", ps:"ارزونه", example:"Complete the assessment." },
+{ en:"assignment", ps:"وظیفه", example:"Finish your assignment." },
+{ en:"assumption", ps:"فرضیه", example:"The assumption was incorrect." },
+{ en:"attendance", ps:"حاضري", example:"Attendance is mandatory." },
+{ en:"attraction", ps:"جذب", example:"The park is a main attraction." },
+{ en:"authority", ps:"واکن", example:"Respect authority." },
+{ en:"automation", ps:"اتوماتیک", example:"Automation improves efficiency." },
+{ en:"background", ps:"شالید", example:"Provide your background information." },
+{ en:"balance", ps:"توازن", example:"Balance work and life." },
+{ en:"barometer", ps:"بارومتر", example:"The barometer shows pressure changes." },
+{ en:"behavior", ps:"چلند", example:"His behavior was exemplary." },
+{ en:"benchmark", ps:"معیار", example:"Use this as a benchmark." },
+{ en:"beneficiary", ps:"ګټه اخیستونکی", example:"He is the main beneficiary." },
+{ en:"biography", ps:"ژوندلیک", example:"Read her biography." },
+{ en:"boundary", ps:"پوله", example:"Respect the boundary." },
+{ en:"brand", ps:"نښه", example:"The brand is popular." },
+{ en:"budget", ps:"بودجه", example:"Prepare the annual budget." },
+{ en:"capability", ps:"وړتیا", example:"Test the capability of the system." },
+{ en:"capital", ps:"پایتخت", example:"Kabul is the capital." },
+{ en:"career", ps:"مسیر", example:"He chose a teaching career." },
+{ en:"category", ps:"ډله", example:"Select a category." },
+{ en:"celebration", ps:"جشن", example:"The celebration was joyful." },
+{ en:"certainty", ps:"ډاډ", example:"There is no certainty." },
+{ en:"challenge", ps:"ستونزه", example:"Face every challenge." },
+{ en:"champion", ps:"اتل", example:"He is a chess champion." },
+{ en:"characteristic", ps:"ځانګړنه", example:"Honesty is a characteristic." },
+{ en:"charity", ps:"خیریه", example:"Donate to charity." },
+{ en:"chart", ps:"چارت", example:"Draw a chart for clarity." },
+{ en:"checklist", ps:"لیست", example:"Complete the checklist." },
+{ en:"chronology", ps:"زماني ترتیب", example:"Study the chronology of events." },
+{ en:"circumstance", ps:"حالت", example:"Under these circumstances, act carefully." },
+{ en:"citizen", ps:"شهروند", example:"Every citizen has rights." },
+{ en:"civilization", ps:"مدنیت", example:"Ancient civilization fascinates us." },
+{ en:"clarity", ps:"وضاحت", example:"Explain with clarity." },
+{ en:"client", ps:"مراجع", example:"The client approved the design." },
+{ en:"climate", ps:"اقلیم", example:"Climate change is real." },
+{ en:"cohesion", ps:"یووالی", example:"Team cohesion is important." },
+{ en:"collaboration", ps:"ګډ کار", example:"Collaboration yields better results." },
+{ en:"colonial", ps:"استعماري", example:"Colonial history is significant." },
+{ en:"column", ps:"ستون", example:"Write in the first column." },
+{ en:"combat", ps:"مبارزه", example:"Combat poverty actively." },
+{ en:"comedy", ps:"کامیډي", example:"We watched a comedy show." },
+{ en:"comfort", ps:"ارامي", example:"Comfort is essential." },
+{ en:"command", ps:"امر", example:"Follow the command carefully." },
+{ en:"commentary", ps:"تبصره", example:"Provide commentary on the match." },
+{ en:"commerce", ps:"تجارت", example:"International commerce is growing." },
+{ en:"commission", ps:"کمېسیون", example:"The commission approved the plan." },
+{ en:"commitment", ps:"ژمنه", example:"He showed full commitment." },
+{ en:"communication", ps:"اړیکه", example:"Good communication is key." },
+{ en:"community", ps:"ټولنه", example:"Serve the community." },
+{ en:"comparison", ps:"مقایسه", example:"Make a comparison of results." },
+{ en:"compensation", ps:"جبران", example:"Receive compensation for damage." },
+{ en:"competence", ps:"صلاحیت", example:"Evaluate the competence of staff." },
+{ en:"competition", ps:"سیالي", example:"Competition motivates people." },
+{ en:"complexity", ps:"پیچلتیا", example:"The complexity increased." },
+{ en:"compliance", ps:"مطابقت", example:"Compliance with rules is essential." },
+{ en:"composition", ps:"جوړښت", example:"Study the composition of the molecule." },
+{ en:"comprehension", ps:"پوهاوی", example:"Reading improves comprehension." },
+{ en:"concentration", ps:"تمرکز", example:"Maintain concentration during work." },
+{ en:"concept", ps:"مفهوم", example:"Understand the concept." },
+{ en:"conclusion", ps:"پایله", example:"Draw a conclusion from data." },
+{ en:"condition", ps:"حالت", example:"Weather condition is fine." },
+{ en:"conference", ps:"کنفرانس", example:"Attend the conference." },
+{ en:"confidence", ps:"باور", example:"Confidence leads to success." },
+{ en:"confirmation", ps:"تایید", example:"Receive confirmation via email." },
+{ en:"conflict", ps:"شخړه", example:"Avoid conflict whenever possible." },
+{ en:"connection", ps:"نښلون", example:"The connection is stable." },
+{ en:"consequence", ps:"پایله", example:"Every action has a consequence." },
+{ en:"conservation", ps:"ساتنه", example:"Conservation of nature is critical." },
+{ en:"consideration", ps:"غور", example:"Take consideration before deciding." },
+{ en:"consistency", ps:"دوامدارۍ", example:"Maintain consistency in work." },
+{ en:"consolidation", ps:"یووالی", example:"Consolidation of resources helps." },
+{ en:"construction", ps:"جوړښت", example:"Construction is ongoing." },
+{ en:"consultation", ps:"مشوره", example:"Seek consultation before proceeding." },
+{ en:"consumption", ps:"مصرف", example:"Reduce energy consumption." },
+{ en:"containment", ps:"کنترول", example:"Containment of the problem is essential." },
+{ en:"content", ps:"مینځپانګه", example:"The content of the book is informative." },
+{ en:"continuity", ps:"دوام", example:"Continuity ensures stability." },
+{ en:"contribution", ps:"ونډه", example:"Your contribution matters." },
+{ en:"controversy", ps:"شخړه", example:"The topic caused controversy." },
+{ en:"convention", ps:"کنوانسیون", example:"Attend the international convention." },
+{ en:"conversion", ps:"بدلون", example:"Currency conversion rates." },
+{ en:"coordination", ps:"همغږي", example:"Coordination among teams is vital." },
+{ en:"corporation", ps:"شرکت", example:"A multinational corporation." },
+{ en:"correlation", ps:"اړیکه", example:"There is a correlation between variables." },
+{ en:"criterion", ps:"معیار", example:"Meet the criterion carefully." },
+{ en:"criticism", ps:"انتقاد", example:"Handle criticism positively." },
+{ en:"curiosity", ps:"تلوسه", example:"Children have curiosity about nature." },
+{ en:"currency", ps:"پیسې", example:"Exchange the currency." },
+{ en:"customization", ps:"شخصي کول", example:"Software customization is possible." },
+{ en:"cyclical", ps:"چاپېریالي", example:"Economic trends are cyclical." },
+{ en:"database", ps:"ډیټابیس", example:"Store data in a database." },
+{ en:"deadline", ps:"وروستۍ نیټه", example:"Meet the deadline." },
+{ en:"declaration", ps:"اعلان", example:"Official declaration issued." },
+{ en:"dedication", ps:"وقف", example:"Show dedication to work." },
+{ en:"definition", ps:"تعریف", example:"Provide a clear definition." },
+{ en:"democracy", ps:"ډیموکراسي", example:"Democracy ensures freedom." },
+{ en:"demonstration", ps:"نمایش", example:"The students gave a demonstration." },
+{ en:"denomination", ps:"واحد", example:"Currency denomination matters." },
+{ en:"dependency", ps:"متکي والی", example:"Dependency on others is risky." },
+{ en:"depression", ps:"افسردګي", example:"Economic depression affected many." },
+{ en:"derivation", ps:"د لاسرسي لاره", example:"Word derivation is interesting." },
+{ en:"description", ps:"تشریح", example:"Provide a full description." },
+{ en:"design", ps:"ډیزاین", example:"The design is modern." },
+{ en:"desire", ps:"هوس", example:"He has a strong desire to learn." },
+{ en:"development", ps:"پرمختګ", example:"Development of technology is fast." },
+{ en:"dialogue", ps:"مکالمه", example:"The dialogue was constructive." },
+{ en:"difference", ps:"فرق", example:"Notice the difference." },
+{ en:"difficulty", ps:"ستونزه", example:"Face difficulty with courage." },
+{ en:"dignity", ps:"عزت", example:"Maintain your dignity." },
+{ en:"dimension", ps:"ابعاد", example:"Measure the dimension accurately." },
+{ en:"direction", ps:"لارښود", example:"Follow the direction carefully." },
+{ en:"discipline", ps:"انضباط", example:"Discipline is essential in school." },
+{ en:"discussion", ps:"بحث", example:"Participate in discussion." },
+{ en:"discovery", ps:"موندنه", example:"The discovery was groundbreaking." },
+{ en:"discussion", ps:"بحث", example:"Join the discussion." },
+{ en:"distance", ps:"فاصله", example:"Maintain a safe distance." },
+{ en:"distribution", ps:"توزیع", example:"Distribution of food is fair." },
+{ en:"diversity", ps:"متنوع", example:"Cultural diversity is valuable." },
+{ en:"document", ps:"سند", example:"Submit the document." },
+{ en:"dominance", ps:"برلاسي", example:"His dominance was clear." },
+{ en:"duration", ps:"وخت", example:"Duration of the meeting was two hours." },
+{ en:"education", ps:"زده کړه", example:"Education is key to success." },
+{ en:"effectiveness", ps:"اغېزمنتیا", example:"Check the effectiveness of the plan." },
+{ en:"efficiency", ps:"موثریت", example:"Efficiency is improved by automation." },
+{ en:"eligibility", ps:"وړتیا", example:"Check eligibility criteria." },
+{ en:"emphasis", ps:"ټینګار", example:"Place emphasis on safety." },
+{ en:"employment", ps:"کار", example:"Employment opportunities are increasing." },
+{ en:"encouragement", ps:"هڅونه", example:"Provide encouragement to students." },
+{ en:"engagement", ps:"ګډون", example:"Active engagement is required." },
+{ en:"enhancement", ps:"پرمختګ", example:"Enhancement of skills is essential." },
+{ en:"enrollment", ps:"ثبت نوم", example:"Complete the enrollment process." },
+{ en:"entitlement", ps:"حق", example:"You have entitlement to benefits." },
+{ en:"environment", ps:"چاپیریال", example:"Protect the environment." },
+{ en:"equilibrium", ps:"توازن", example:"Maintain emotional equilibrium." },
+{ en:"equipment", ps:"وسایل", example:"Laboratory equipment is ready." },
+{ en:"evaluation", ps:"ارزونه", example:"Complete the evaluation report." },
+{ en:"excellence", ps:"لوړتیا", example:"Strive for excellence." },
+{ en:"exception", ps:"استثنا", example:"Make an exception." },
+{ en:"exchange", ps:"تبادله", example:"Currency exchange rates." },
+{ en:"expenditure", ps:"لګښت", example:"Track all expenditures." },
+{ en:"experience", ps:"تجربه", example:"Gain experience in real work." },
+{ en:"experiment", ps:"تجربه", example:"Conduct the experiment carefully." },
+{ en:"expertise", ps:"مهارت", example:"Consult experts for expertise." },
+{ en:"explanation", ps:"تشریح", example:"Provide explanation clearly." },
+{ en:"expression", ps:"اظهار", example:"Free expression is allowed." },
+{ en:"extension", ps:"غځول", example:"Request an extension for submission." },
+{ en:"facilitation", ps:"اسانتیا", example:"Facilitation of tasks helps productivity." },
+{ en:"factor", ps:"فکتور", example:"Cost is a key factor." },
+{ en:"familiarity", ps:"اشنايي", example:"Familiarity with rules is essential." },
+{ en:"feedback", ps:"غبرګون", example:"Provide honest feedback." },
+{ en:"flexibility", ps:"انعطاف", example:"Flexibility is important in work." },
+{ en:"forecast", ps:"وړاندوینه", example:"Weather forecast changed." },
+{ en:"formation", ps:"تشکیل", example:"The formation of the team is ready." },
+{ en:"foundation", ps:"بنسټ", example:"Foundation of the building is strong." },
+{ en:"framework", ps:"چوکات", example:"Use a proper framework for development." },
+{ en:"functionality", ps:"فعالیت", example:"Check software functionality." },
+{ en:"fundamental", ps:"بنسټیز", example:"Fundamental principles guide us." },
+{ en:"future", ps:"راتلونکی", example:"Prepare for future challenges." },
+{ en:"generosity", ps:"سخاوت", example:"His generosity was admirable." },
+{ en:"governance", ps:"حکومت", example:"Good governance is crucial." },
+{ en:"guidance", ps:"لارښودنه", example:"Seek guidance from mentors." },
+{ en:"harmony", ps:"همغږي", example:"Work in harmony with colleagues." },
+{ en:"heritage", ps:"میراث", example:"Cultural heritage is valuable." },
+{ en:"highlight", ps:"روښانه کول", example:"Highlight key points in report." },
+{ en:"honesty", ps:"ریښتینولي", example:"Honesty builds trust." },
+{ en:"hospitality", ps:"میلمه پالنه", example:"Hospitality is a virtue." },
+{ en:"humanity", ps:"بشریت", example:"Humanity should guide actions." },
+{ en:"identification", ps:"پیژندنه", example:"Provide identification document." },
+{ en:"illustration", ps:"انځور", example:"Use illustration to explain." },
+{ en:"imagination", ps:"خیال", example:"Imagination fuels creativity." },
+{ en:"implementation", ps:"پلي کول", example:"Implementation of plans is vital." },
+{ en:"improvement", ps:"ښه والی", example:"Continuous improvement is key." },
+{ en:"incentive", ps:"انګېزه", example:"Provide incentive to workers." },
+{ en:"inclusion", ps:"شمولیت", example:"Inclusion of all groups matters." },
+{ en:"independence", ps:"خپلواکي", example:"Independence is important for nations." },
+{ en:"innovation", ps:"نوښت", example:"Innovation drives progress." },
+{ en:"inspection", ps:"څارنه", example:"Regular inspection ensures quality." },
+{ en:"inspiration", ps:"الهام", example:"Seek inspiration from nature." },
+{ en:"installation", ps:"نصب", example:"Installation was successful." },
+{ en:"instruction", ps:"لارښوونه", example:"Follow instruction carefully." },
+{ en:"integration", ps:"یوځای کول", example:"Integration of systems is required." },
+{ en:"intelligence", ps:"هوښیاري", example:"Artificial intelligence is growing." },
+{ en:"interaction", ps:"متقابل عمل", example:"Positive interaction helps learning." },
+{ en:"interpretation", ps:"تشریح", example:"Interpretation of results matters." },
+{ en:"intervention", ps:"لاس وهنه", example:"Early intervention prevents issues." },
+{ en:"investment", ps:"سرمایه ګذاري", example:"Investment in education is crucial." },
+{ en:"involvement", ps:"ګډون", example:"Active involvement is appreciated." },
+{ en:"judgment", ps:"قضاوت", example:"Use good judgment." },
+{ en:"justification", ps:"توجیه", example:"Provide justification for your actions." },
+{ en:"knowledge", ps:"پوهه", example:"Knowledge is power." },
+{ en:"leadership", ps:"رهبري", example:"Leadership skills are essential." },
+{ en:"legislation", ps:"قانون جوړونه", example:"Legislation ensures order." },
+{ en:"literacy", ps:"سواد", example:"Promote literacy among children." },
+{ en:"maintenance", ps:"ساتنه", example:"Maintenance of equipment is needed." },
+{ en:"management", ps:"مدیریت", example:"Management oversees all operations." },
+{ en:"time", ps:"وخت", example:"Time flies quickly." },
+{ en:"person", ps:"شخص", example:"That person is kind." },
+{ en:"year", ps:"کال", example:"This year is important." },
+{ en:"way", ps:"لار", example:"Show me the way." },
+{ en:"day", ps:"ورځ", example:"Have a nice day." },
+{ en:"thing", ps:"شی", example:"This is an important thing." },
+{ en:"man", ps:"سړی", example:"The man is tall." },
+{ en:"world", ps:"نړۍ", example:"The world is changing." },
+{ en:"life", ps:"ژوند", example:"Life is beautiful." },
+{ en:"hand", ps:"لاس", example:"Wash your hands." },
+{ en:"part", ps:"برخه", example:"This is part of the project." },
+{ en:"child", ps:"ماشوم", example:"The child is playing." },
+{ en:"eye", ps:"سترګه", example:"Her eyes are blue." },
+{ en:"woman", ps:"ښځه", example:"The woman is happy." },
+{ en:"place", ps:"ځای", example:"This is a nice place." },
+{ en:"work", ps:"کار", example:"He goes to work every day." },
+{ en:"week", ps:"اونۍ", example:"I am busy this week." },
+{ en:"case", ps:"حالت", example:"The case is solved." },
+{ en:"point", ps:"نقطه", example:"Make your point clearly." },
+{ en:"government", ps:"حکومت", example:"The government passed a law." },
+{ en:"company", ps:"شرکت", example:"The company is growing fast." },
+{ en:"number", ps:"شمېره", example:"Check the number carefully." },
+{ en:"group", ps:"ډله", example:"Join the group discussion." },
+{ en:"problem", ps:"ستونزه", example:"Solve the problem quickly." },
+{ en:"fact", ps:"حقیقت", example:"It is a fact." },
+{ en:"be", ps:"وي", example:"I want to be happy." },
+{ en:"have", ps:"لرل", example:"I have a car." },
+{ en:"do", ps:"کول", example:"I will do it." },
+{ en:"say", ps:"وویل", example:"He did not say anything." },
+{ en:"get", ps:"ترلاسه کول", example:"I get many emails." },
+{ en:"make", ps:"جوړول", example:"Make a cake." },
+{ en:"go", ps:"تلل", example:"I will go to school." },
+{ en:"know", ps:"پوهیدل", example:"I know the answer." },
+{ en:"take", ps:"اخیستل", example:"Take your time." },
+{ en:"see", ps:"لیدل", example:"I see the problem." },
+{ en:"come", ps:"راتلل", example:"Come to the party." },
+{ en:"think", ps:"فکر کول", example:"Think before you act." },
+{ en:"look", ps:"کتل", example:"Look at the picture." },
+{ en:"want", ps:"غوښتل", example:"I want some water." },
+{ en:"give", ps:"ورکول", example:"Give me the book." },
+{ en:"find", ps:"موندل", example:"Find the hidden item." },
+{ en:"tell", ps:"ویل", example:"Tell me the truth." },
+{ en:"ask", ps:"پوښتل", example:"Ask a question." },
+{ en:"work", ps:"کار", example:"Work hard every day." },
+{ en:"seem", ps:"ښکاره کېدل", example:"It seems easy." },
+{ en:"feel", ps:"احساس کول", example:"I feel happy." },
+{ en:"try", ps:"هڅه کول", example:"Try your best." },
+{ en:"leave", ps:"تلو", example:"Leave the room quietly." },
+{ en:"call", ps:"زنګ وهل", example:"Call me later." },
+{ en:"good", ps:"ښه", example:"This is a good book." },
+{ en:"new", ps:"نوې", example:"I bought a new phone." },
+{ en:"first", ps:"لومړی", example:"He was the first in line." },
+{ en:"last", ps:"وروستی", example:"She came last in the race." },
+{ en:"long", ps:"اوږد", example:"It was a long day." },
+{ en:"great", ps:"غټ", example:"He made a great effort." },
+{ en:"little", ps:"کوچنی", example:"She has a little dog." },
+{ en:"own", ps:"خپل", example:"I have my own ideas." },
+{ en:"other", ps:"نور", example:"I like the other option." },
+{ en:"old", ps:"زوړ", example:"The old man smiled." },
+{ en:"right", ps:"حق", example:"You have the right to speak." },
+{ en:"big", ps:"لوی", example:"This is a big problem." },
+{ en:"high", ps:"لوړ", example:"Mountains are high." },
+{ en:"different", ps:"بیلابیل", example:"We have different opinions." },
+{ en:"small", ps:"کوچنی", example:"I live in a small town." },
+{ en:"large", ps:"غټ", example:"This is a large house." },
+{ en:"next", ps:"بل", example:"Next week we travel." },
+{ en:"early", ps:"مخکې", example:"We arrived early." },
+{ en:"young", ps:"ځوان", example:"The young man smiled." },
+{ en:"important", ps:"مهم", example:"This is an important matter." },
+{ en:"few", ps:"څو", example:"Only a few people came." },
+{ en:"public", ps:"عام", example:"The public park is clean." },
+{ en:"bad", ps:"خراب", example:"The weather is bad." },
+{ en:"same", ps:"هماغه", example:"We have the same teacher." },
+{ en:"able", ps:"وړ", example:"She is able to solve the problem." },
+{ en:"happy", ps:"خوښ", example:"I am happy today." },
+{ en:"sad", ps:"خفه", example:"He feels sad." },
+{ en:"strong", ps:"قوي", example:"Be strong in adversity." },
+{ en:"possible", ps:"ممکن", example:"Anything is possible." },
+{ en:"likely", ps:"ممکنه", example:"It is likely to rain." },
+{ en:"short", ps:"لنډ", example:"The test was short." },
+{ en:"early", ps:"مخکې", example:"Come early tomorrow." },
+{ en:"social", ps:"ټولنیز", example:"Social events are fun." },
+{ en:"open", ps:"پرانیستی", example:"Open the door." },
+{ en:"local", ps:"ځایي", example:"Local news is important." },
+{ en:"late", ps:"ورو", example:"I arrived late." },
+{ en:"hard", ps:"سخت", example:"Work hard every day." },
+{ en:"special", ps:"ځانګړی", example:"She has a special gift." },
+{ en:"different", ps:"بیلابیل", example:"Try a different method." },
+{ en:"true", ps:"ریښتینی", example:"The statement is true." },
+{ en:"clear", ps:"واضح", example:"Make your intentions clear." },
+{ en:"full", ps:"بشپړ", example:"The glass is full." },
+{ en:"easy", ps:"اسانه", example:"This task is easy." },
+{ en:"difficult", ps:"سخته", example:"It is a difficult problem." },
+{ en:"real", ps:"حقیقي", example:"This is a real story." },
+{ en:"certain", ps:"باور", example:"I am certain about it." },
+{ en:"main", ps:"اصلي", example:"This is the main reason." },
+{ en:"likely", ps:"ممکنه", example:"It is likely to succeed." },
+{ en:"close", ps:"نږدې", example:"Stand close to me." },
+{ en:"common", ps:"عام", example:"It is a common issue." },
+{ en:"answer", ps:"ځواب", example:"Give me the answer." },
+{ en:"area", ps:"ساحه", example:"This area is dangerous." },
+{ en:"art", ps:"هنر", example:"She studies art." },
+{ en:"bank", ps:"بانک", example:"Deposit money in the bank." },
+{ en:"body", ps:"بدن", example:"Exercise your body." },
+{ en:"book", ps:"کتاب", example:"Read a book." },
+{ en:"boy", ps:"هلک", example:"The boy is playing." },
+{ en:"case", ps:"حالت", example:"This is a special case." },
+{ en:"center", ps:"مرکز", example:"Go to the city center." },
+{ en:"church", ps:"کلیسا", example:"Visit the church." },
+{ en:"city", ps:"ښار", example:"The city is large." },
+{ en:"college", ps:"کالج", example:"She goes to college." },
+{ en:"community", ps:"ټولنه", example:"Serve your community." },
+{ en:"company", ps:"شرکت", example:"The company is growing." },
+{ en:"country", ps:"هېواد", example:"This country is beautiful." },
+{ en:"course", ps:"درس", example:"Take an online course." },
+{ en:"court", ps:"محکمې", example:"The court made a decision." },
+{ en:"day", ps:"ورځ", example:"Today is a sunny day." },
+{ en:"death", ps:"مرګ", example:"He feared death." },
+{ en:"decision", ps:"پریکړه", example:"Make a decision wisely." },
+{ en:"door", ps:"دروازه", example:"Open the door." },
+{ en:"earth", ps:"ځمکه", example:"The earth is round." },
+{ en:"education", ps:"زده کړه", example:"Education is important." },
+{ en:"effect", ps:"اغېز", example:"The effect was surprising." },
+{ en:"experience", ps:"تجربه", example:"Gain experience in work." },
+{ en:"eye", ps:"سترګه", example:"She has blue eyes." },
+{ en:"face", ps:"مخ", example:"Face the problem." },
+{ en:"fact", ps:"حقیقت", example:"It is a fact." },
+{ en:"family", ps:"کورنۍ", example:"Family is important." },
+{ en:"father", ps:"پلار", example:"My father is kind." },
+{ en:"field", ps:"صنعت/صحراء", example:"Work in the field." },
+{ en:"figure", ps:"شکل/شمېره", example:"The figure is impressive." },
+{ en:"friend", ps:"ملګری", example:"He is my best friend." },
+{ en:"girl", ps:"جلۍ", example:"The girl is singing." },
+{ en:"group", ps:"ډله", example:"Join the group." },
+{ en:"head", ps:"سر", example:"The head is injured." },
+{ en:"health", ps:"روغتیا", example:"Health is wealth." },
+{ en:"home", ps:"کور", example:"Stay at home." },
+{ en:"house", ps:"کور", example:"This is a big house." },
+{ en:"idea", ps:"نظر", example:"I have a new idea." },
+{ en:"information", ps:"معلومات", example:"Provide the information." },
+{ en:"job", ps:"دنده", example:"I have a new job." },
+{ en:"kind", ps:"ښه/نوع", example:"Be kind to everyone." },
+{ en:"knowledge", ps:"پوهه", example:"Knowledge is power." },
+{ en:"language", ps:"ژبه", example:"Learn a new language." },
+{ en:"law", ps:"قانون", example:"Follow the law." },
+{ en:"letter", ps:"لیک", example:"Write a letter." },
+{ en:"life", ps:"ژوند", example:"Life is precious." },
+{ en:"line", ps:"کرښه", example:"Draw a straight line." },
+{ en:"list", ps:"لیست", example:"Make a list of items." },
+{ en:"man", ps:"سړی", example:"The man is tall." },
+{ en:"matter", ps:"موضوع", example:"This matter is serious." },
+{ en:"month", ps:"میاشت", example:"This month is important." },
+{ en:"mother", ps:"مور", example:"My mother is caring." },
+{ en:"name", ps:"نوم", example:"What is your name?" },
+{ en:"nation", ps:"ملت", example:"The nation is strong." },
+{ en:"office", ps:"دفتر", example:"Go to the office." },
+{ en:"party", ps:"ګوند/پارټي", example:"Attend the party." },
+{ en:"people", ps:"خلک", example:"People are friendly." },
+{ en:"place", ps:"ځای", example:"This is a nice place." },
+{ en:"point", ps:"نقطه", example:"Make your point clear." },
+{ en:"problem", ps:"ستونزه", example:"Solve the problem." },
+{ en:"process", ps:"پروسه", example:"Follow the process carefully." },
+{ en:"product", ps:"محصول", example:"The product is new." },
+{ en:"program", ps:"پروګرام", example:"Launch the new program." },
+{ en:"question", ps:"پوښتنه", example:"Ask a question." },
+{ en:"reason", ps:"دلیل", example:"Explain your reason." },
+{ en:"report", ps:"راپور", example:"Submit the report." },
+{ en:"result", ps:"نتیجه", example:"The result is positive." },
+{ en:"room", ps:"کوټه", example:"The room is clean." },
+{ en:"school", ps:"ښوونځی", example:"Children go to school." },
+{ en:"section", ps:"برخه", example:"Read section two." },
+{ en:"service", ps:"خدمت", example:"Customer service is important." },
+{ en:"side", ps:"خوا", example:"Stand on the right side." },
+{ en:"society", ps:"ټولنه", example:"Society needs help." },
+{ en:"state", ps:"ایالت/حالت", example:"The state is stable." },
+{ en:"story", ps:"کیسه", example:"Tell a story." },
+{ en:"student", ps:"زده کوونکی", example:"The student is hardworking." },
+{ en:"study", ps:"مطالعه", example:"Study for the test." },
+{ en:"system", ps:"سیستم", example:"The system is running smoothly." },
+{ en:"team", ps:"ټیم", example:"The team won the match." },
+{ en:"thing", ps:"شی", example:"This is an interesting thing." },
+{ en:"time", ps:"وخت", example:"Time is precious." },
+{ en:"town", ps:"ښار/ټاون", example:"Visit the town." },
+{ en:"truth", ps:"ریښتیا", example:"Tell the truth." },
+{ en:"use", ps:"کارول", example:"Use a pen." },
+{ en:"value", ps:"ارزښت", example:"Respect the value of time." },
+{ en:"voice", ps:"غږ", example:"Raise your voice." },
+{ en:"water", ps:"اوبه", example:"Drink water daily." },
+{ en:"way", ps:"لار", example:"Show me the way." },
+{ en:"week", ps:"اونۍ", example:"This week is busy." },
+{ en:"woman", ps:"ښځه", example:"The woman is kind." },
+{ en:"word", ps:"کلمه", example:"Write the word correctly." },
+{ en:"work", ps:"کار", example:"Work hard every day." },
+{ en:"world", ps:"نړۍ", example:"The world is big." },
+{ en:"year", ps:"کال", example:"Next year is important." },
+{ en:"young", ps:"ځوان", example:"The young boy is smart." },
+{ en:"water", ps:"اوبه", example:"Water is essential." },
+{ en:"food", ps:"خواړه", example:"Food gives energy." },
+{ en:"house", ps:"کور", example:"This is my house." },
+{ en:"family", ps:"کورنۍ", example:"Family is important." },
+{ en:"friend", ps:"ملګری", example:"He is my friend." },
+{ en:"school", ps:"ښوونځی", example:"I go to school." },
+{ en:"teacher", ps:"ښوونکی", example:"The teacher explains." },
+{ en:"student", ps:"زده کوونکی", example:"The student studies." },
+{ en:"book", ps:"کتاب", example:"Read this book." },
+{ en:"pen", ps:"قلم", example:"I need a pen." },
 
-{
-    id: 1,
-    question: "اسلام څه شی دی",
-    keywords: ["اسلام", "دین", "مسلمان", "اسلام تعریف"],
-    answer:
-"اسلام د الله تعالی د یووالي منل، د هغه عبادت کول او د هغه د رسولانو پیروي کول دي. د اسلام اساسي پیغام د الله تعالی عبادت، نېک عمل، عدالت، رحمت او د خلکو د حقونو مراعاتول دي."
-},
+{ en:"paper", ps:"کاغذ", example:"Write on paper." },
+{ en:"time", ps:"وخت", example:"Time is valuable." },
+{ en:"day", ps:"ورځ", example:"Today is a good day." },
+{ en:"night", ps:"شپه", example:"Good night." },
+{ en:"morning", ps:"سهار", example:"Good morning." },
+{ en:"evening", ps:"ماښام", example:"Good evening." },
+{ en:"man", ps:"سړی", example:"The man works." },
+{ en:"woman", ps:"ښځه", example:"The woman smiles." },
+{ en:"child", ps:"ماشوم", example:"The child plays." },
+{ en:"people", ps:"خلک", example:"People are kind." },
 
-{
-    id: 2,
-    question: "قرآن کریم څه شی دی",
-    keywords: ["قرآن", "قران", "قرآن کریم", "کتاب الله", "اسماني کتاب"],
-    answer:
-"قرآن کریم د اسلام سپېڅلی کتاب دی چې مسلمانان یې د الله تعالی کلام بولي. دا د حضرت محمد ﷺ پر زړه نازل شوی. قرآن کریم ۱۱۴ سورتونه لري. د آیتونو د دقیق شمېر او تفسیر په اړه باید باوري قرآني سرچینو ته مراجعه وشي."
-},
+{ en:"city", ps:"ښار", example:"This city is big." },
+{ en:"village", ps:"کلی", example:"He lives in a village." },
+{ en:"road", ps:"سړک", example:"The road is long." },
+{ en:"car", ps:"موټر", example:"The car is fast." },
+{ en:"bus", ps:"بس", example:"Take the bus." },
+{ en:"market", ps:"بازار", example:"Go to the market." },
+{ en:"money", ps:"پیسې", example:"Money is needed." },
+{ en:"job", ps:"دنده", example:"He has a job." },
+{ en:"work", ps:"کار", example:"Work hard." },
+{ en:"rest", ps:"ارام", example:"Take some rest." },
 
-{
-    id: 3,
-    question: "حضرت محمد ﷺ څوک و",
-    keywords: ["محمد", "رسول الله", "پیغمبر", "نبي", "حضرت محمد"],
-    answer:
-"حضرت محمد ﷺ د اسلام وروستی پیغمبر دی. مسلمانان پر هغه ایمان لري او د هغه سنت د خپل ژوند لپاره لارښود ګڼي. هغه په مکه مکرمه کې زېږېدلی او وروسته مدینې منورې ته هجرت کړی."
-},
+{ en:"health", ps:"روغتیا", example:"Health is wealth." },
+{ en:"doctor", ps:"ډاکټر", example:"Visit the doctor." },
+{ en:"hospital", ps:"روغتون", example:"The hospital is clean." },
+{ en:"help", ps:"مرسته", example:"Help others." },
+{ en:"need", ps:"اړتیا", example:"I need water." },
+{ en:"want", ps:"غواړم", example:"I want food." },
+{ en:"give", ps:"ورکول", example:"Give me time." },
+{ en:"take", ps:"اخیستل", example:"Take the book." },
+{ en:"come", ps:"راتلل", example:"Come here." },
+{ en:"go", ps:"تلل", example:"Go home." },
 
-{
-    id: 4,
-    question: "د اسلام پنځه ارکان کوم دي",
-    keywords: ["پنځه ارکان", "ارکان اسلام", "کلمې", "زکات", "حج", "روژه"],
-    answer:
-"د اسلام پنځه مشهور ارکان دا دي:\n۱. شهادتین ویل.\n۲. لمونځ ادا کول.\n۳. زکات ورکول، کله چې شرایط پوره شي.\n۴. د رمضان روژه نیول.\n۵. د توان په صورت کې حج ادا کول."
-},
+{ en:"see", ps:"لیدل", example:"I see you." },
+{ en:"hear", ps:"اورېدل", example:"I hear sound." },
+{ en:"speak", ps:"خبرې کول", example:"Speak clearly." },
+{ en:"listen", ps:"اورېدل", example:"Listen carefully." },
+{ en:"eat", ps:"خوړل", example:"Eat food." },
+{ en:"drink", ps:"څښل", example:"Drink water." },
+{ en:"sleep", ps:"ویده کېدل", example:"Sleep well." },
+{ en:"wake", ps:"ویښېدل", example:"Wake up early." },
+{ en:"walk", ps:"ګرځېدل", example:"Walk slowly." },
+{ en:"run", ps:"منډه وهل", example:"Run fast." },
 
-{
-    id: 5,
-    question: "ایمان څه شی دی",
-    keywords: ["ایمان", "مومن", "عقیده", "اصول ایمان"],
-    answer:
-"ایمان په اسلام کې پر الله تعالی، د هغه پر ملایکو، کتابونو، رسولانو، د آخرت پر ورځې او د تقدیر پر خیر او شر باور ته ویل کېږي. د ایمان د تفصیلي بیان لپاره د عقیدې باوري کتابونه وګورئ."
-},
+{ en:"open", ps:"پرانیستل", example:"Open the door." },
+{ en:"close", ps:"بندول", example:"Close the window." },
+{ en:"start", ps:"پیل کول", example:"Start now." },
+{ en:"finish", ps:"پای ته رسول", example:"Finish work." },
+{ en:"buy", ps:"اخیستل", example:"Buy food." },
+{ en:"sell", ps:"پلورل", example:"Sell goods." },
+{ en:"big", ps:"لوی", example:"A big house." },
+{ en:"small", ps:"کوچنی", example:"A small room." },
+{ en:"new", ps:"نوی", example:"A new phone." },
+{ en:"old", ps:"زوړ", example:"An old book." },
 
-{
-    id: 6,
-    question: "الله تعالی څوک دی",
-    keywords: ["الله", "رب", "خالق", "خدای", "الله تعالی"],
-    answer:
-"الله تعالی د اسلام له نظره د ټولو مخلوقاتو خالق او یوازینی معبود دی. مسلمانان باور لري چې هغه یو دی، شریک نه لري او د عبادت وړ یوازې هماغه دی."
-},
+{ en:"good", ps:"ښه", example:"Good job." },
+{ en:"bad", ps:"بد", example:"Bad weather." },
+{ en:"easy", ps:"اسانه", example:"Easy work." },
+{ en:"hard", ps:"سخت", example:"Hard task." },
+{ en:"fast", ps:"چټک", example:"Fast car." },
+{ en:"slow", ps:"سوکاله", example:"Slow walk." },
+{ en:"hot", ps:"ګرم", example:"Hot tea." },
+{ en:"cold", ps:"یخ", example:"Cold water." },
+{ en:"happy", ps:"خوښ", example:"I am happy." },
+{ en:"sad", ps:"خفه", example:"He feels sad." },
 
-{
-    id: 7,
-    question: "سلام څه معنی لري",
-    keywords: ["سلام", "السلام علیکم", "وعلیکم السلام"],
-    answer:
-"وعلیکم السلام ورحمة الله وبرکاته! ښه راغلاست. الله تعالی دې درته خیر او برکت درکړي. څنګه مرسته درسره وکړم؟"
-},
+{ en:"true", ps:"ریښتیا", example:"This is true." },
+{ en:"false", ps:"غلط", example:"That is false." },
+{ en:"right", ps:"سم", example:"Right answer." },
+{ en:"wrong", ps:"غلط", example:"Wrong way." },
+{ en:"early", ps:"وختي", example:"Come early." },
+{ en:"late", ps:"ناوخته", example:"Do not be late." },
+{ en:"today", ps:"نن", example:"Today is good." },
+{ en:"tomorrow", ps:"سبا", example:"See you tomorrow." },
+{ en:"yesterday", ps:"پرون", example:"Yesterday was busy." },
+{ en:"always", ps:"تل", example:"Always try." },
 
-{
-    id: 8,
-    question: "لمونځ څه شی دی",
-    keywords: ["لمونځ", "نماز", "صلاة", "فرض لمونځ"],
-    answer:
-"لمونځ د اسلام له مهمو عبادتونو څخه دی. مسلمانان هره ورځ پنځه وخته فرض لمونځونه ادا کوي: سهار، ماسپښین، مازدیګر، ماښام او ماسخوتن. د لمانځه د شرایطو او طریقې په اړه د خپل مذهب له باوري لارښود سره سم عمل وکړئ."
-},
+{ en:"sometimes", ps:"ځینې وخت", example:"Sometimes I read." },
+{ en:"never", ps:"هیڅکله", example:"Never give up." },
+{ en:"yes", ps:"هو", example:"Yes, I agree." },
+{ en:"no", ps:"نه", example:"No problem." },
+{ en:"maybe", ps:"کېدای شي", example:"Maybe tomorrow." },
+{ en:"because", ps:"ځکه چې", example:"Because I care." },
+{ en:"before", ps:"مخکې", example:"Before noon." },
+{ en:"after", ps:"وروسته", example:"After school." },
+{ en:"inside", ps:"دننه", example:"Go inside." },
+{ en:"outside", ps:"بهر", example:"Stay outside." },
+{ en:"hello", ps:"سلام", example:"Hello, how are you?" },
+{ en:"hi", ps:"های / سلام", example:"Hi my friend." },
+{ en:"how are you", ps:"څنګه یې؟", example:"How are you today?" },
+{ en:"fine", ps:"ښه یم", example:"I am fine." },
+{ en:"thank you", ps:"مننه", example:"Thank you very much." },
+{ en:"thanks", ps:"مننه", example:"Thanks for your help." },
+{ en:"you are welcome", ps:"ستړی مه شې", example:"You are welcome." },
+{ en:"please", ps:"لطفاً", example:"Please help me." },
+{ en:"sorry", ps:"بخښنه", example:"Sorry for being late." },
+{ en:"excuse me", ps:"بخښنه غواړم", example:"Excuse me, sir." },
 
-{
-    id: 9,
-    question: "پنځه وخته لمونځونه کوم دي",
-    keywords: ["پنځه وخته", "د لمونځونو نومونه", "سهار", "ماسپښین", "مازدیګر", "ماښام", "ماسخوتن"],
-    answer:
-"پنځه وخته فرض لمونځونه دا دي:\n۱. د سهار لمونځ.\n۲. د ماسپښین لمونځ.\n۳. د مازدیګر لمونځ.\n۴. د ماښام لمونځ.\n۵. د ماسخوتن لمونځ."
-},
+{ en:"good morning", ps:"سهار مو پخیر", example:"Good morning everyone." },
+{ en:"good afternoon", ps:"غرمه مو پخیر", example:"Good afternoon." },
+{ en:"good evening", ps:"ماښام مو پخیر", example:"Good evening." },
+{ en:"good night", ps:"ښه شپه", example:"Good night, sleep well." },
+{ en:"see you", ps:"بیا به ګورو", example:"See you tomorrow." },
+{ en:"see you later", ps:"وروسته به ګورو", example:"See you later." },
+{ en:"goodbye", ps:"خدای پامان", example:"Goodbye my friend." },
+{ en:"take care", ps:"ځان ساته", example:"Take care of yourself." },
 
-{
-    id: 10,
-    question: "اودس څنګه کیږي",
-    keywords: ["اودس", "اوداسه", "وضو", "اودس طریقه"],
-    answer:
-"د اوداسه عمومي طریقه دا ده:\n۱. د اوداسه نیت وکړئ.\n۲. لاسونه ومینځئ.\n۳. خوله او پوزه ووینځئ.\n۴. مخ ووینځئ.\n۵. لاسونه تر څنګلو پورې ووینځئ.\n۶. د سر مسح وکړئ.\n۷. پښې تر ښنګرو پورې ووینځئ.\n\nد فرضونو، سنتونو او ترتیب په تفصیل کې د فقهي مذهبونو ترمنځ ځینې توپیرونه شته."
-},
+{ en:"what is your name", ps:"ستاسو نوم څه دی؟", example:"What is your name?" },
+{ en:"my name is", ps:"زما نوم دی", example:"My name is Ahmad." },
+{ en:"where are you from", ps:"له کوم ځایه یې؟", example:"Where are you from?" },
+{ en:"i am from", ps:"زه د … یم", example:"I am from Afghanistan." },
+{ en:"how old are you", ps:"ستا عمر څو دی؟", example:"How old are you?" },
 
-{
-    id: 11,
-    question: "روژه څه شی ده",
-    keywords: ["روژه", "صوم", "رمضان", "روژه نیول"],
-    answer:
-"روژه د الله تعالی د عبادت لپاره له سهار صادق څخه تر لمر لوېدو پورې له خوراک، څښاک او نورو روژه ماتوونکو کارونو څخه ځان ساتلو ته ویل کېږي. د ناروغۍ، سفر او نورو ځانګړو حالتونو احکام جلا تفصیل لري."
-},
+{ en:"what are you doing", ps:"څه کوې؟", example:"What are you doing now?" },
+{ en:"i am working", ps:"زه کار کوم", example:"I am working now." },
+{ en:"i am busy", ps:"زه بوخت یم", example:"I am busy." },
+{ en:"no problem", ps:"کومه خبره نشته", example:"No problem." },
+{ en:"wait", ps:"انتظار وکړه", example:"Wait a moment." },
+{ en:"come here", ps:"دلته راشه", example:"Come here please." },
+{ en:"go there", ps:"هلته ولاړ شه", example:"Go there." },
 
-{
-    id: 12,
-    question: "زکات څه شی دی",
-    keywords: ["زکات", "صدقه واجبه", "مال", "نصاب"],
-    answer:
-"زکات په ځانګړو شرایطو کې د مال یوه ټاکلې برخه مستحقو کسانو ته ورکول دي. د زکات اندازه او شرایط د مال له ډول، نصاب او نورو شرعي شرایطو سره تړاو لري؛ د خپل مال دقیق حساب له باوري عالم سره وکړئ."
-},
+{ en:"do you understand", ps:"پوه شوې؟", example:"Do you understand?" },
+{ en:"i understand", ps:"پوه شوم", example:"Yes, I understand." },
+{ en:"i do not understand", ps:"نه پوهېږم", example:"I do not understand." },
+{ en:"say again", ps:"بیا ووایه", example:"Please say again." },
+{ en:"speak slowly", ps:"ورو خبرې وکړه", example:"Speak slowly please." },
 
-{
-    id: 13,
-    question: "حج څه شی دی",
-    keywords: ["حج", "کعبه", "مکه", "حاجي"],
-    answer:
-"حج د اسلام له پنځو ارکانو څخه دی. هغه مسلمان چې د حج مالي او بدني توان ولري، د شرعي شرایطو له مخې پرې حج فرض کېږي. حج په ټاکلو ورځو کې په مکه مکرمه او شاوخوا مقدسو ځایونو کې ادا کېږي."
-},
+{ en:"what do you want", ps:"څه غواړې؟", example:"What do you want?" },
+{ en:"i want this", ps:"دا غواړم", example:"I want this." },
+{ en:"how much", ps:"بیه څو ده؟", example:"How much is this?" },
+{ en:"it is cheap", ps:"دا ارزانه دی", example:"It is cheap." },
+{ en:"it is expensive", ps:"دا ګران دی", example:"It is expensive." },
 
-{
-    id: 14,
-    question: "توبه څه شی ده",
-    keywords: ["توبه", "ګناه", "استغفار", "بښنه غوښتل"],
-    answer:
-"توبه د ګناه پرېښودل، پر تېروتنه پښېمانه کېدل او د بیا نه کولو کلک هوډ کول دي. که د بل انسان حق ضایع شوی وي، د هغه د حق د ادا کولو یا بښنې غوښتلو هڅه هم ضروري ده."
-},
+{ en:"help me", ps:"مرسته راسره وکړه", example:"Help me please." },
+{ en:"can you help me", ps:"کولی شې مرسته وکړې؟", example:"Can you help me?" },
+{ en:"i agree", ps:"زه موافق یم", example:"I agree with you." },
+{ en:"i disagree", ps:"زه موافق نه یم", example:"I disagree." },
+{ en:"maybe later", ps:"کېدای شي وروسته", example:"Maybe later." },
 
-{
-    id: 15,
-    question: "دعا څه شی دی",
-    keywords: ["دعا", "دعاء", "غوښتنه", "الله څخه غوښتل"],
-    answer:
-"دعا له الله تعالی څخه د خیر، مرستې او بښنې غوښتلو عبادت دی. مسلمان کولای شي په خپلو الفاظو دعا وکړي او له قرآن او صحیح حدیثونو څخه ثابتې دعاګانې هم ولولي."
-},
+{ en:"achieve", ps:"ترلاسه کول", example:"Achieve your goal." },
+{ en:"action", ps:"عمل", example:"Take action." },
+{ en:"activity", ps:"فعالیت", example:"Outdoor activity." },
+{ en:"advice", ps:"مشوره", example:"Give advice." },
+{ en:"affect", ps:"اغېز کول", example:"This affects health." },
+{ en:"allow", ps:"اجازه ورکول", example:"Allow me." },
+{ en:"amount", ps:"اندازه", example:"Large amount." },
+{ en:"appear", ps:"ښکاره کېدل", example:"He appears happy." },
 
-{
-    id: 16,
-    question: "استغفار څه معنی لري",
-    keywords: ["استغفار", "استغفرالله", "بښنه", "ګناه بښل"],
-    answer:
-"استغفار له الله تعالی څخه د ګناهونو د بښنې غوښتلو ته ویل کېږي. د استغفار یوه مشهوره جمله «أستغفر الله» ده، یعنې له الله تعالی څخه بښنه غواړم."
-},
+{ en:"apply", ps:"درخواست کول", example:"Apply for job." },
+{ en:"argue", ps:"بحث کول", example:"They argue." },
+{ en:"arrive", ps:"رسېدل", example:"Arrive early." },
+{ en:"attack", ps:"برید", example:"Sudden attack." },
+{ en:"avoid", ps:"ډډه کول", example:"Avoid danger." },
+{ en:"balance", ps:"توازن", example:"Keep balance." },
+{ en:"behavior", ps:"چلند", example:"Good behavior." },
+{ en:"believe", ps:"باور کول", example:"Believe me." },
+{ en:"benefit", ps:"ګټه", example:"Health benefit." },
+{ en:"cancel", ps:"لغوه کول", example:"Cancel meeting." },
 
-{
-    id: 17,
-    question: "جنت څه شی دی",
-    keywords: ["جنت", "بهشت", "اخرت", "نعمتونه"],
-    answer:
-"جنت د آخرت هغه ځای دی چې قرآن کریم او اسلامي عقیده یې د مؤمنانو د ابدي نعمتونو کور بولي. د جنت د ترلاسه کولو لپاره ایمان، نېک عمل او د الله تعالی رحمت مهم دي."
-},
+{ en:"career", ps:"مسلک", example:"Career choice." },
+{ en:"cause", ps:"لامل", example:"Main cause." },
+{ en:"challenge", ps:"ستونزه", example:"Face challenge." },
+{ en:"chance", ps:"چانس", example:"One chance." },
+{ en:"change", ps:"بدلون", example:"Change life." },
+{ en:"choice", ps:"انتخاب", example:"Make choice." },
+{ en:"compare", ps:"پرتله کول", example:"Compare prices." },
+{ en:"complete", ps:"بشپړ", example:"Complete work." },
+{ en:"control", ps:"کنټرول", example:"Control system." },
+{ en:"create", ps:"جوړول", example:"Create account." },
 
-{
-    id: 18,
-    question: "دوزخ څه شی دی",
-    keywords: ["دوزخ", "جهنم", "عذاب", "آخرت"],
-    answer:
-"دوزخ یا جهنم په اسلامي عقیده کې د آخرت د عذاب ځای دی. قرآن کریم انسانان له کفر، ظلم او ګناهونو څخه منع کوي او توبه، ایمان او نېک عمل ته یې رابولي."
-},
+{ en:"damage", ps:"زیان", example:"Heavy damage." },
+{ en:"decision", ps:"پریکړه", example:"Make decision." },
+{ en:"develop", ps:"پراختیا کول", example:"Develop skills." },
+{ en:"difference", ps:"توپیر", example:"Big difference." },
+{ en:"discover", ps:"کشف کول", example:"Discover truth." },
+{ en:"disease", ps:"ناروغي", example:"Heart disease." },
+{ en:"effort", ps:"هڅه", example:"Hard effort." },
+{ en:"energy", ps:"انرژي", example:"More energy." },
+{ en:"experience", ps:"تجربه", example:"Work experience." },
+{ en:"explain", ps:"تشریح کول", example:"Explain clearly." },
 
-{
-    id: 19,
-    question: "حدیث څه شی دی",
-    keywords: ["حدیث", "احادیث", "سنت", "روایت"],
-    answer:
-"حدیث هغه روایت ته ویل کېږي چې د رسول الله ﷺ خبرې، کړنې، تأیید یا اړوند صفتونه بیانوي. د حدیث د منلو لپاره د هغه سند او د علماوو ارزونه مهمه ده."
-},
+{ en:"fear", ps:"وېره", example:"No fear." },
+{ en:"focus", ps:"تمرکز", example:"Focus on study." },
+{ en:"goal", ps:"هدف", example:"Reach goal." },
+{ en:"improve", ps:"ښه کول", example:"Improve skills." },
+{ en:"increase", ps:"زیاتول", example:"Increase speed." },
+{ en:"information", ps:"معلومات", example:"Get information." },
+{ en:"interest", ps:"علاقه", example:"Show interest." },
+{ en:"manage", ps:"سمبالول", example:"Manage time." },
+{ en:"method", ps:"طریقه", example:"Best method." },
+{ en:"opinion", ps:"نظر", example:"Your opinion." },
+{ en:"abandon", ps:"پرېښودل", example:"Do not abandon hope." },
+{ en:"absolute", ps:"مطلق", example:"Absolute truth." },
+{ en:"academic", ps:"علمي", example:"Academic research." },
+{ en:"access", ps:"لاس‌رسی", example:"Access information." },
+{ en:"accomplish", ps:"ترسره کول", example:"Accomplish a task." },
+{ en:"accurate", ps:"دقیق", example:"Accurate data." },
+{ en:"adapt", ps:"عیارېدل", example:"Adapt to change." },
+{ en:"additional", ps:"اضافي", example:"Additional cost." },
+{ en:"adequate", ps:"کافي", example:"Adequate time." },
+{ en:"administration", ps:"اداره", example:"Public administration." },
 
-{
-    id: 20,
-    question: "سنت څه شی دی",
-    keywords: ["سنت", "د رسول سنت", "نبوي طریقه"],
-    answer:
-"سنت د رسول الله ﷺ د وینا، کړنې او تأیید له لارې معلومې شوې لارښوونې ته ویل کېږي. د سنتو عملي کول د اسلامي ژوند مهمه برخه ده؛ خو د هر حکم درجه باید د باوري علمي سرچینو له مخې وپېژندل شي."
-},
+{ en:"admission", ps:"منل", example:"University admission." },
+{ en:"adopt", ps:"منل / خپلول", example:"Adopt a policy." },
+{ en:"advanced", ps:"پرمختللی", example:"Advanced level." },
+{ en:"advantage", ps:"ګټه", example:"Main advantage." },
+{ en:"advertise", ps:"اعلان کول", example:"Advertise product." },
+{ en:"afford", ps:"وس لرل", example:"I cannot afford it." },
+{ en:"agency", ps:"اداره", example:"News agency." },
+{ en:"agreement", ps:"هوکړه", example:"Peace agreement." },
+{ en:"analysis", ps:"تحلیل", example:"Data analysis." },
+{ en:"announce", ps:"اعلان کول", example:"Announce results." },
 
-{
-    id: 21,
-    question: "اخلاق څه اهمیت لري",
-    keywords: ["اخلاق", "ښه اخلاق", "بد اخلاق", "کردار"],
-    answer:
-"ښه اخلاق د اسلام مهمه برخه ده. رښتیا ویل، امانت ساتل، له خلکو سره مهرباني، د مور او پلار احترام، د ګاونډي حق او له ظلم څخه ډډه کول د ښو اخلاقو بېلګې دي."
-},
+{ en:"anxiety", ps:"اندېښنه", example:"Feel anxiety." },
+{ en:"apology", ps:"بښنه غوښتنه", example:"Accept apology." },
+{ en:"approach", ps:"لاره", example:"New approach." },
+{ en:"appropriate", ps:"مناسب", example:"Appropriate action." },
+{ en:"approve", ps:"تاییدول", example:"Approve plan." },
+{ en:"argument", ps:"دلیل", example:"Strong argument." },
+{ en:"artificial", ps:"مصنوعي", example:"Artificial intelligence." },
+{ en:"aspect", ps:"اړخ", example:"Important aspect." },
+{ en:"assignment", ps:"دنده", example:"Homework assignment." },
+{ en:"assistance", ps:"مرسته", example:"Financial assistance." },
 
-{
-    id: 22,
-    question: "د مور او پلار حقونه څه دي",
-    keywords: ["مور", "پلار", "والدین", "مور او پلار", "والدینو حق"],
-    answer:
-"اسلام د مور او پلار د احترام، خدمت او له هغوی سره د نېک چلند سپارښتنه کوي. خو که د الله تعالی د حکم خلاف کار ته امر وکړي، اطاعت یې نه کېږي؛ بیا هم ورسره باید په مناسبه او درناوي ډکه ژبه چلند وشي."
-}
+{ en:"assume", ps:"ګومان کول", example:"Assume responsibility." },
+{ en:"atmosphere", ps:"فضا", example:"Friendly atmosphere." },
+{ en:"attempt", ps:"هڅه", example:"Attempt success." },
+{ en:"attract", ps:"جلب کول", example:"Attract attention." },
+{ en:"authority", ps:"واک", example:"Local authority." },
+{ en:"available", ps:"شته", example:"Service available." },
+{ en:"awareness", ps:"پوهاوی", example:"Public awareness." },
+{ en:"background", ps:"شالید", example:"Educational background." },
+{ en:"barrier", ps:"خنډ", example:"Language barrier." },
+{ en:"baseline", ps:"بنسټ", example:"Baseline data." },
 
+{ en:"beneficial", ps:"ګټور", example:"Beneficial habit." },
+{ en:"budget", ps:"بودیجه", example:"Annual budget." },
+{ en:"capacity", ps:"وړتیا", example:"Full capacity." },
+{ en:"category", ps:"کتګوري", example:"Product category." },
+{ en:"circumstance", ps:"حالت", example:"Under circumstances." },
+{ en:"clarify", ps:"روښانه کول", example:"Clarify issue." },
+{ en:"collapse", ps:"نړېدل", example:"System collapse." },
+{ en:"commitment", ps:"ژمنتیا", example:"Strong commitment." },
+{ en:"communicate", ps:"اړیکه نیول", example:"Communicate clearly." },
+{ en:"compensation", ps:"تاوان", example:"Pay compensation." },
+
+{ en:"complex", ps:"پیچلی", example:"Complex problem." },
+{ en:"component", ps:"برخه", example:"Main component." },
+{ en:"concept", ps:"مفهوم", example:"Basic concept." },
+{ en:"conclusion", ps:"پایله", example:"Final conclusion." },
+{ en:"conduct", ps:"ترسره کول", example:"Conduct survey." },
+{ en:"confidence", ps:"باور", example:"Self confidence." },
+{ en:"conflict", ps:"شخړه", example:"Resolve conflict." },
+{ en:"consequence", ps:"پایله", example:"Serious consequence." },
+{ en:"consideration", ps:"غور", example:"Careful consideration." },
+{ en:"consistent", ps:"دوامدار", example:"Consistent effort." },
+
+{ en:"constraint", ps:"محدودیت", example:"Time constraint." },
+{ en:"consult", ps:"مشوره کول", example:"Consult expert." },
+{ en:"consume", ps:"مصرفول", example:"Consume energy." },
+{ en:"context", ps:"سیاق", example:"Social context." },
+{ en:"contribute", ps:"ونډه اخیستل", example:"Contribute ideas." },
+{ en:"controversy", ps:"لانجه", example:"Political controversy." },
+{ en:"convenient", ps:"اسانه", example:"Convenient time." },
+{ en:"cooperation", ps:"همکاري", example:"Regional cooperation." },
+{ en:"core", ps:"اصلي", example:"Core issue." },
+{ en:"credible", ps:"د باور وړ", example:"Credible source." },
+
+{ en:"criteria", ps:"معیارونه", example:"Selection criteria." },
+{ en:"critical", ps:"حساس", example:"Critical moment." },
+{ en:"currency", ps:"اسعار", example:"Local currency." },
+{ en:"debate", ps:"مناظره", example:"Public debate." },
+{ en:"decline", ps:"کموالی", example:"Economic decline." },
+{ en:"dedicate", ps:"ځانګړی کول", example:"Dedicate time." },
+{ en:"defend", ps:"دفاع کول", example:"Defend rights." },
+{ en:"define", ps:"تعریف کول", example:"Define goal." },
+{ en:"demonstrate", ps:"ښودل", example:"Demonstrate skill." },
+{ en:"density", ps:"کثافت", example:"Population density." },
+
+{ en:"depend", ps:"تکیه کول", example:"Depend on effort." },
+{ en:"derive", ps:"لاس ته راوړل", example:"Derive benefit." },
+{ en:"detect", ps:"موندل", example:"Detect problem." },
+{ en:"dimension", ps:"بعد", example:"New dimension." },
+{ en:"distribute", ps:"وېشل", example:"Distribute food." },
+{ en:"diverse", ps:"متنوع", example:"Diverse culture." },
+{ en:"dominate", ps:"واکمن کېدل", example:"Dominate market." },
+{ en:"duration", ps:"موده", example:"Course duration." },
+{ en:"efficient", ps:"اغېزمن", example:"Efficient system." },
+{ en:"eliminate", ps:"له منځه وړل", example:"Eliminate errors." },
+
+{ en:"emphasis", ps:"ټینګار", example:"Place emphasis." },
+{ en:"encounter", ps:"مخامخ کېدل", example:"Encounter difficulty." },
+{ en:"enhance", ps:"پیاوړی کول", example:"Enhance quality." },
+{ en:"ensure", ps:"ډاډمن کول", example:"Ensure safety." },
+{ en:"estimate", ps:"اټکل", example:"Estimate cost." },
+{ en:"evaluate", ps:"ارزونه کول", example:"Evaluate result." },
+{ en:"evidence", ps:"ثبوت", example:"Clear evidence." },
+{ en:"exclude", ps:"ایستل", example:"Exclude option." },
+{ en:"expand", ps:"پراخول", example:"Expand business." },
+{ en:"expose", ps:"افشا کول", example:"Expose truth." },
+
+{ en:"external", ps:"بهرنی", example:"External factor." },
+{ en:"facilitate", ps:"اسانتیا برابرول", example:"Facilitate process." },
+{ en:"feature", ps:"ځانګړنه", example:"New feature." },
+{ en:"flexible", ps:"انعطاف منونکی", example:"Flexible schedule." },
+{ en:"framework", ps:"چوکاټ", example:"Legal framework." },
+{ en:"fundamental", ps:"بنسټیز", example:"Fundamental right." },
+{ en:"generate", ps:"تولیدول", example:"Generate income." },
+{ en:"guideline", ps:"لارښود", example:"Safety guideline." },
+{ en:"highlight", ps:"روښانه کول", example:"Highlight issue." },
+{ en:"hypothesis", ps:"فرضیه", example:"Test hypothesis." },
+{ en:"accumulate", ps:"راټولول", example:"Accumulate experience." },
+{ en:"acknowledge", ps:"منل", example:"Acknowledge the truth." },
+{ en:"acquire", ps:"ترلاسه کول", example:"Acquire skills." },
+{ en:"activate", ps:"فعالول", example:"Activate the system." },
+{ en:"allocate", ps:"وېشل", example:"Allocate resources." },
+{ en:"alter", ps:"بدلول", example:"Alter the plan." },
+{ en:"anticipate", ps:"تمه لرل", example:"Anticipate results." },
+{ en:"appoint", ps:"ټاکل", example:"Appoint a manager." },
+{ en:"assemble", ps:"راټولول", example:"Assemble parts." },
+{ en:"assess", ps:"ارزونه کول", example:"Assess performance." },
+
+{ en:"authorize", ps:"اجازه ورکول", example:"Authorize access." },
+{ en:"brief", ps:"لنډ", example:"Brief explanation." },
+{ en:"catalog", ps:"فهرست", example:"Product catalog." },
+{ en:"circulate", ps:"ګرځول", example:"Circulate document." },
+{ en:"coincide", ps:"برابرېدل", example:"Dates coincide." },
+{ en:"compile", ps:"راټولول", example:"Compile data." },
+{ en:"comply", ps:"اطاعت کول", example:"Comply with rules." },
+{ en:"concentrate", ps:"تمرکز کول", example:"Concentrate on work." },
+{ en:"configure", ps:"تنظیم کول", example:"Configure device." },
+{ en:"consolidate", ps:"یوځای کول", example:"Consolidate power." },
+
+{ en:"constitute", ps:"جوړول", example:"Constitute a team." },
+{ en:"constrain", ps:"محدودول", example:"Constrain growth." },
+{ en:"construct", ps:"جوړول", example:"Construct building." },
+{ en:"contemplate", ps:"فکر کول", example:"Contemplate future." },
+{ en:"coordinate", ps:"همغږي کول", example:"Coordinate efforts." },
+{ en:"correlate", ps:"اړیکه لرل", example:"Correlate results." },
+{ en:"cultivate", ps:"وده ورکول", example:"Cultivate skills." },
+{ en:"decentralize", ps:"غیر متمرکز کول", example:"Decentralize system." },
+{ en:"deduce", ps:"نتیجه اخیستل", example:"Deduce meaning." },
+{ en:"defer", ps:"ځنډول", example:"Defer decision." },
+
+{ en:"depict", ps:"انځورول", example:"Depict reality." },
+{ en:"deploy", ps:"ځای پر ځای کول", example:"Deploy forces." },
+{ en:"designate", ps:"نښه کول", example:"Designate area." },
+{ en:"differentiate", ps:"توپیر کول", example:"Differentiate products." },
+{ en:"diminish", ps:"کمول", example:"Diminish value." },
+{ en:"disclose", ps:"ښکاره کول", example:"Disclose information." },
+{ en:"discrete", ps:"جلا", example:"Discrete units." },
+{ en:"distort", ps:"تحریف کول", example:"Distort facts." },
+{ en:"divert", ps:"ګرځول", example:"Divert attention." },
+{ en:"elaborate", ps:"تفصیل ورکول", example:"Elaborate plan." },
+
+{ en:"embed", ps:"نښلول", example:"Embed video." },
+{ en:"empower", ps:"واک ورکول", example:"Empower people." },
+{ en:"enforce", ps:"پلي کول", example:"Enforce law." },
+{ en:"engage", ps:"بوختېدل", example:"Engage audience." },
+{ en:"entail", ps:"اړتیا لرل", example:"Entail risk." },
+{ en:"enumerate", ps:"شمېرل", example:"Enumerate points." },
+{ en:"eradicate", ps:"له منځه وړل", example:"Eradicate poverty." },
+{ en:"escalate", ps:"لوړېدل", example:"Escalate conflict." },
+{ en:"establish", ps:"بنسټ ایښودل", example:"Establish company." },
+{ en:"ethics", ps:"اخلاقیات", example:"Professional ethics." },
+
+{ en:"exceed", ps:"اوښتل", example:"Exceed limits." },
+{ en:"execute", ps:"اجرا کول", example:"Execute plan." },
+{ en:"exempt", ps:"معاف", example:"Exempt tax." },
+{ en:"exhaust", ps:"ستړی کول", example:"Exhaust resources." },
+{ en:"exhibit", ps:"نندارې ته ایښودل", example:"Exhibit art." },
+{ en:"explicit", ps:"روښانه", example:"Explicit instruction." },
+{ en:"exploit", ps:"ګټه اخیستل", example:"Exploit opportunity." },
+{ en:"facade", ps:"ظاهري بڼه", example:"False facade." },
+{ en:"feasible", ps:"ممکن", example:"Feasible solution." },
+{ en:"fluctuate", ps:"بدلېدل", example:"Prices fluctuate." },
+
+{ en:"formulate", ps:"جوړول", example:"Formulate strategy." },
+{ en:"foster", ps:"وده ورکول", example:"Foster talent." },
+{ en:"fragment", ps:"ټوټه", example:"Fragment data." },
+{ en:"friction", ps:"اصطکاک", example:"Cause friction." },
+{ en:"fulfill", ps:"پوره کول", example:"Fulfill promise." },
+{ en:"fund", ps:"تمویل کول", example:"Fund project." },
+{ en:"gauge", ps:"اندازه کول", example:"Gauge progress." },
+{ en:"generate", ps:"تولیدول", example:"Generate power." },
+{ en:"halt", ps:"درول", example:"Halt process." },
+{ en:"implement", ps:"پلي کول", example:"Implement policy." },
+
+{ en:"imply", ps:"اشاره کول", example:"Imply meaning." },
+{ en:"incentive", ps:"انګېزه", example:"Financial incentive." },
+{ en:"incorporate", ps:"شاملول", example:"Incorporate ideas." },
+{ en:"indicate", ps:"ښودل", example:"Indicate direction." },
+{ en:"induce", ps:"لامل کېدل", example:"Induce change." },
+{ en:"inevitable", ps:"نه مخنیوی کېدونکی", example:"Inevitable result." },
+{ en:"infrastructure", ps:"زیربنا", example:"Build infrastructure." },
+{ en:"inhibit", ps:"مخنیوی کول", example:"Inhibit growth." },
+{ en:"initiate", ps:"پیل کول", example:"Initiate process." },
+{ en:"integrate", ps:"یوځای کول", example:"Integrate system." },
+
+{ en:"interpret", ps:"تفسیر کول", example:"Interpret data." },
+{ en:"intervene", ps:"لاس وهنه کول", example:"Intervene quickly." },
+{ en:"invoke", ps:"غوښتل", example:"Invoke law." },
+{ en:"isolate", ps:"جلا کول", example:"Isolate issue." },
+{ en:"justify", ps:"توجیه کول", example:"Justify decision." },
+{ en:"leverage", ps:"ګټه اخیستل", example:"Leverage resources." },
+{ en:"manipulate", ps:"لاس وهنه کول", example:"Manipulate data." },
+{ en:"mediate", ps:"منځګړیتوب کول", example:"Mediate conflict." },
+{ en:"mitigate", ps:"کمول", example:"Mitigate risk." },
+{ en:"mobilize", ps:"چمتو کول", example:"Mobilize support." },
+
+{ en:"monitor", ps:"څارل", example:"Monitor system." },
+{ en:"motivate", ps:"هڅول", example:"Motivate team." },
+{ en:"negotiate", ps:"خبرې کول", example:"Negotiate deal." },
+{ en:"optimize", ps:"ښه کول", example:"Optimize performance." },
+{ en:"orient", ps:"لارښوونه کول", example:"Orient staff." },
+{ en:"outcome", ps:"پایله", example:"Positive outcome." },
+{ en:"overcome", ps:"بریالي کېدل", example:"Overcome fear." },
+{ en:"perceive", ps:"درک کول", example:"Perceive change." },
+{ en:"persist", ps:"دوام کول", example:"Persist effort." },
+{ en:"precede", ps:"مخکې راتلل", example:"Precede event." },
+
+{ en:"predict", ps:"اټکل کول", example:"Predict weather." },
+{ en:"preserve", ps:"ساتل", example:"Preserve nature." },
+{ en:"prioritize", ps:"لومړیتوب ورکول", example:"Prioritize tasks." },
+{ en:"proceed", ps:"پرمخ تلل", example:"Proceed carefully." },
+{ en:"promote", ps:"وده ورکول", example:"Promote business." },
+{ en:"prohibit", ps:"منع کول", example:"Prohibit entry." },
+{ en:"reinforce", ps:"پیاوړی کول", example:"Reinforce rules." },
+{ en:"relocate", ps:"بل ځای ته وړل", example:"Relocate office." },
+{ en:"resolve", ps:"حل کول", example:"Resolve issue." },
+{ en:"retain", ps:"ساتل", example:"Retain control." },
+
+{ en:"revise", ps:"بیا کتنه کول", example:"Revise plan." },
+{ en:"safeguard", ps:"ساتنه کول", example:"Safeguard rights." },
+{ en:"simulate", ps:"تمثیل کول", example:"Simulate process." },
+{ en:"stabilize", ps:"ثابتول", example:"Stabilize economy." },
+{ en:"substitute", ps:"بدیل", example:"Substitute option." },
+{ en:"sustain", ps:"ساتل", example:"Sustain growth." },
+{ en:"synchronize", ps:"هممهاله کول", example:"Synchronize data." },
+{ en:"terminate", ps:"پای ته رسول", example:"Terminate contract." },
+{ en:"transform", ps:"بدلول", example:"Transform system." },
+{ en:"utilize", ps:"کارول", example:"Utilize resources." },
+{ en:"alarm", ps:"الارم", example:"Set the alarm." },
+{ en:"appointment", ps:"وخت ټاکنه", example:"I have an appointment." },
+{ en:"area", ps:"ساحه", example:"This area is busy." },
+{ en:"arrival", ps:"رسېدل", example:"Arrival time changed." },
+{ en:"attention", ps:"پاملرنه", example:"Pay attention." },
+{ en:"available", ps:"شته", example:"Is it available?" },
+{ en:"average", ps:"منځنی", example:"Average score." },
+{ en:"balance", ps:"توازن", example:"Keep balance." },
+{ en:"battery", ps:"بېټرۍ", example:"Battery is low." },
+{ en:"behavior", ps:"چلند", example:"Good behavior." },
+
+{ en:"belt", ps:"کمربند", example:"Wear a belt." },
+{ en:"benefit", ps:"ګټه", example:"Health benefit." },
+{ en:"bill", ps:"بیل", example:"Pay the bill." },
+{ en:"block", ps:"بلاک", example:"Road is blocked." },
+{ en:"borrow", ps:"پور اخیستل", example:"Borrow money." },
+{ en:"bother", ps:"تنګول", example:"Don't bother me." },
+{ en:"budget", ps:"بودیجه", example:"Monthly budget." },
+{ en:"button", ps:"تڼۍ", example:"Press the button." },
+{ en:"calendar", ps:"کلیندر", example:"Check calendar." },
+{ en:"cancel", ps:"لغوه کول", example:"Cancel meeting." },
+
+{ en:"cash", ps:"نغدې", example:"Pay cash." },
+{ en:"celebrate", ps:"لمانځل", example:"Celebrate success." },
+{ en:"change", ps:"بدلون", example:"Change clothes." },
+{ en:"charge", ps:"چارج", example:"Charge phone." },
+{ en:"choice", ps:"انتخاب", example:"Good choice." },
+{ en:"cleaner", ps:"پاکوونکی", example:"The cleaner arrived." },
+{ en:"closet", ps:"المارۍ", example:"Open the closet." },
+{ en:"comfort", ps:"ارام", example:"Feel comfort." },
+{ en:"complaint", ps:"شکایت", example:"File a complaint." },
+{ en:"confirm", ps:"تاییدول", example:"Confirm order." },
+
+{ en:"contact", ps:"اړیکه", example:"Contact me." },
+{ en:"conversation", ps:"خبرې", example:"Nice conversation." },
+{ en:"correct", ps:"سم", example:"Correct answer." },
+{ en:"customer", ps:"پېرېدونکی", example:"Happy customer." },
+{ en:"damage", ps:"زیان", example:"Phone damage." },
+{ en:"deadline", ps:"وروستۍ نېټه", example:"Meet deadline." },
+{ en:"decision", ps:"فیصله", example:"Big decision." },
+{ en:"delivery", ps:"سپارل", example:"Fast delivery." },
+{ en:"deposit", ps:"جمع کول", example:"Deposit money." },
+{ en:"direction", ps:"لار", example:"Wrong direction." },
+
+{ en:"discount", ps:"تخفیف", example:"Get discount." },
+{ en:"distance", ps:"واټن", example:"Long distance." },
+{ en:"document", ps:"سند", example:"Important document." },
+{ en:"driver", ps:"چلوونکی", example:"Bus driver." },
+{ en:"duration", ps:"موده", example:"Short duration." },
+{ en:"emergency", ps:"بیړنی حالت", example:"Medical emergency." },
+{ en:"employee", ps:"کارکوونکی", example:"Company employee." },
+{ en:"empty", ps:"تش", example:"Empty bottle." },
+{ en:"entrance", ps:"دروازه", example:"Main entrance." },
+{ en:"error", ps:"تېروتنه", example:"System error." },
+
+{ en:"estimate", ps:"اټکل", example:"Cost estimate." },
+{ en:"exchange", ps:"بدلون", example:"Exchange money." },
+{ en:"experience", ps:"تجربه", example:"Work experience." },
+{ en:"explain", ps:"تشریح کول", example:"Explain clearly." },
+{ en:"feedback", ps:"نظر", example:"Give feedback." },
+{ en:"file", ps:"فایل", example:"Open file." },
+{ en:"finish", ps:"پای ته رسول", example:"Finish work." },
+{ en:"focus", ps:"تمرکز", example:"Focus here." },
+{ en:"force", ps:"زور", example:"Use force." },
+{ en:"form", ps:"فورم", example:"Fill the form." },
+
+{ en:"forward", ps:"مخ ته", example:"Move forward." },
+{ en:"friendship", ps:"دوستي", example:"Strong friendship." },
+{ en:"fuel", ps:"تیل", example:"Fuel price." },
+{ en:"furniture", ps:"فرنیچر", example:"New furniture." },
+{ en:"garbage", ps:"کثافات", example:"Throw garbage." },
+{ en:"grocery", ps:"خوراکي توکي", example:"Buy grocery." },
+{ en:"habit", ps:"عادت", example:"Good habit." },
+{ en:"handle", ps:"سمبالول", example:"Handle problem." },
+{ en:"headline", ps:"سرلیک", example:"News headline." },
+{ en:"healthcare", ps:"روغتیا پالنه", example:"Healthcare system." },
+
+{ en:"hearing", ps:"اورېدنه", example:"Court hearing." },
+{ en:"helmet", ps:"خولۍ", example:"Wear helmet." },
+{ en:"honest", ps:"رښتینی", example:"Honest person." },
+{ en:"identity", ps:"پېژند", example:"Identity card." },
+{ en:"improve", ps:"ښه کول", example:"Improve skills." },
+{ en:"include", ps:"شاملول", example:"Include details." },
+{ en:"income", ps:"عاید", example:"Monthly income." },
+{ en:"industry", ps:"صنعت", example:"Tech industry." },
+{ en:"information", ps:"معلومات", example:"Get information." },
+{ en:"instruction", ps:"لارښوونه", example:"Follow instructions." },
+
+{ en:"interview", ps:"مرکه", example:"Job interview." },
+{ en:"introduce", ps:"پېژندل", example:"Introduce yourself." },
+{ en:"issue", ps:"ستونزه", example:"Fix issue." },
+{ en:"journey", ps:"سفر", example:"Long journey." },
+{ en:"key", ps:"کلید", example:"Room key." },
+{ en:"language", ps:"ژبه", example:"Learn language." },
+{ en:"laundry", ps:"کالي مینځل", example:"Do laundry." },
+{ en:"license", ps:"جواز", example:"Driving license." },
+{ en:"location", ps:"ځای", example:"Share location." },
+{ en:"manager", ps:"مدیر", example:"Office manager." },
+
+{ en:"market", ps:"بازار", example:"Local market." },
+{ en:"medicine", ps:"درمل", example:"Take medicine." },
+{ en:"meeting", ps:"غونډه", example:"Attend meeting." },
+{ en:"message", ps:"پیغام", example:"Send message." },
+{ en:"mistake", ps:"غلطی", example:"Small mistake." },
+{ en:"mobile", ps:"موبایل", example:"Mobile phone." },
+{ en:"moment", ps:"شیبه", example:"Wait a moment." },
+{ en:"monthly", ps:"میاشتنی", example:"Monthly payment." },
+{ en:"movement", ps:"حرکت", example:"Body movement." },
+{ en:"neighbor", ps:"ګاونډی", example:"Good neighbor." },
+
+{ en:"network", ps:"شبکه", example:"Internet network." },
+{ en:"notice", ps:"خبرتیا", example:"Read notice." },
+{ en:"object", ps:"شي", example:"Heavy object." },
+{ en:"offer", ps:"وړاندیز", example:"Special offer." },
+{ en:"opinion", ps:"نظر", example:"My opinion." },
+{ en:"option", ps:"انتخاب", example:"Choose option." },
+{ en:"order", ps:"امر / فرمایش", example:"Place order." },
+{ en:"package", ps:"بسته", example:"Receive package." },
+{ en:"payment", ps:"تادیه", example:"Online payment." },
+{ en:"permission", ps:"اجازه", example:"Ask permission." },
+{ en:"access", ps:"لاسرسی", example:"Access denied." },
+{ en:"account", ps:"حساب", example:"Open an account." },
+{ en:"active", ps:"فعال", example:"Stay active." },
+{ en:"add", ps:"زیاتول", example:"Add sugar." },
+{ en:"adjust", ps:"برابرول", example:"Adjust settings." },
+{ en:"advice", ps:"مشوره", example:"Take advice." },
+{ en:"afford", ps:"توان لرل", example:"I can afford it." },
+{ en:"agree", ps:"موافقه کول", example:"I agree." },
+{ en:"allow", ps:"اجازه ورکول", example:"Allow access." },
+
+{ en:"announce", ps:"اعلان کول", example:"Announce result." },
+{ en:"answer", ps:"ځواب", example:"Correct answer." },
+{ en:"anxious", ps:"اندېښمن", example:"Feel anxious." },
+{ en:"apply", ps:"درخواست کول", example:"Apply online." },
+{ en:"argue", ps:"بحث کول", example:"Do not argue." },
+{ en:"arrange", ps:"تنظیمول", example:"Arrange meeting." },
+{ en:"arrive", ps:"رسېدل", example:"Arrive early." },
+{ en:"assist", ps:"مرسته کول", example:"Assist customer." },
+{ en:"avoid", ps:"ډډه کول", example:"Avoid traffic." },
+{ en:"aware", ps:"خبر", example:"Be aware." },
+
+{ en:"basic", ps:"اساسي", example:"Basic needs." },
+{ en:"behave", ps:"چلند کول", example:"Behave well." },
+{ en:"believe", ps:"باور کول", example:"I believe you." },
+{ en:"belong", ps:"تړاو لرل", example:"Belong here." },
+{ en:"blame", ps:"پړه اچول", example:"Do not blame." },
+{ en:"board", ps:"سپرلۍ", example:"Board bus." },
+{ en:"breathe", ps:"ساه اخیستل", example:"Breathe slowly." },
+{ en:"brief", ps:"لنډ", example:"Brief talk." },
+{ en:"bring", ps:"راوړل", example:"Bring water." },
+{ en:"build", ps:"جوړول", example:"Build house." },
+
+{ en:"busy", ps:"بوخت", example:"I am busy." },
+{ en:"calm", ps:"ارام", example:"Stay calm." },
+{ en:"careful", ps:"احتیاطي", example:"Be careful." },
+{ en:"carry", ps:"وړل", example:"Carry bag." },
+{ en:"catch", ps:"نیول", example:"Catch bus." },
+{ en:"check", ps:"کتل", example:"Check email." },
+{ en:"choose", ps:"غوراوی کول", example:"Choose wisely." },
+{ en:"collect", ps:"راټولول", example:"Collect data." },
+{ en:"compare", ps:"پرتله کول", example:"Compare prices." },
+{ en:"complete", ps:"بشپړول", example:"Complete task." },
+
+{ en:"concern", ps:"اندېښنه", example:"Health concern." },
+{ en:"connect", ps:"نښلول", example:"Connect internet." },
+{ en:"consider", ps:"په پام کې نیول", example:"Consider option." },
+{ en:"contain", ps:"لرل", example:"Contains sugar." },
+{ en:"continue", ps:"جاري ساتل", example:"Continue work." },
+{ en:"control", ps:"کنټرول", example:"Control system." },
+{ en:"copy", ps:"کاپي کول", example:"Copy file." },
+{ en:"count", ps:"شمېرل", example:"Count money." },
+{ en:"cover", ps:"پوښل", example:"Cover food." },
+{ en:"create", ps:"جوړول", example:"Create account." },
+
+{ en:"cross", ps:"اوښتل", example:"Cross road." },
+{ en:"daily", ps:"ورځنی", example:"Daily routine." },
+{ en:"decide", ps:"فیصله کول", example:"Decide now." },
+{ en:"decline", ps:"رد کول", example:"Decline offer." },
+{ en:"depend", ps:"تکیه کول", example:"Depend on you." },
+{ en:"describe", ps:"بیانول", example:"Describe problem." },
+{ en:"design", ps:"ډیزاین", example:"Design logo." },
+{ en:"destroy", ps:"ویجاړول", example:"Destroy evidence." },
+{ en:"develop", ps:"پرمختګ کول", example:"Develop skill." },
+{ en:"difference", ps:"توپیر", example:"Big difference." },
+
+{ en:"direct", ps:"مستقیم", example:"Direct route." },
+{ en:"discover", ps:"موندل", example:"Discover truth." },
+{ en:"divide", ps:"وېشل", example:"Divide money." },
+{ en:"double", ps:"دوه چنده", example:"Double check." },
+{ en:"draw", ps:"رسم کول", example:"Draw picture." },
+{ en:"drop", ps:"غورځول", example:"Drop call." },
+{ en:"during", ps:"په جریان کې", example:"During class." },
+{ en:"earn", ps:"ګټل", example:"Earn money." },
+{ en:"educate", ps:"ښوونه", example:"Educate children." },
+{ en:"effective", ps:"اغېزمن", example:"Effective method." },
+
+{ en:"effort", ps:"هڅه", example:"Make effort." },
+{ en:"enable", ps:"فعالول", example:"Enable option." },
+{ en:"encourage", ps:"هڅول", example:"Encourage students." },
+{ en:"engage", ps:"بوختېدل", example:"Engage audience." },
+{ en:"enjoy", ps:"خوند اخیستل", example:"Enjoy life." },
+{ en:"ensure", ps:"ډاډمنول", example:"Ensure safety." },
+{ en:"enter", ps:"ننوتل", example:"Enter room." },
+{ en:"escape", ps:"تښتېدل", example:"Escape danger." },
+{ en:"essential", ps:"ضروري", example:"Essential item." },
+{ en:"eventually", ps:"په پای کې", example:"Eventually succeed." },
+
+{ en:"exact", ps:"کره", example:"Exact time." },
+{ en:"exist", ps:"شتون لرل", example:"Problems exist." },
+{ en:"expand", ps:"پراخول", example:"Expand business." },
+{ en:"expect", ps:"تمه کول", example:"Expect results." },
+{ en:"explain", ps:"تشریح کول", example:"Explain again." },
+{ en:"explore", ps:"سپړل", example:"Explore city." },
+{ en:"express", ps:"څرګندول", example:"Express feelings." },
+{ en:"extend", ps:"غځول", example:"Extend deadline." },
+{ en:"fail", ps:"ناکامېدل", example:"Fail exam." },
+{ en:"fair", ps:"عادلانه", example:"Fair decision." }
 ];
 
-/* =====================================================
-   2. عمومي حالت او د خبرو ذخیره
-   ===================================================== */
 
-const STORAGE_KEY = "pashto_islamic_ai_chats_v6";
-
-let chats = [];
-let currentChatId = null;
-let pendingChoices = [];
-let isBusy = false;
-
-let typeWriterToken = 0;
-
-const chatArea = document.getElementById("chatArea");
-const messagesEl = document.getElementById("messages");
-const welcomeEl = document.getElementById("welcome");
-const userInput = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const historyList = document.getElementById("historyList");
-const toastEl = document.getElementById("toast");
-
-const chatDropdown = document.getElementById("chatDropdown");
-const dropdownRenameBtn = document.getElementById("dropdownRenameBtn");
-const dropdownDeleteBtn = document.getElementById("dropdownDeleteBtn");
-let dropdownChatId = null;
-
-function makeId() {
-    return Date.now().toString(36) +
-        Math.random().toString(36).slice(2, 8);
-}
-
-function now() {
-    return new Date().toISOString();
-}
-
-function loadChats() {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        const parsed = saved ? JSON.parse(saved) : [];
-        chats = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-        chats = [];
-    }
-
-    chats = chats.filter(chat =>
-        chat &&
-        typeof chat.id === "string" &&
-        Array.isArray(chat.messages)
-    );
-
-    chats.forEach(chat => {
-        if (!chat.title) chat.title = "نوې خبرې";
-        if (!chat.createdAt) chat.createdAt = now();
-        if (!chat.updatedAt) chat.updatedAt = chat.createdAt;
-    });
-}
-
-function saveChats() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
-    } catch (error) {
-        showToast("د ذخیرې ستونزه: د موبایل حافظه وګورئ.");
-    }
-}
-
-function getCurrentChat() {
-    return chats.find(chat => chat.id === currentChatId) || null;
-}
-
-function createChat(silent) {
-    const chat = {
-        id: makeId(),
-        title: "نوې خبرې",
-        createdAt: now(),
-        updatedAt: now(),
-        messages: []
-    };
-
-    chats.unshift(chat);
-    currentChatId = chat.id;
-    pendingChoices = [];
-
-    if (!silent) {
-        saveChats();
-        renderChat();
-        renderHistory();
-        closeSidebar();
-    }
-
-    return chat;
-}
-
-function ensureChat() {
-    let chat = getCurrentChat();
-    if (!chat) chat = createChat(true);
-    return chat;
-}
-
-/* =====================================================
-   3. د متن پاکول او د پښتو عددونو پېژندل
-   ===================================================== */
-
-function convertDigitsToEnglish(text) {
-    const map = {
-        "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
-        "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9"
-    };
-    return String(text).replace(/[۰-۹]/g, digit => map[digit]);
-}
-
-function normalize(text) {
-    return convertDigitsToEnglish(String(text || ""))
-        .toLowerCase()
-        .replace(/[ًٌٍَُِّْٰـ]/g, "")
-        .replace(/[إأآٱ]/g, "ا")
-        .replace(/ى/g, "ي")
-        .replace(/ک/g, "ك")
-        .replace(/ي/g, "ی")
-        .replace(/ة/g, "ه")
-        .replace(/[؟?!.,،؛:()[\]{}"'«»ـ\-]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-function tokenize(text) {
-    return normalize(text).split(/\s+/).filter(Boolean);
-}
-
-const stopWords = new Set([
-    "څه", "څوک", "څنګه", "ولې", "چیرته", "کوم", "کومه",
-    "دی", "ده", "دي", "شو", "شي", "کوي", "کړي", "کړه",
-    "د", "په", "کې", "له", "نه", "او", "یا", "را", "زه",
-    "ته", "تاسو", "موږ", "زما", "ستا", "ستاسو", "یې",
-    "دا", "هغه", "هم", "خو", "چې", "به", "و", "وو",
-    "لري", "لره", "رانه", "مهرباني",
-    "ماته", "راته", "وایه", "ووایه", "تشریح", "کړئ",
-    "معنی", "مطلب", "تعریف", "کومې"
-]);
-
-function meaningfulWords(text) {
-    return tokenize(text).filter(word =>
-        word.length > 1 && !stopWords.has(word)
-    );
-}
-
-/* =====================================================
-   4. د ورته والي حساب
-   ===================================================== */
-
-function similarity(a, b) {
-    const wordsA = new Set(meaningfulWords(a));
-    const wordsB = new Set(meaningfulWords(b));
-
-    if (wordsA.size === 0 || wordsB.size === 0) return 0;
-
-    let intersection = 0;
-    for (const word of wordsA) {
-        if (wordsB.has(word)) intersection++;
-    }
-
-    const union = new Set([...wordsA, ...wordsB]).size;
-    const jaccard = intersection / union;
-    const coverageA = intersection / wordsA.size;
-    const coverageB = intersection / wordsB.size;
-
-    return Math.max(jaccard, coverageA * 0.85, coverageB * 0.85);
-}
-
-function levenshtein(a, b) {
-    a = String(a);
-    b = String(b);
-    if (a === b) return 0;
-    if (!a.length) return b.length;
-    if (!b.length) return a.length;
-
-    const matrix = [];
-    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1,
-                    matrix[i][j - 1] + 1,
-                    matrix[i - 1][j] + 1
-                );
-            }
-        }
-    }
-    return matrix[b.length][a.length];
-}
-
-function scoreEntry(query, entry) {
-    const q = normalize(query);
-    const mainQuestion = normalize(entry.question);
-
-    if (q === mainQuestion) return 1;
-
-    const queryWords = q.split(/\s+/).filter(Boolean);
-    if (queryWords.length === 0) return 0;
-
-    const meaningfulQueryWords = meaningfulWords(q);
-    const queryWordSet = new Set(queryWords);
-
-    let score = similarity(q, entry.question);
-
-    for (const keyword of (entry.keywords || [])) {
-        const k = normalize(keyword);
-        if (!k) continue;
-
-        if (q === k) {
-            score = Math.max(score, 1);
-            continue;
-        }
-
-        const keywordWords = k.split(/\s+/).filter(Boolean);
-        if (keywordWords.length === 0) continue;
-
-        const allMatched = keywordWords.every(kw => queryWordSet.has(kw));
-
-        if (allMatched) {
-            const meaningfulCount = meaningfulQueryWords.length;
-            const keywordMeaningfulCount = keywordWords.filter(kw =>
-                !stopWords.has(kw)
-            ).length;
-
-            const extraMeaningful = meaningfulCount - keywordMeaningfulCount;
-
-            if (extraMeaningful >= 2) {
-                score = Math.max(score, 0.3);
-            } else if (extraMeaningful === 1) {
-                score = Math.max(score, 0.55);
-            } else {
-                const ratio = keywordWords.length / queryWords.length;
-                if (ratio >= 0.5) {
-                    score = Math.max(score, 0.94);
-                } else {
-                    score = Math.max(score, 0.85);
-                }
-            }
-        }
-    }
-
-    return score;
-}
-
-function findMatches(query) {
-    return knowledgeBase
-        .map(entry => ({ entry, score: scoreEntry(query, entry) }))
-        .sort((a, b) => b.score - a.score);
-}
-
-/* =====================================================
-   5. د سلام او عامو خبرو پېژندل
-   ===================================================== */
-
-function getSmallTalk(query) {
-    const q = normalize(query);
-    if (!q) return null;
-
-    const words = q.split(/\s+/).filter(Boolean);
-    if (words.length === 0) return null;
-
-    const greetingWords = new Set([
-        "سلام", "سلامونه", "علیکم", "علیکم", "salam", "السلام"
-    ]);
-
-    const exactGreetings = [
-        "سلام", "سلامونه", "السلام علیکم",
-        "سلام علیکم", "وعلیکم السلام", "salam"
-    ];
-    if (exactGreetings.some(g => q === normalize(g))) {
-        return "وعلیکم السلام ورحمة الله وبرکاته! ښه راغلاست. خپله پوښتنه ولیکه، زه به د موجودو معلوماتو له مخې مرسته درسره وکړم.";
-    }
-
-    if (words.length <= 3 && words.every(w => greetingWords.has(w))) {
-        return "وعلیکم السلام ورحمة الله وبرکاته! ښه راغلاست. خپله پوښتنه ولیکه، زه به د موجودو معلوماتو له مخې مرسته درسره وکړم.";
-    }
-
-    if (words.length === 1) {
-        const word = words[0];
-        if (word.length >= 2 && word.length <= 6) {
-            const dist = levenshtein(word, "سلام");
-            if (dist <= 1) {
-                return "وعلیکم السلام ورحمة الله وبرکاته! ښه راغلاست. خپله پوښتنه ولیکه، زه به د موجودو معلوماتو له مخې مرسته درسره وکړم.";
-            }
-        }
-    }
-
-    const exactThanks = ["مننه", "ډیره مننه", "ډېره مننه", "تشکر", "ډیر تشکر", "ډېر تشکر"];
-    if (exactThanks.some(t => q === normalize(t))) {
-        return "هر کله! الله تعالی دې درته خیر او برکت درکړي.";
-    }
-    if (words.length === 1) {
-        const word = words[0];
-        if (word.length >= 3 && word.length <= 6) {
-            if (levenshtein(word, "مننه") <= 1 || levenshtein(word, "تشکر") <= 1) {
-                return "هر کله! الله تعالی دې درته خیر او برکت درکړي.";
-            }
-        }
-    }
-
-    const howAreYou = ["ته څنګه یې", "څنګه یې", "څنګه یاست"];
-    if (howAreYou.some(h => q === normalize(h))) {
-        return "مننه! زه چمتو یم چې ستا پوښتنو ته د موجودو معلوماتو له مخې ځواب ووایم.";
-    }
-
-    return null;
-}
-
-/* =====================================================
-   6. د یوې پوښتنې حل کول
-   ===================================================== */
-
-function resolveSingleQuestion(question) {
-    const q = normalize(question);
-    if (!q) return { type: "unknown", question, answer: "" };
-
-    const smallTalk = getSmallTalk(q);
-    if (smallTalk) {
-        return { type: "answer", question, answer: smallTalk };
-    }
-
-    const matches = findMatches(q);
-    const best = matches[0];
-
-    if (best && best.score >= 0.76) {
-        return {
-            type: "answer",
-            question,
-            answer: best.entry.answer,
-            entryId: best.entry.id
-        };
-    }
-
-    const suggestions = matches
-        .filter(item => item.score >= 0.22)
-        .slice(0, 5)
-        .map(item => ({
-            id: item.entry.id,
-            question: item.entry.question,
-            answer: item.entry.answer,
-            score: item.score
-        }));
-
-    if (suggestions.length > 0) {
-        return { type: "suggestions", question, suggestions };
-    }
-
-    return {
-        type: "unknown",
-        question,
-        answer:
-"بښنه غواړم، د دې پوښتنې لپاره په محلي معلوماتو کې مناسب ځواب پیدا نه شو. پوښتنه لږه روښانه ولیکه یا یې په بل ډول بیان کړه."
-    };
-}
-
-/* =====================================================
-   7. په یوه پیغام کې د څو پوښتنو جلا کول
-   ===================================================== */
-
-function splitQuestions(text) {
-    const input = String(text || "").trim();
-    if (!input) return [];
-
-    const parts = input
-        .split(/[؟?!؛;\n]+/)
-        .map(part => part.trim())
-        .filter(Boolean);
-
-    const starters = [
-        "اسلام", "قرآن", "قران", "الله", "رسول", "محمد", "ایمان",
-        "لمونځ", "نماز", "اودس", "روژه", "زکات", "حج", "جنت",
-        "دوزخ", "حدیث", "سنت", "توبه", "دعا", "استغفار",
-        "مسلمان", "هجرت", "صدقه", "اخلاق", "درود", "حلال",
-        "حرام", "جمعه", "اختر", "سورت", "سوره", "مور", "پلار", "ذکر"
-    ];
-
-    const output = [];
-
-    for (const part of parts) {
-        let segments = [part];
-
-        for (const starter of starters) {
-            const nextSegments = [];
-            for (const segment of segments) {
-                const escaped = starter.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                const regex = new RegExp("\\s+(?:او)\\s+(?=" + escaped + ")", "g");
-                nextSegments.push(...segment.split(regex));
-            }
-            segments = nextSegments;
-        }
-
-        for (const segment of segments) {
-            const clean = segment.trim();
-            if (clean && (meaningfulWords(clean).length > 0 || getSmallTalk(clean))) {
-                output.push(clean);
-            }
-        }
-    }
-
-    return output;
-}
-
-/* =====================================================
-   8. د شمېرې له لارې د وړاندیز انتخاب
-   ===================================================== */
-
-function getNumericSelection(text) {
-    const value = normalize(text);
-    if (!/^[1-5]$/.test(value)) return null;
-    return Number(value);
-}
-
-function answerSelectedChoice(number) {
-    if (!pendingChoices.length) return null;
-
-    const group = pendingChoices[0];
-    if (!group || !Array.isArray(group.suggestions)) {
-        pendingChoices.shift();
-        return {
-            type: "answer",
-            answer: "د دې پوښتنې لپاره نور انتخابونه نشته. مهرباني وکړه بیا پوښتنه ولیکه."
-        };
-    }
-
-    const selected = group.suggestions[number - 1];
-
-    if (!selected) {
-        return {
-            type: "answer",
-            answer: "مهرباني وکړه، د ۱ او ۵ ترمنځ یوه موجوده شمېره وټاکه."
-        };
-    }
-
-    pendingChoices.shift();
-
-    return {
-        type: "answer",
-        answer: selected.answer,
-        selectedQuestion: selected.question
-    };
-}
-
-/* =====================================================
-   9. د ځواب جوړول
-   ===================================================== */
-
-function getAnswer(userText) {
-    const number = getNumericSelection(userText);
-
-    if (number !== null && pendingChoices.length > 0) {
-        const selected = answerSelectedChoice(number);
-        if (selected) {
-            let answer = selected.answer;
-            if (selected.selectedQuestion) {
-                answer =
-                    "ستاسې انتخاب: " + selected.selectedQuestion +
-                    "\n\n" + answer;
-            }
-            if (pendingChoices.length > 0) {
-                answer +=
-                    "\n\nیادونه: لا هم " + pendingChoices.length +
-                    " نا حل شوې پوښتنه پاتې ده. د هغې د انتخاب لپاره ۱–۵ ولیکه.";
-            }
-            return answer;
-        }
-    }
-
-    pendingChoices = [];
-
-    const questions = splitQuestions(userText);
-    if (questions.length === 0) {
-        return "مهرباني وکړه، یوه پوښتنه ولیکه.";
-    }
-
-    const results = questions.map(q => resolveSingleQuestion(q));
-    const output = [];
-
-    results.forEach((result, index) => {
-        if (questions.length > 1) {
-            output.push("پوښتنه " + (index + 1) + ": " + result.question);
-        }
-
-        if (result.type === "answer") {
-            output.push(result.answer);
-        } else if (result.type === "suggestions") {
-            output.push("ستا د پوښتنې لپاره څو نږدې موضوعات پیدا شول:");
-            result.suggestions.forEach((item, i) => {
-                output.push((i + 1) + ". " + item.question);
-            });
-            pendingChoices.push({
-                originalQuestion: result.question,
-                suggestions: result.suggestions
-            });
-            output.push("د دې پوښتنې د سم ځواب لپاره د پورته انتخابونو شمېره ولیکه.");
-        } else {
-            output.push(result.answer);
-        }
-
-        if (questions.length > 1 && index < results.length - 1) {
-            output.push("");
-        }
-    });
-
-    if (pendingChoices.length > 1) {
-        output.push(
-            "\nیادونه: د څو پوښتنو لپاره انتخابونه شته. " +
-            "لومړی د لومړۍ نا حل شوې پوښتنې شمېره وټاکه؛ " +
-            "وروسته به د بلې پوښتنې انتخاب ته ورسېږو."
-        );
-    }
-
-    return output.join("\n");
-}
-
-/* =====================================================
-   10. typeWriter (اصلاح شوې برخه: د لایک تڼۍ یوازې د ټایپ پای کې ښکارېدل)
-   ===================================================== */
-
-function createActionButtons(wrapper, text) {
-    const actionsDiv = document.createElement("div");
-    actionsDiv.className = "message-actions";
-
-    // د کاپي تڼۍ
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "action-btn";
-    copyBtn.title = "کاپي کول";
-    copyBtn.innerHTML = `
-        <svg viewBox="0 0 24 24">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-        </svg>
-    `;
-    copyBtn.addEventListener("click", () => {
-        navigator.clipboard.writeText(text || "").then(() => {
-            showToast("ځواب کاپي شو!");
-        }).catch(() => {
-            showToast("کاپي نه شو، له نوي سر هڅه وکړئ.");
-        });
-    });
-
-    // د لایک تڼۍ
-    const likeBtn = document.createElement("button");
-    likeBtn.className = "action-btn";
-    likeBtn.title = "خوښول";
-    likeBtn.innerHTML = `
-        <svg viewBox="0 0 24 24">
-            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-        </svg>
-    `;
-
-    // د ډېس لایک تڼۍ
-    const dislikeBtn = document.createElement("button");
-    dislikeBtn.className = "action-btn";
-    dislikeBtn.title = "نه خوښول";
-    dislikeBtn.innerHTML = `
-        <svg viewBox="0 0 24 24">
-            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
-        </svg>
-    `;
-
-    likeBtn.addEventListener("click", () => {
-        if (likeBtn.classList.contains("active-like")) {
-            likeBtn.classList.remove("active-like");
-        } else {
-            likeBtn.classList.add("active-like");
-            dislikeBtn.classList.remove("active-dislike");
-        }
-    });
-
-    dislikeBtn.addEventListener("click", () => {
-        if (dislikeBtn.classList.contains("active-dislike")) {
-            dislikeBtn.classList.remove("active-dislike");
-        } else {
-            dislikeBtn.classList.add("active-dislike");
-            likeBtn.classList.remove("active-like");
-        }
-    });
-
-    actionsDiv.appendChild(copyBtn);
-    actionsDiv.appendChild(likeBtn);
-    actionsDiv.appendChild(dislikeBtn);
-    wrapper.appendChild(actionsDiv);
-}
-
-function typeWriter(element, fullText, token, wrapper) {
-    element.textContent = "";
-    const characters = Array.from(fullText);
-    const speed = 15;
-    let index = 0;
-    let scrollCounter = 0;
-
-    function writeNext() {
-        if (token !== typeWriterToken || !element.isConnected) return;
-        
-        // ⭐️ کله چې ځواب بشپړ شو، یوازې دغه مهال تڼۍ جوړې او ښکاره کړی
-        if (index >= characters.length) {
-            createActionButtons(wrapper, fullText);
-            scrollToBottom();
-            return;
-        }
-
-        element.textContent += characters[index];
-        index++;
-
-        scrollCounter++;
-        if (scrollCounter >= 4) {
-            scrollCounter = 0;
-            scrollToBottom();
-        }
-
-        setTimeout(writeNext, speed);
-    }
-
-    writeNext();
-}
-
-function renderMessage(message) {
-    const isUser = message.role === "user";
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "message " + (isUser ? "user" : "assistant");
-
-    const sender = document.createElement("div");
-    sender.className = "sender";
-    sender.textContent = isUser ? "تاسو" : "اسلامي پښتو AI";
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-
-    if (!isUser) {
-        wrapper.appendChild(sender);
-    }
-    wrapper.appendChild(bubble);
-    messagesEl.appendChild(wrapper);
-
-    if (message.role === "assistant" && message.animate === true) {
-        message.animate = false;
-        // ⭐️ واپر هم پاس شو ترڅو تڼۍ تر انیمیشن وروسته پکې اضافه شي
-        typeWriter(bubble, message.text || "", typeWriterToken, wrapper);
-    } else {
-        bubble.textContent = message.text || "";
-        if (!isUser) {
-            createActionButtons(wrapper, message.text || "");
-        }
-    }
-}
-
-function renderChat() {
-    typeWriterToken++;
-
-    messagesEl.innerHTML = "";
-
-    const chat = getCurrentChat();
-
-    if (!chat || chat.messages.length === 0) {
-        welcomeEl.style.display = "flex";
-    } else {
-        welcomeEl.style.display = "none";
-        chat.messages.forEach(message => renderMessage(message));
-    }
-
-    scrollToBottom();
-}
-
-function scrollToBottom() {
-    requestAnimationFrame(() => {
-        chatArea.scrollTop = chatArea.scrollHeight;
-    });
-}
-
-function addMessage(role, text) {
-    const chat = ensureChat();
-
-    const message = {
-        id: makeId(),
-        role,
-        text,
-        time: now(),
-        animate: role === "assistant"
-    };
-
-    chat.messages.push(message);
-    chat.updatedAt = now();
-
-    if (role === "user" && (chat.title === "نوې خبرې" || !chat.title)) {
-        chat.title = text.length > 32 ? text.slice(0, 32) + "…" : text;
-    }
-
-    saveChats();
-    renderChat();
-    renderHistory();
-
-    return message;
-}
-
-/* =====================================================
-   11. د ټایپ کولو انیمېشن
-   ===================================================== */
-
-function showTyping() {
-    const wrapper = document.createElement("div");
-    wrapper.className = "message assistant";
-    wrapper.id = "typingMessage";
-
-    wrapper.innerHTML = `
-        <div class="sender">اسلامي پښتو AI</div>
-        <div class="bubble">
-            <div class="typing">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-    `;
-
-    messagesEl.appendChild(wrapper);
-    scrollToBottom();
-}
-
-function removeTyping() {
-    const typing = document.getElementById("typingMessage");
-    if (typing) typing.remove();
-}
-
-/* =====================================================
-   12. د پیغام لېږل
-   ===================================================== */
-
-async function sendMessage(text) {
-    text = String(text || "").trim();
-    if (!text || isBusy) return;
-
-    isBusy = true;
-    sendBtn.disabled = true;
-
-    ensureChat();
-    addMessage("user", text);
-
-    userInput.value = "";
-    userInput.blur();
-    autoResizeInput();
-
-    showTyping();
-
-    await new Promise(resolve => setTimeout(resolve, 400));
-
-    removeTyping();
-
-    const answer = getAnswer(text);
-    addMessage("assistant", answer);
-
-    isBusy = false;
-    sendBtn.disabled = false;
-}
-
-/* =====================================================
-   13. د تاریخچې رسمول
-   ===================================================== */
-
-function renderHistory() {
-    historyList.innerHTML = "";
-
-    if (chats.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty-history";
-        empty.textContent = "تر اوسه کومې خبرې نه شته.";
-        historyList.appendChild(empty);
-        return;
-    }
-
-    const sortedChats = [...chats].sort((a, b) =>
-        new Date(b.updatedAt) - new Date(a.updatedAt)
-    );
-
-    sortedChats.forEach(chat => {
-        const row = document.createElement("div");
-        row.className = "history-item";
-
-        const openButton = document.createElement("button");
-        openButton.className =
-            "history-open" + (chat.id === currentChatId ? " active" : "");
-        openButton.textContent = chat.title;
-        openButton.title = chat.title;
-
-        openButton.addEventListener("click", () => {
-            currentChatId = chat.id;
-            pendingChoices = [];
-            renderChat();
-            renderHistory();
-            closeSidebar();
-        });
-
-        const menuButton = document.createElement("button");
-        menuButton.className = "history-menu";
-        menuButton.textContent = "⋮";
-        menuButton.setAttribute("aria-label", "د خبرو اختیارونه");
-
-        menuButton.addEventListener("click", (event) => {
-            event.stopPropagation();
-            showChatOptions(chat.id, event);
-        });
-
-        row.appendChild(openButton);
-        row.appendChild(menuButton);
-        historyList.appendChild(row);
-    });
-}
-
-/* =====================================================
-   14. منوی شناور و مودال سفارشی
-   ===================================================== */
-
-function showChatOptions(chatId, event) {
-    dropdownChatId = chatId;
-    const button = event.currentTarget;
-    const rect = button.getBoundingClientRect();
-    
-    chatDropdown.style.display = "flex";
-    chatDropdown.style.top = (rect.bottom + window.scrollY + 4) + "px";
-    chatDropdown.style.left = (rect.left + window.scrollX) + "px";
-}
-
-function hideChatDropdown() {
-    chatDropdown.style.display = "none";
-    dropdownChatId = null;
-}
-
-document.addEventListener("click", (e) => {
-    if (!chatDropdown.contains(e.target) && !e.target.closest(".history-menu")) {
-        hideChatDropdown();
-    }
-});
-
-dropdownRenameBtn.addEventListener("click", async () => {
-    if (dropdownChatId) {
-        const idToEdit = dropdownChatId;
-        hideChatDropdown();
-        await renameChat(idToEdit);
-    }
-});
-
-dropdownDeleteBtn.addEventListener("click", async () => {
-    if (dropdownChatId) {
-        const idToDelete = dropdownChatId;
-        hideChatDropdown();
-        await deleteChat(idToDelete);
-    }
-});
-
-const modalOverlay = document.getElementById("modalOverlay");
-const modalTitle = document.getElementById("modalTitle");
-const modalInput = document.getElementById("modalInput");
-const modalActions = document.getElementById("modalActions");
-
-let modalResolve = null;
-
-function closeModal(value) {
-    modalOverlay.classList.remove("show");
-    modalInput.value = "";
-    if (modalResolve) {
-        const resolve = modalResolve;
-        modalResolve = null;
-        resolve(value);
-    }
-}
-
-function askText(title, defaultValue) {
-    return new Promise(resolve => {
-        modalTitle.textContent = title;
-        modalInput.style.display = "block";
-        modalInput.value = defaultValue || "";
-        modalActions.innerHTML = "";
-        modalResolve = resolve;
-
-        const cancelBtn = document.createElement("button");
-        cancelBtn.className = "modal-btn";
-        cancelBtn.textContent = "لغو";
-        cancelBtn.addEventListener("click", () => closeModal(null));
-
-        const okBtn = document.createElement("button");
-        okBtn.className = "modal-btn primary";
-        okBtn.textContent = "تایید";
-        okBtn.addEventListener("click", () => {
-            closeModal(modalInput.value);
-        });
-
-        modalActions.appendChild(okBtn);
-        modalActions.appendChild(cancelBtn);
-
-        modalOverlay.classList.add("show");
-
-        setTimeout(() => {
-            modalInput.focus();
-            modalInput.select();
-        }, 50);
-    });
-}
-
-function askConfirm(title) {
-    return new Promise(resolve => {
-        modalTitle.textContent = title;
-        modalInput.style.display = "none";
-        modalInput.value = "";
-        modalActions.innerHTML = "";
-        modalResolve = (val) => resolve(val === true);
-
-        const cancelBtn = document.createElement("button");
-        cancelBtn.className = "modal-btn";
-        cancelBtn.textContent = "لغو";
-        cancelBtn.addEventListener("click", () => closeModal(false));
-
-        const okBtn = document.createElement("button");
-        okBtn.className = "modal-btn danger";
-        okBtn.textContent = "تایید";
-        okBtn.addEventListener("click", () => closeModal(true));
-
-        modalActions.appendChild(okBtn);
-        modalActions.appendChild(cancelBtn);
-
-        modalOverlay.classList.add("show");
-    });
-}
-
-modalOverlay.addEventListener("click", event => {
-    if (event.target === modalOverlay) {
-        closeModal(null);
-    }
-});
-
-/* =====================================================
-   15. مدیریت چت‌ها
-   ===================================================== */
-
-async function renameChat(chatId) {
-    const chat = chats.find(item => item.id === chatId);
-    if (!chat) return;
-
-    const newName = await askText("د خبرو نوی نوم ولیکه:", chat.title);
-    if (newName === null) return;
-
-    const cleanName = newName.trim();
-    if (!cleanName) {
-        showToast("د خبرو نوم تش نه شي پاتې کېدای.");
-        return;
-    }
-
-    chat.title = cleanName.slice(0, 80);
-    chat.updatedAt = now();
-
-    saveChats();
-    renderHistory();
-    showToast("د خبرو نوم بدل شو.");
-}
-
-async function deleteChat(chatId) {
-    const chat = chats.find(item => item.id === chatId);
-    if (!chat) return;
-
-    const confirmed = await askConfirm("ایا غواړې دا خبرې د تل لپاره حذف کړې؟");
-    if (!confirmed) return;
-
-    chats = chats.filter(item => item.id !== chatId);
-
-    if (currentChatId === chatId) {
-        currentChatId = null;
-        pendingChoices = [];
-
-        if (chats.length > 0) {
-            currentChatId = chats[0].id;
-        } else {
-            createChat(true);
-        }
-    }
-
-    saveChats();
-    renderChat();
-    renderHistory();
-    showToast("خبرې حذف شوې.");
-}
-
-/* =====================================================
-   16. د مینو کنټرول
-   ===================================================== */
-
-function openSidebar() {
-    sidebar.classList.add("open");
-    overlay.classList.add("show");
-}
-
-function closeSidebar() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
-}
-
-document.getElementById("menuBtn").addEventListener("click", openSidebar);
-document.getElementById("closeMenuBtn").addEventListener("click", closeSidebar);
-overlay.addEventListener("click", closeSidebar);
-
-document.getElementById("newChatBtn").addEventListener("click", () => createChat());
-document.getElementById("sidebarNewBtn").addEventListener("click", () => createChat());
-
-document.getElementById("renameBtn").addEventListener("click", () => {
-    const chat = getCurrentChat();
-    if (!chat) {
-        showToast("لومړی خبرې پیل کړه.");
-        return;
-    }
-    renameChat(chat.id);
-});
-
-document.getElementById("deleteCurrentBtn").addEventListener("click", () => {
-    const chat = getCurrentChat();
-    if (!chat) {
-        showToast("د حذف کولو لپاره خبرې نشته.");
-        return;
-    }
-    deleteChat(chat.id);
-});
-
-document.getElementById("deleteAllBtn").addEventListener("click", async () => {
-    if (chats.length === 0) {
-        showToast("د حذف کولو لپاره خبرې نشته.");
-        return;
-    }
-
-    const confirmed = await askConfirm(
-        "ایا ډاډه یې چې ټولې خبرې حذف کړې؟ دا کار بېرته نه شي راګرځېدای."
-    );
-    if (!confirmed) return;
-
-    chats = [];
-    currentChatId = null;
-    pendingChoices = [];
-
-    createChat(true);
-    saveChats();
-    renderChat();
-    renderHistory();
-
-    showToast("ټولې خبرې حذف شوې.");
-});
-
-/* =====================================================
-   17. د متن ساحه او د لېږلو تڼۍ
-   ===================================================== */
-
-document.getElementById("chatForm").addEventListener("submit", event => {
-    event.preventDefault();
-    sendMessage(userInput.value);
-});
-
-userInput.addEventListener("input", autoResizeInput);
-
-userInput.addEventListener("keydown", event => {
-    if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage(userInput.value);
-    }
-});
-
-function autoResizeInput() {
-    const minHeight = 38;
-    userInput.style.height = minHeight + "px";
-
-    const newHeight = Math.min(userInput.scrollHeight, 120);
-    userInput.style.height = newHeight + "px";
-}
-
-document.querySelectorAll(".suggestion-card").forEach(button => {
-    button.addEventListener("click", () => {
-        const question = button.getAttribute("data-question");
-        if (question) {
-            userInput.blur();
-            sendMessage(question);
+document.getElementById("searchInput").addEventListener("input", function() {
+    const value = this.value.trim().toLowerCase();
+    const mode = document.querySelector('input[name="lang"]:checked').value;
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+
+    if (!value) return; // که سرچ خالي وي، پاکه نتیجه
+
+    dictionary.forEach(item => {
+        let word = mode === "en2ps" ? item.en.toLowerCase() : item.ps;
+        if (word.startsWith(value)) { // فلټر د سرچ پیل سره
+            results.innerHTML += `
+                <div class="result-card">
+                    <div class="result-word">
+                        ${mode === "en2ps" ? item.en : item.ps}
+                    </div>
+                    <div class="result-meaning">
+                        ${mode === "en2ps" ? item.ps : item.en}
+                    </div>
+                    <div class="result-example">
+                        ${item.example}
+                    </div>
+                </div>
+            `;
         }
     });
 });
 
-/* =====================================================
-   18. خبرتیا
-   ===================================================== */
-
-let toastTimer = null;
-
-function showToast(message) {
-    toastEl.textContent = message;
-    toastEl.classList.add("show");
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-        toastEl.classList.remove("show");
-    }, 2500);
+function speak() {
+    const text = document.getElementById("searchInput").value;
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
 }
 
-/* =====================================================
-   19. د اپلیکیشن پیل
-   ===================================================== */
-
-function initializeApp() {
-    loadChats();
-
-    chats.forEach(chat => {
-        if (chat.messages && chat.messages.length > 0) {
-            chat.messages.forEach(msg => {
-                msg.animate = false; 
-            });
-        }
-    });
-
-    const newChat = createChat(true);
-    currentChatId = newChat.id;
-    saveChats();
-
-    renderChat();
-    renderHistory();
+function openMenu(){
+    document.querySelector(".overlay").style.display="block";
+    sideMenu.classList.add("active");
+}
+function closeMenu(){
+    document.querySelector(".overlay").style.display="none";
+    sideMenu.classList.remove("active");
 }
 
-initializeApp();
-
-/* =====================================================
-   20. حل مشکل کیبورد در اپلیکیشن اندروید (WebView)
-   ===================================================== */
-
-// این تابع ارتفاع واقعی صفحه را با باز و بسته شدن کیبورد تنظیم می‌کند
-function handleKeyboardResize() {
-    const app = document.querySelector('.app');
-    // window.innerHeight ارتفاعی است که با باز شدن کیبورد تغییر می‌کند
-    app.style.height = window.innerHeight + 'px';
-    scrollToBottom();
+/* ABOUT */
+function openAbout(){
+    closeMenu();
+    about.style.display="block";
 }
-
-// تنظیم ارتفاع اولیه هنگام باز شدن اپلیکیشن
-handleKeyboardResize();
-
-// گوش دادن به تغییرات ارتفاع صفحه (زمانی که کیبورد باز یا بسته می‌شود)
-window.addEventListener('resize', handleKeyboardResize);
-
-// برای برخی از نسخه‌های قدیمی اندروید
-window.addEventListener('orientationchange', handleKeyboardResize);
-
-// وقتی کاربر روی فیلد ورودی کلیک می‌کند (کیبورد باز می‌شود)
-userInput.addEventListener('focus', () => {
-    setTimeout(handleKeyboardResize, 300); // با کمی تاخیر برای اینکه کیبورد کاملاً باز شود
-});
-
-// وقتی کاربر از فیلد ورودی خارج می‌شود (کیبورد بسته می‌شود)
-userInput.addEventListener('blur', () => {
-    setTimeout(handleKeyboardResize, 100);
-});
-
-// قفل کردن کل صفحه اصلی برای جلوگیری از اسکرول ناخواسته
-document.documentElement.style.overflow = 'hidden';
-document.body.style.overflow = 'hidden';
-document.body.style.position = 'fixed';
-document.body.style.width = '100%';
-document.body.style.height = '100%';
-
+function closeAbout(){
+    about.style.display="none";
+}
+/* WORD OF DAY */
+function setWordOfDay() {
+    const index = Math.floor(Date.now() / 43200000) % dictionary.length;
+    document.getElementById("wotdWord").innerText = dictionary[index].en;
+    document.getElementById("wotdMeaning").innerText = dictionary[index].ps;
+}
+setWordOfDay();
 </script>
-
 </body>
 </html>
